@@ -3,6 +3,7 @@ var app = express();
 
 app.get('/', function(req, res,next) {
     res.status(200).json({stato: 'ok'});
+    res.end();
 });
 
 app.listen(2000, ()=>{
