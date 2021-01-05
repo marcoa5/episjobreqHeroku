@@ -6,6 +6,11 @@ app.get('/', function(req, res,next) {
     res.end();
 });
 
+app.get('*', function(req, res,next) {
+    res.status(404).json({stato: 'Nok'});
+    res.end();
+});
+
 app.listen(process.env.PORT || 2000, ()=>{
     console.log('RUNNING')
 });
