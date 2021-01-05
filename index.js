@@ -6,6 +6,6 @@ app.get('/', function(req, res,next) {
     res.end();
 });
 
-app.listen(2000, ()=>{
+app.listen(process.env.PORT || 2000, ()=>{
     console.log('RUNNING')
 });
