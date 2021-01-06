@@ -28,7 +28,7 @@ function createMailOptions(to1, subject, son1,son2,son3,urlPdf, fileN){
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.get('/user', function(req, res,next) {
+app.get('/mail', function(req, res,next) {
     if(req.query.to1!=undefined){
         transporter.sendMail(createMailOptions(req.query.to1, req.query.subject, req.query.son1, req.query.son2,req.query.son3, req.query.urlPdf, req.query.fileN), (error, info)=>{
             if (error) {
