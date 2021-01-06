@@ -1,10 +1,38 @@
 var express = require('express');
 var app = express();
+const nodemailer = require('nodemailer');
 
-app.get('/user', function(req, res,next) {
-    console.log(req.body)
-    res.status(200).json({stato: 'ok'});
-    res.end();
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'episerjob@gmail.com',
+      pass: 'Epiroc2020' 
+    }
+  });
+
+
+function createMailOptions(to1){
+    const mailOptions = {
+        from: 'Epiroc Service <episerjob@gmail.com>',
+        to: to1,
+        subject: 'Invoices due',
+        text: 'Dudes, we really need your money.'
+      };
+      return mailOptions
+}
+
+app.post('/user', function(req, res,next) {
+    if(req.query.to1!=undefined){
+        transporter.sendMail(createMailOptions(req.query.to1), (error, info)=>{
+            if (error) {
+            console.log(error);
+            } else {
+                res.status(200).send('Mail Sent');
+            }
+        });
+    } else {
+        res.send('Mail not sent')
+    }
 });
 
 app.get('*', function(req, res,next) {
