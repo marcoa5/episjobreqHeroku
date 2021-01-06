@@ -12,12 +12,15 @@ const transporter = nodemailer.createTransport({
   });
 
 
-function createMailOptions(to1, subject, son1,son2,son3){
+function createMailOptions(to1, subject, son1,son2,son3,urlPdf){
     const mailOptions = {
         from: 'Epiroc Service <episerjob@gmail.com>',
         to: to1,
         subject: subject,
-        text: "In allegato scheda lavoro relativa all'intervento da noi effettuato.\nVi ringraziamo qualora abbiate aderito al nostro sondaggio."  + "\n\n\nRisultato sondaggio:\n\nOrganizzazione intervento: " + son1 + "\nConsegna Ricambi: " + son2 + "\nEsecuzione Intervento: " + son3
+        text: "In allegato scheda lavoro relativa all'intervento da noi effettuato.\nVi ringraziamo qualora abbiate aderito al nostro sondaggio."  + "\n\n\nRisultato sondaggio:\n\nOrganizzazione intervento: " + son1 + "\nConsegna Ricambi: " + son2 + "\nEsecuzione Intervento: " + son3,
+        attachments: { 
+            path: urlPdf
+        }
       };
       return mailOptions
 }
@@ -26,7 +29,7 @@ app.use(bodyParser.json());
 
 app.get('/user', function(req, res,next) {
     if(req.query.to1!=undefined){
-        transporter.sendMail(createMailOptions(req.query.to1, req.query.subject, req.query.son1, req.query.son2,req.query.son3), (error, info)=>{
+        transporter.sendMail(createMailOptions(req.query.to1, req.query.subject, req.query.son1, req.query.son2,req.query.son3, req.query.urlPdf), (error, info)=>{
             if (error) {
             console.log(error);
             } else {
