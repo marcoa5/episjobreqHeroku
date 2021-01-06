@@ -30,7 +30,7 @@ app.get('/user', function(req, res,next) {
             if (error) {
             console.log(error);
             } else {
-                res.status(200).send('Mail Sent');
+                res.status(200).send('Mail Sent ' + req.body.to1 + '\n' + req.query.rAss);
             }
         });
     } else {
