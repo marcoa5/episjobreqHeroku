@@ -1,7 +1,7 @@
 var express = require('express');
 var app = express();
 const nodemailer = require('nodemailer');
-const bobyparser = require('body-parser');
+const bodyParser = require('body-parser');
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
