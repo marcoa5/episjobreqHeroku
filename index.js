@@ -1,6 +1,7 @@
 var express = require('express');
 var app = express();
 const nodemailer = require('nodemailer');
+const bobyparser = require('body-parser');
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -20,6 +21,8 @@ function createMailOptions(to1){
       };
       return mailOptions
 }
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.post('/user', function(req, res,next) {
     res.send(req.query.to1)
