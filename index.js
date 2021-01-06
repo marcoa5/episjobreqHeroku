@@ -22,7 +22,7 @@ function createMailOptions(to1){
 }
 
 app.post('/user', function(req, res,next) {
-    res.send(req.body)
+    res.send(req.query.to1)
     /*if(req.query.to1!=undefined){
         transporter.sendMail(createMailOptions(req.query.to1), (error, info)=>{
             if (error) {
