@@ -7,6 +7,7 @@ app.get('/', function(req, res,next) {
 });
 
 app.get('*', function(req, res,next) {
+    if(req!=undefined){res.send(req.body)}
     res.status(404).json({stato: 'Nok'});
     res.end();
 });
