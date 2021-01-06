@@ -22,7 +22,8 @@ function createMailOptions(to1){
 }
 
 app.post('/user', function(req, res,next) {
-    if(req.query.to1!=undefined){
+    res.send(req.body)
+    /*if(req.query.to1!=undefined){
         transporter.sendMail(createMailOptions(req.query.to1), (error, info)=>{
             if (error) {
             console.log(error);
@@ -32,7 +33,7 @@ app.post('/user', function(req, res,next) {
         });
     } else {
         res.send('Mail not sent')
-    }
+    }*/
 });
 
 app.get('*', function(req, res,next) {
