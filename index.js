@@ -19,7 +19,7 @@ function createMailOptions(to1, subject, son1,son2,son3,urlPdf, fileN){
         subject: subject,
         text: "In allegato scheda lavoro relativa all'intervento da noi effettuato.\nVi ringraziamo qualora abbiate aderito al nostro sondaggio."  + "\n\n\nRisultato sondaggio:\n\nOrganizzazione intervento: " + son1 + "\nConsegna Ricambi: " + son2 + "\nEsecuzione Intervento: " + son3,
         attachments: {
-            filename: fileN,
+            filename: fileN + '.pdf',
             path: urlPdf
         }
       };
