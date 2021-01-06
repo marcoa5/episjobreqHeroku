@@ -2,7 +2,7 @@ var express = require('express');
 var app = express();
 
 app.get('/user', function(req, res,next) {
-    if(req!=undefined){res.send(req.body)}
+    console.log(req.body)
     res.status(200).json({stato: 'ok'});
     res.end();
 });
