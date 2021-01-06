@@ -25,8 +25,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.get('/user', function(req, res,next) {
-    res.send(req.query.to1)
-    /*if(req.query.to1!=undefined){
+    if(req.query.to1!=undefined){
         transporter.sendMail(createMailOptions(req.query.to1), (error, info)=>{
             if (error) {
             console.log(error);
@@ -36,7 +35,7 @@ app.get('/user', function(req, res,next) {
         });
     } else {
         res.send('Mail not sent')
-    }*/
+    }
 });
 
 app.get('*', function(req, res,next) {
