@@ -15,7 +15,7 @@ const transporter = nodemailer.createTransport({
 function createMailOptions(to1, subject, son1,son2,son3,urlPdf, fileN, userN,userC,userM){
     const mailOptions = {
         from: 'Epiroc Service <episerjob@gmail.com>',
-        replyto: 'marco.fumagalli@epiroc.com',
+        replyTo: 'marco.fumagalli@epiroc.com',
         to: to1,
         cc: userM,
         subject: subject,
