@@ -12,12 +12,14 @@ const transporter = nodemailer.createTransport({
   });
 
 
-function createMailOptions(to1, subject, son1,son2,son3,urlPdf, fileN){
+function createMailOptions(to1, subject, son1,son2,son3,urlPdf, fileN, userN,userC,userM){
     const mailOptions = {
         from: 'Epiroc Service <episerjob@gmail.com>',
+        replyto: 'marco.fumagalli@epiroc.com',
         to: to1,
+        cc: userM,
         subject: subject,
-        text: "In allegato scheda lavoro relativa all'intervento da noi effettuato.\nVi ringraziamo qualora abbiate aderito al nostro sondaggio."  + "\n\n\nRisultato sondaggio:\n\nOrganizzazione intervento: " + son1 + "\nConsegna Ricambi: " + son2 + "\nEsecuzione Intervento: " + son3,
+        text: "In allegato scheda lavoro relativa all'intervento effettuato dal nostro tecnico Sig. " + userN + " " + userC + ".\nVi ringraziamo qualora abbiate aderito al nostro sondaggio."  + "\n\n\nRisultato sondaggio:\n\nOrganizzazione intervento: " + son1 + "\nConsegna Ricambi: " + son2 + "\nEsecuzione Intervento: " + son3,
         attachments: {
             filename: fileN + '.pdf',
             path: urlPdf
@@ -52,7 +54,7 @@ app.use(bodyParser.json());
 
 app.get('/mail', function(req, res,next) {
     if(req.query.to1!=undefined){
-        transporter.sendMail(createMailOptions(req.query.to1, req.query.subject, req.query.son1, req.query.son2,req.query.son3, req.query.urlPdf, req.query.fileN), (error, info)=>{
+        transporter.sendMail(createMailOptions(req.query.to1, req.query.subject, req.query.son1, req.query.son2,req.query.son3, req.query.urlPdf, req.query.fileN, req.query.userN, req.query.userC, req.query.userM), (error, info)=>{
             if (error) {
             console.log(error);
             } else {
