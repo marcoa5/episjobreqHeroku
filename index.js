@@ -2,6 +2,14 @@ var express = require('express');
 var app = express();
 const nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
+var admin = require("firebase-admin");
+var serviceAccount = require('./key.json')
+const port = 3000;
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://epi-serv-job-default-rtdb.firebaseio.com"
+});
+
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -70,6 +78,61 @@ function createMailOptionsIntProd(subject, son1,son2,son3,rap,rAss,urlPdf,urlMa,
       return mailOptions
 }
 
+app.get('/getusers', function(req,res){
+    admin.auth().listUsers(1000).then((a)=>{
+        res.send(a.users)
+    })
+})
+
+app.get('/getuserinfo', function(req,res){
+    var id = req.query.id
+    admin.database().ref('Users/'+ id).once('value', a=>{
+        res.send(a.val())
+    })
+})
+
+app.post('/createuser', function(req,res){
+    var Mail = req.query.Mail
+    var Nome = req.query.Nome
+    var Cognome = req.query.Cognome
+    var Pos=req.query.Pos
+
+    admin.auth().createUser({
+        email: Mail,
+        emailVerified: false,
+        password: 'Epiroc2021',
+        disabled: false,
+    })
+    .then((userRecord) => {
+        admin.database().ref('Users/' + userRecord.uid).set({
+            Nome: Nome,
+            Cognome: Cognome,
+            Pos: Pos
+        })
+        .then(()=>{
+           res.send('ok') 
+        })
+        .catch((error) => {
+            console.log('Error creating new user:', error);
+        })
+    })
+    .catch((error) => {
+        console.log('Error creating new user:', error);
+    });
+})
+
+app.post('/delete',function(req,res){
+    var id = req.query.id
+    admin.auth().deleteUser(id)
+    .then(()=>{
+        res.status(200).send('ok')
+    })
+    .catch(err=>{
+        console.log(err)
+    })
+})
+
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -118,10 +181,10 @@ app.get('/users', function(req, res,next) {
 });
 
 app.get('*', function(req, res,next) {
-    res.status(404).json({stato: 'Nok'});
+    res.status(404).send('Pagina non trovata');
     res.end();
 });
 
-app.listen(process.env.PORT || 2000, ()=>{
-    console.log('RUNNING')
+app.listen(port, ()=>{
+    console.log(`Running on port:${port}`)
 });
