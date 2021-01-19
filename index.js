@@ -4,7 +4,7 @@ const nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
 var admin = require("firebase-admin");
 var serviceAccount = require('./key.json')
-const port = 3000;
+const porta = process.env.PORT || 3000
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://epi-serv-job-default-rtdb.firebaseio.com"
@@ -78,6 +78,9 @@ function createMailOptionsIntProd(subject, son1,son2,son3,rap,rAss,urlPdf,urlMa,
       return mailOptions
 }
 
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
 app.get('/getusers', function(req,res){
     admin.auth().listUsers(1000).then((a)=>{
         res.send(a.users)
@@ -132,10 +135,6 @@ app.post('/delete',function(req,res){
     })
 })
 
-
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-
 app.get('/mail', function(req, res,next) {
     if(req.query.to1!=undefined){
         transporter.sendMail(createMailOptions(req.query.to1, req.query.subject, req.query.son1, req.query.son2,req.query.son3, req.query.urlPdf, req.query.fileN, req.query.userN, req.query.userC, req.query.userM), (error, info)=>{
@@ -185,6 +184,6 @@ app.get('*', function(req, res,next) {
     res.end();
 });
 
-app.listen(port, ()=>{
-    console.log(`Running on port:${port}`)
+app.listen(porta, ()=>{
+    console.log(`Running on port:${porta}`)
 });
