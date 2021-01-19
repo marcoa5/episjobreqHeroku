@@ -94,12 +94,12 @@ app.get('/getuserinfo', function(req,res){
     })
 })
 
-app.post('/createuser', function(req,res){
+app.get('/createuser', function(req,res){
     var Mail = req.query.Mail
     var Nome = req.query.Nome
     var Cognome = req.query.Cognome
     var Pos=req.query.Pos
-
+	
     admin.auth().createUser({
         email: Mail,
         emailVerified: false,
