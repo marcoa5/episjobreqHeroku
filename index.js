@@ -124,7 +124,7 @@ app.get('/createuser', function(req,res){
     });
 })
 
-app.post('/delete',function(req,res){
+app.get('/delete',function(req,res){
     var id = req.query.id
     admin.auth().deleteUser(id)
     .then(()=>{
