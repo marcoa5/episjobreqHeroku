@@ -23,10 +23,13 @@ const transporter = nodemailer.createTransport({
 function createMailOptions(to1, subject, son1,son2,son3,urlPdf, fileN, userN,userC,userM){
     const mailBody=`
     <table width=600 style="margin: 0 auto;">
-    <tr>
-        <body style="width: 700px;">
+    <tr height=100>
         <h1 style="background-color: rgb(255,205,0);text-align:center;font-family: Arial; color:rgb(66,85,99);height:100px;margin:0 auto;">Epiroc Italia srl</h1>
+    </tr>
+    <tr>
         <img style="width:100%;" src="https://firebasestorage.googleapis.com/v0/b/epi-serv-job.appspot.com/o/car.jpeg?alt=media&token=341d08d3-d0ed-4d91-866f-d5999b6d1595">
+    </tr>
+    <tr>
         <p style="font-family: Arial; color:rgb(66,85,99)">Gentile Cliente,<br>In allegato scheda lavoro relativa all'intervento effettuato dal nostro tecnico Sig. ${userN} ${userC}.</p>
         <p style="font-family: Arial; color:rgb(66,85,99)">Vi ringraziamo qualora abbiate aderito al nostro sondaggio</p>
         <hr>
@@ -34,7 +37,6 @@ function createMailOptions(to1, subject, son1,son2,son3,urlPdf, fileN, userN,use
         <p style="font-family: Arial; font-size:80%; color:rgb(66,85,99)">Organizzazione intervento: ${son1}</p>
         <p style="font-family: Arial; font-size:80%; color:rgb(66,85,99)">Consegna Ricambi: ${son2}</p>
         <p style="font-family: Arial; font-size:80%; color:rgb(66,85,99)">Esecuzione Intervento: ${son3}</p>
-        </body>
     </tr>
     </table>
     `
