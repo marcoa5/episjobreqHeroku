@@ -23,7 +23,7 @@ const transporter = nodemailer.createTransport({
 function createMailOptions(to1, subject, son1,son2,son3,urlPdf, fileN, userN,userC,userM){
     const mailBody=`
     <table width=600 style="margin: 0 auto;">
-    <tr height=100>
+    <tr height=100 style="background-color: rgb(255,205,0);">
         <h1 style="background-color: rgb(255,205,0);text-align:center;font-family: Arial; color:rgb(66,85,99);height:100px;margin:0 auto;">Epiroc Italia srl</h1>
     </tr>
     <tr>
