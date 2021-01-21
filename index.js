@@ -128,7 +128,10 @@ app.get('/delete',function(req,res){
     var id = req.query.id
     admin.auth().deleteUser(id)
     .then(()=>{
-        res.status(200).send('ok')
+        admin.database().ref('Users/' + id).remove()
+        .then(()=>{
+            res.send('ok') 
+         })
     })
     .catch(err=>{
         console.log(err)
