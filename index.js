@@ -46,8 +46,8 @@ function createMailOptions(to1, subject, son1,son2,son3,urlPdf, fileN, userN,use
         to: to1,
         cc: userM,
         subject: subject,
-        //text: "In allegato scheda lavoro relativa all'intervento effettuato dal nostro tecnico Sig. " + userN + " " + userC + ".\nVi ringraziamo qualora abbiate aderito al nostro sondaggio."  + "\n\n\nRisultato sondaggio:\n\nOrganizzazione intervento: " + son1 + "\nConsegna Ricambi: " + son2 + "\nEsecuzione Intervento: " + son3,
-        html:mailBody,
+        text: "In allegato scheda lavoro relativa all'intervento effettuato dal nostro tecnico Sig. " + userN + " " + userC + ".\nVi ringraziamo qualora abbiate aderito al nostro sondaggio."  + "\n\n\nRisultato sondaggio:\n\nOrganizzazione intervento: " + son1 + "\nConsegna Ricambi: " + son2 + "\nEsecuzione Intervento: " + son3,
+        //html:mailBody,
         attachments: {
             filename: fileN? fileN + '.pdf': '',
             path: urlPdf? urlPdf : ''
