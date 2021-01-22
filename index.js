@@ -48,10 +48,10 @@ function createMailOptions(to1, subject, son1,son2,son3,urlPdf, fileN, userN,use
         subject: subject,
         //text: "In allegato scheda lavoro relativa all'intervento effettuato dal nostro tecnico Sig. " + userN + " " + userC + ".\nVi ringraziamo qualora abbiate aderito al nostro sondaggio."  + "\n\n\nRisultato sondaggio:\n\nOrganizzazione intervento: " + son1 + "\nConsegna Ricambi: " + son2 + "\nEsecuzione Intervento: " + son3,
         html:mailBody,
-        attachments: {
-            filename: fileN + '.pdf',
-            path: urlPdf
-        }
+        /*attachments: {
+            filename: fileN? fileN + '.pdf': '',
+            path: urlPdf? urlPdf : ''
+        }*/
       };
       return mailOptions
 }
@@ -100,6 +100,16 @@ function createMailOptionsIntProd(subject, son1,son2,son3,rap,rAss,urlPdf,urlMa,
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+app.get('/test', function(req,res){
+    var o = createMailOptions('marco.arato@gmail.com;marco.arato@epiroc.com','Prova',1,1,2,'','','Andrea','Laini','marco.arato@epiroc.com')
+    console.log(o)
+    transporter.sendMail(o,(err,data)=>{
+        if(err)throw err
+        console.log(data)
+        res.status(200).send(o)
+    })
+})
 
 app.get('/getusers', function(req,res){
     admin.auth().listUsers(1000).then((a)=>{
