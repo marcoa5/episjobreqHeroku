@@ -129,6 +129,7 @@ app.get('/createuser', function(req,res){
     var Nome = req.query.Nome
     var Cognome = req.query.Cognome
     var Pos=req.query.Pos
+    var km = req.query.km
 	
     admin.auth().createUser({
         email: Mail,
@@ -140,7 +141,8 @@ app.get('/createuser', function(req,res){
         admin.database().ref('Users/' + userRecord.uid).set({
             Nome: Nome,
             Cognome: Cognome,
-            Pos: Pos
+            Pos: Pos,
+            km: km
         })
         .then(()=>{
            res.send('ok') 
