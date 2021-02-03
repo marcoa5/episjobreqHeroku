@@ -10,6 +10,7 @@ admin.initializeApp({
   databaseURL: "https://epi-serv-job-default-rtdb.firebaseio.com"
 });
 
+app.set('view engine', 'pug');
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -77,9 +78,9 @@ function createMailOptionsInt(subject, son1,son2,son3,rap,rAss,urlPdf,urlMa, fil
       return mailOptions
 }
 
-function createMailOptionsIntProd(subject, son1,son2,son3,rap,rAss,urlPdf,urlMa, fileN){
+function createMailOptionsIntProd(subject, son1,son2,son3,rap,rAss,urlPdf,urlMa, fileN, userN, userC){
     const mailOptions = {
-        from: 'Epiroc Service <episerjob@gmail.com>',
+        from: 'Epiroc Service ('+`${userN} ${userC}`+') <episerjob@gmail.com>',
         to: "marco.fumagalli@epiroc.com",
         cc: "mario.parravicini@epiroc.com; carlo.colombo@epiroc.com; marco.arato@epiroc.com",
         subject: subject,
@@ -176,7 +177,7 @@ app.get('/mail', function(req, res,next) {
             if (error) {
             console.log(error);
             } else {
-                transporter.sendMail(createMailOptionsIntProd(req.query.subject, req.query.son1, req.query.son2,req.query.son3,req.query.rap, req.query.rAss, req.query.urlPdf, req.query.urlMa, req.query.fileN), (error, info)=>{
+                transporter.sendMail(createMailOptionsIntProd(req.query.subject, req.query.son1, req.query.son2,req.query.son3,req.query.rap, req.query.rAss, req.query.urlPdf, req.query.urlMa, req.query.fileN, req.query.userN,req.query.userC), (error, info)=>{
                     if (error) {
                     console.log(error);
                     } else {
@@ -213,6 +214,10 @@ app.get('/maildebug', function(req, res,next) {
 app.get('/users', function(req, res,next) {
     res.send('Ok')
 });
+
+app.get('/prova', function(req,res){
+    res.render('io',{nome: "Marco", cognome: "Arato"})
+})
 
 app.get('*', function(req, res,next) {
     res.status(404).send('Pagina non trovata');
