@@ -80,7 +80,7 @@ function createMailOptionsInt(subject, son1,son2,son3,rap,rAss,urlPdf,urlMa, fil
 
 function createMailOptionsIntProd(subject, son1,son2,son3,rap,rAss,urlPdf,urlMa, fileN, userN, userC){
     const mailOptions = {
-        from: 'Epiroc Service ('+`${userN} ${userC}`+') <episerjob@gmail.com>',
+        from: `Epiroc Service ${userN} ${userC} <episerjob@gmail.com>`,
         to: "marco.fumagalli@epiroc.com",
         cc: "mario.parravicini@epiroc.com; carlo.colombo@epiroc.com; marco.arato@epiroc.com",
         subject: subject,
@@ -103,13 +103,19 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.get('/test', function(req,res){
-    var o = createMailOptions('marco.arato@gmail.com;marco.arato@epiroc.com','Prova',1,1,2,'','','Andrea','Laini','marco.arato@epiroc.com')
-    console.log(o)
-    transporter.sendMail(o,(err,data)=>{
-        if(err)throw err
-        console.log(data)
-        res.status(200).send(o)
-    })
+    var userN = "Marco"
+    var userC = "Arato"
+    const mailOptionsT = {
+        from: `Epiroc Service <episerjob@gmail.com>`,
+        to: "marco.arato@epiroc.com",
+        //cc: "mario.parravicini@epiroc.com; carlo.colombo@epiroc.com; marco.arato@epiroc.com",
+        subject: 'Test',
+        text: "Risultato sondaggio:\n\nOrganizzazione intervento: \nConsegna Ricambi: \nEsecuzione Intervento: \n\n\nRisk Assessment \n",
+      };
+      transporter.sendMail(mailOptionsT, (error,info)=>{
+        if (error) res.send("ERRORE: " + error)  
+        res.send(info)
+      })
 })
 
 app.get('/getusers', function(req,res){
