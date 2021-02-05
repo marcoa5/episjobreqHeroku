@@ -106,7 +106,7 @@ app.get('/test', function(req,res){
     var userN = "Marco"
     var userC = "Arato"
     const mailOptionsT = {
-        from: `Epiroc Service <episerjob@gmail.com>`,
+        from: `Epiroc Service ${userN} ${userC} <episerjob@gmail.com>`,
         to: "marco.arato@epiroc.com",
         //cc: "mario.parravicini@epiroc.com; carlo.colombo@epiroc.com; marco.arato@epiroc.com",
         subject: 'Test',
