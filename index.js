@@ -107,10 +107,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.post('/rendersj', (req,res)=>{
-    /*var t = fs.readFileSync('template.html','utf-8')
-    var i = req.query
-    var o = Handlebars.compile(t)*/
-    res.send(req.body)
+    var t = fs.readFileSync('template.html','utf-8')
+    var i = req.body
+    var o = Handlebars.compile(t)
 })
 
 app.get('/test', function(req,res){
