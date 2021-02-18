@@ -5,6 +5,10 @@ const bodyParser = require('body-parser');
 var admin = require("firebase-admin");
 var serviceAccount = require('./key.json')
 const porta = process.env.PORT || 3000
+const fs = require('fs')
+const Handlebars = require('handlebars')
+
+
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://epi-serv-job-default-rtdb.firebaseio.com"
@@ -102,6 +106,13 @@ function createMailOptionsIntProd(subject, son1,son2,son3,rap,rAss,urlPdf,urlMa,
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+app.get('/rendersj', (req,res)=>{
+    var t = fs.readFileSync('template.html','utf-8')
+    var i = req.query
+    var o = Handlebars.compile(t)
+    res.status(200).send(o(i))
+})
+
 app.get('/test', function(req,res){
     var userN = "Marco"
     var userC = "Arato"
@@ -114,7 +125,7 @@ app.get('/test', function(req,res){
       };
       transporter.sendMail(mailOptionsT, (error,info)=>{
         if (error) res.send("ERRORE: " + error)  
-        res.send(info)
+        res.status(200).send(info)
       })
 })
 
@@ -127,7 +138,7 @@ app.get('/getusers', function(req,res){
 app.get('/getuserinfo', function(req,res){
     var id = req.query.id
     admin.database().ref('Users/'+ id).once('value', a=>{
-        res.send(a.val())
+        res.status(200).send(a.val())
     })
 })
 
@@ -169,7 +180,7 @@ app.get('/delete',function(req,res){
     .then(()=>{
         admin.database().ref('Users/' + id).remove()
         .then(()=>{
-            res.send('ok') 
+            res.status(200).send('ok') 
          })
     })
     .catch(err=>{
@@ -217,13 +228,6 @@ app.get('/maildebug', function(req, res,next) {
     }
 });
 
-app.get('/users', function(req, res,next) {
-    res.send('Ok')
-});
-
-app.get('/prova', function(req,res){
-    res.render('io',{nome: "Marco", cognome: "Arato"})
-})
 
 app.get('*', function(req, res,next) {
     res.status(404).send('Pagina non trovata');
