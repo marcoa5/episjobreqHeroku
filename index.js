@@ -106,11 +106,11 @@ function createMailOptionsIntProd(subject, son1,son2,son3,rap,rAss,urlPdf,urlMa,
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.get('/rendersj', (req,res)=>{
-    var t = fs.readFileSync('template.html','utf-8')
+app.post('/rendersj', (req,res)=>{
+    /*var t = fs.readFileSync('template.html','utf-8')
     var i = req.query
-    var o = Handlebars.compile(t)
-    res.status(200).send(o(i))
+    var o = Handlebars.compile(t)*/
+    res.status(200).send(req.query)
 })
 
 app.get('/test', function(req,res){
