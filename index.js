@@ -110,8 +110,7 @@ app.post('/rendersj', (req,res)=>{
     /*var t = fs.readFileSync('template.html','utf-8')
     var i = req.query
     var o = Handlebars.compile(t)*/
-    console.log(req.params)
-    res.send('poiu')
+    res.send(req.body)
 })
 
 app.get('/test', function(req,res){
