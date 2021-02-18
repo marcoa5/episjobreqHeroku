@@ -103,8 +103,9 @@ function createMailOptionsIntProd(subject, son1,son2,son3,rap,rAss,urlPdf,urlMa,
       return mailOptions
 }
 
-app.use(bodyParser.urlencoded({ extended: false }));
+//app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(bodyParser({limit: '5mb'}));
 
 app.post('/rendersj', (req,res)=>{
     var t = fs.readFileSync('template.html','utf-8')
