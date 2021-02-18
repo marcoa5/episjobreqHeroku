@@ -110,6 +110,7 @@ app.post('/rendersj', (req,res)=>{
     var t = fs.readFileSync('template.html','utf-8')
     var i = req.body
     var o = Handlebars.compile(t)
+    res.status(200).send(o(i))
 })
 
 app.get('/test', function(req,res){
