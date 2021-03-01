@@ -63,7 +63,7 @@ function createMailOptions(to1, subject, son1,son2,son3,urlPdf, fileN, userN,use
 
 function createMailOptionsInt(subject, son1,son2,son3,rap,rAss,urlPdf,urlMa, fileN){
     const mailOptions = {
-        from: 'Epiroc Service <episerjob@gmail.com>',
+        from: `${userN} ${userC} - Epiroc Service <episerjob@gmail.com>`,
         to: "marco.arato@epiroc.com", //"marco.fumagalli@epiroc.com"
         cc: "", //"mario.parravicini@epiroc.com; carlo.colombo@epiroc.com; marco.arato@epiroc.com",
         subject: subject,
