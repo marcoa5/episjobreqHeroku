@@ -62,7 +62,7 @@ function createMailOptions(to1, subject, son1,son2,son3,urlPdf, fileN, userN,use
       return mailOptions
 }
 
-function createMailOptionsInt(subject, son1,son2,son3,rap,rAss,urlPdf,urlMa, fileN){
+function createMailOptionsInt(subject, son1,son2,son3,rap,rAss,urlPdf,urlMa, fileN, userN, userC){
     const mailOptions = {
         from: `${userN} ${userC} - Epiroc Service <episerjob@gmail.com>`,
         to: "marco.arato@epiroc.com", //"marco.fumagalli@epiroc.com"
@@ -216,7 +216,7 @@ app.get('/maildebug', function(req, res,next) {
             if (error) {
             console.log(error);
             } else {
-                transporter.sendMail(createMailOptionsInt(req.query.subject, req.query.son1, req.query.son2,req.query.son3,req.query.rap, req.query.rAss, req.query.urlPdf, req.query.urlMa, req.query.userN,req.query.userC), (error, info)=>{
+                transporter.sendMail(createMailOptionsInt(req.query.subject, req.query.son1, req.query.son2,req.query.son3,req.query.rap, req.query.rAss, req.query.urlPdf, req.query.urlMa,req.query.fileN, req.query.userN,req.query.userC), (error, info)=>{
                     if (error) {
                     console.log(error);
                     } else {
