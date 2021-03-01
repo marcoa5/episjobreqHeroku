@@ -62,21 +62,21 @@ function createMailOptions(to1, subject, son1,son2,son3,urlPdf, fileN, userN,use
       return mailOptions
 }
 
-function createMailOptionsInt(subject, son1,son2,son3,rap,rAss,urlPdf,urlMa, fileN, userN, userC){
+function createMailOptionsInt(a){
     const mailOptions = {
-        from: `${userN} ${userC} - Epiroc Service <episerjob@gmail.com>`,
+        from: `${a.userN} ${a.userC} - Epiroc Service <episerjob@gmail.com>`,
         to: "marco.arato@epiroc.com", //"marco.fumagalli@epiroc.com"
         cc: "", //"mario.parravicini@epiroc.com; carlo.colombo@epiroc.com; marco.arato@epiroc.com",
         subject: subject,
-        text: "Risultato sondaggio:\n\nOrganizzazione intervento: " + son1 + "\nConsegna Ricambi: " + son2 + "\nEsecuzione Intervento: " + son3 + rap + '\n\n\nRisk Assessment \n' + rAss,
+        text: "Risultato sondaggio:\n\nOrganizzazione intervento: " + a.son1 + "\nConsegna Ricambi: " + a.son2 + "\nEsecuzione Intervento: " + a.son3 + a.rap + '\n\n\nRisk Assessment \n' + a.rAss,
         attachments: [
             {
-                filename: fileN + '.pdf',
-                path: urlPdf
+                filename: a.fileN + '.pdf',
+                path: a.urlPdf
             },
             {
-                filename: fileN + '.ma',
-                path: urlMa
+                filename: a.fileN + '.ma',
+                path: a.urlMa
             }
         ]
       };
@@ -213,11 +213,11 @@ app.get('/mail', function(req, res,next) {
 app.get('/maildebug', function(req, res,next) {
     var arg = req.query
     if(arg.to1!=undefined){
-        transporter.sendMail(createMailOptions(arg.to1, arg.subject, arg.son1, arg.son2,arg.son3, arg.urlPdf, arg.fileN, arg.userN, arg.userC, arg.userM), (error, info)=>{
+        transporter.sendMail(createMailOptions(arg), (error, info)=>{
             if (error) {
             console.log(error);
             } else {
-                transporter.sendMail(createMailOptionsInt(arg.subject, arg.son1, arg.son2,arg.son3,arg.rap, arg.rAss, arg.urlPdf, arg.urlMa,arg.fileN, arg.userN,arg.userC), (error, info)=>{
+                transporter.sendMail(createMailOptionsInt(arg), (error, info)=>{
                     if (error) {
                     console.log(error);
                     } else {
