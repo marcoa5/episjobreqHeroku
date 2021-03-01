@@ -6,7 +6,8 @@ var admin = require("firebase-admin");
 var serviceAccount = require('./key.json')
 const porta = process.env.PORT || 3000
 const fs = require('fs')
-const Handlebars = require('handlebars')
+const Handlebars = require('handlebars');
+const { json } = require('body-parser');
 
 
 admin.initializeApp({
@@ -103,8 +104,8 @@ function createMailOptionsIntProd(subject, son1,son2,son3,rap,rAss,urlPdf,urlMa,
       return mailOptions
 }
 
-//app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json({limit: '1MB'}));
+app.use(bodyParser.urlencoded({limit: '1MB',extended: false}))
+app.use(bodyParser.json());
 
 
 app.post('/rendersj', (req,res)=>{
@@ -215,7 +216,7 @@ app.get('/maildebug', function(req, res,next) {
             if (error) {
             console.log(error);
             } else {
-                transporter.sendMail(createMailOptionsInt(req.query.subject, req.query.son1, req.query.son2,req.query.son3,req.query.rap, req.query.rAss, req.query.urlPdf, req.query.urlMa, req.query.fileN), (error, info)=>{
+                transporter.sendMail(createMailOptionsInt(req.query.subject, req.query.son1, req.query.son2,req.query.son3,req.query.rap, req.query.rAss, req.query.urlPdf, req.query.urlMa, req.query.userN,req.query.userC), (error, info)=>{
                     if (error) {
                     console.log(error);
                     } else {
