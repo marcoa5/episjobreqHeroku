@@ -67,7 +67,7 @@ function createMailOptionsInt(a){
         from: `${a.userN} ${a.userC} - Epiroc Service <episerjob@gmail.com>`,
         to: "marco.arato@epiroc.com", //"marco.fumagalli@epiroc.com"
         cc: "", //"mario.parravicini@epiroc.com; carlo.colombo@epiroc.com; marco.arato@epiroc.com",
-        subject: subject,
+        subject: a.subject,
         text: "Risultato sondaggio:\n\nOrganizzazione intervento: " + a.son1 + "\nConsegna Ricambi: " + a.son2 + "\nEsecuzione Intervento: " + a.son3 + a.rap + '\n\n\nRisk Assessment \n' + a.rAss,
         attachments: [
             {
