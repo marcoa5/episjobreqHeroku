@@ -211,16 +211,17 @@ app.get('/mail', function(req, res,next) {
 });
 
 app.get('/maildebug', function(req, res,next) {
-    if(req.query.to1!=undefined){
-        transporter.sendMail(createMailOptions(req.query.to1, req.query.subject, req.query.son1, req.query.son2,req.query.son3, req.query.urlPdf, req.query.fileN, req.query.userN, req.query.userC, req.query.userM), (error, info)=>{
+    var arg = req.query
+    if(arg.to1!=undefined){
+        transporter.sendMail(createMailOptions(arg.to1, arg.subject, arg.son1, arg.son2,arg.son3, arg.urlPdf, arg.fileN, arg.userN, arg.userC, arg.userM), (error, info)=>{
             if (error) {
             console.log(error);
             } else {
-                transporter.sendMail(createMailOptionsInt(req.query.subject, req.query.son1, req.query.son2,req.query.son3,req.query.rap, req.query.rAss, req.query.urlPdf, req.query.urlMa,req.query.fileN, req.query.userN,req.query.userC), (error, info)=>{
+                transporter.sendMail(createMailOptionsInt(arg.subject, arg.son1, arg.son2,arg.son3,arg.rap, arg.rAss, arg.urlPdf, arg.urlMa,arg.fileN, arg.userN,arg.userC), (error, info)=>{
                     if (error) {
                     console.log(error);
                     } else {
-                        res.status(200).send(req.query.to1);
+                        res.status(200).send(arg.to1);
                     }
                 })
             }
