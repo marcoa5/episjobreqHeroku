@@ -191,16 +191,17 @@ app.get('/delete',function(req,res){
 })
 
 app.get('/mail', function(req, res,next) {
-    if(req.query.to1!=undefined){
-        transporter.sendMail(createMailOptions(req.query.to1, req.query.subject, req.query.son1, req.query.son2,req.query.son3, req.query.urlPdf, req.query.fileN, req.query.userN, req.query.userC, req.query.userM), (error, info)=>{
+    var arg = req.query
+    if(arg.to1!=undefined){
+        transporter.sendMail(createMailOptions(arg), (error, info)=>{
             if (error) {
             console.log(error);
             } else {
-                transporter.sendMail(createMailOptionsIntProd(req.query.subject, req.query.son1, req.query.son2,req.query.son3,req.query.rap, req.query.rAss, req.query.urlPdf, req.query.urlMa, req.query.fileN, req.query.userN,req.query.userC), (error, info)=>{
+                transporter.sendMail(createMailOptionsIntProd(arg), (error, info)=>{
                     if (error) {
                     console.log(error);
                     } else {
-                        res.status(200).send(req.query.to1);
+                        res.status(200).send(arg.to1);
                     }
                 })
             }
