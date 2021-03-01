@@ -83,21 +83,21 @@ function createMailOptionsInt(a){
       return mailOptions
 }
 
-function createMailOptionsIntProd(subject, son1,son2,son3,rap,rAss,urlPdf,urlMa, fileN, userN, userC){
+function createMailOptionsIntProd(a){
     const mailOptions = {
-        from: `${userN} ${userC} - Epiroc Service <episerjob@gmail.com>`,
+        from: `${a.userN} ${a.userC} - Epiroc Service <episerjob@gmail.com>`,
         to: "marco.fumagalli@epiroc.com",
         cc: "mario.parravicini@epiroc.com; carlo.colombo@epiroc.com; marco.arato@epiroc.com",
-        subject: subject,
-        text: "Risultato sondaggio:\n\nOrganizzazione intervento: " + son1 + "\nConsegna Ricambi: " + son2 + "\nEsecuzione Intervento: " + son3 + rap + '\n\n\nRisk Assessment \n' + rAss,
+        subject: a.subject,
+        text: "Risultato sondaggio:\n\nOrganizzazione intervento: " + a.son1 + "\nConsegna Ricambi: " + a.son2 + "\nEsecuzione Intervento: " + a.son3 + a.rap + '\n\n\nRisk Assessment \n' + a.rAss,
         attachments: [
             {
-                filename: fileN + '.pdf',
-                path: urlPdf
+                filename: a.fileN + '.pdf',
+                path: a.urlPdf
             },
             {
-                filename: fileN + '.ma',
-                path: urlMa
+                filename: a.fileN + '.ma',
+                path: a.urlMa
             }
         ]
       };
