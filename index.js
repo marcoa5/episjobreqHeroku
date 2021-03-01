@@ -52,7 +52,7 @@ function createMailOptions(a){
         to: a.to1,
         cc: a.userM,
         subject: a.subject,
-        text: `In allegato scheda lavoro relativa all'intervento effettuato dal nostro tecnico Sig. ${a.userN} ${a.userC}.\nVi ringraziamo qualora abbiate aderito al nostro sondaggio."  + "\n\n\nRisultato sondaggio:\n\nOrganizzazione intervento: ${a.son1}\nConsegna Ricambi: ${a.son2}\nEsecuzione Intervento: ${a.son3}`,
+        text: `In allegato scheda lavoro relativa all'intervento effettuato dal nostro tecnico Sig. ${a.userN} ${a.userC}.\nVi ringraziamo qualora abbiate aderito al nostro sondaggio.\n\n\nRisultato sondaggio:\n\nOrganizzazione intervento: ${a.son1}\nConsegna Ricambi: ${a.son2}\nEsecuzione Intervento: ${a.son3}`,
         //html:mailBody,
         attachments: {
             filename: a.fileN? a.fileN + '.pdf': '',
@@ -68,7 +68,7 @@ function createMailOptionsInt(a){
         to: "marco.arato@epiroc.com", //"marco.fumagalli@epiroc.com"
         cc: "", //"mario.parravicini@epiroc.com; carlo.colombo@epiroc.com; marco.arato@epiroc.com",
         subject: a.subject,
-        text: "Risultato sondaggio:\n\nOrganizzazione intervento: " + a.son1 + "\nConsegna Ricambi: " + a.son2 + "\nEsecuzione Intervento: " + a.son3 + a.rap + '\n\n\nRisk Assessment \n' + a.rAss,
+        text: `Risultato sondaggio:\n\nOrganizzazione intervento: ${a.son1}\nConsegna Ricambi: ${a.son2}\nEsecuzione Intervento: ${a.son3} ${a.rap}\n\n\nRisk Assessment \n ${a.rAss}`,
         attachments: [
             {
                 filename: a.fileN + '.pdf',
@@ -89,7 +89,7 @@ function createMailOptionsIntProd(a){
         to: "marco.fumagalli@epiroc.com",
         cc: "mario.parravicini@epiroc.com; carlo.colombo@epiroc.com; marco.arato@epiroc.com",
         subject: a.subject,
-        text: "Risultato sondaggio:\n\nOrganizzazione intervento: " + a.son1 + "\nConsegna Ricambi: " + a.son2 + "\nEsecuzione Intervento: " + a.son3 + a.rap + '\n\n\nRisk Assessment \n' + a.rAss,
+        text: `Risultato sondaggio:\n\nOrganizzazione intervento: ${a.son1}\nConsegna Ricambi: ${a.son2}\nEsecuzione Intervento: ${a.son3} ${a.rap}\n\n\nRisk Assessment \n ${a.rAss}`,
         attachments: [
             {
                 filename: a.fileN + '.pdf',
