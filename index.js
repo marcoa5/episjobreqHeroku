@@ -109,7 +109,7 @@ app.use(bodyParser.urlencoded({limit: '1MB',extended: false}))
 app.use(bodyParser.json());
 
 
-app.post('/rendersj', (req,res)=>{
+app.all('/rendersj', (req,res)=>{
     var t = fs.readFileSync('template.html','utf-8')
     var i = req.body
     var o = Handlebars.compile(t)
@@ -118,7 +118,7 @@ app.post('/rendersj', (req,res)=>{
     htp.generatePdf(file,option)
     .catch(err=>{console.log(err)})
     .then(buf=>{
-        fs.writeFileSync(__dirname + '/temp/temp.pdf',buf)
+        fs.writeFileSync(__dirname + './temp.pdf',buf)
         res.status(200).sendFile(__dirname + '/temp.pdf')
     })
     //res.status(200).sendFile()//send(o(i))
@@ -243,12 +243,7 @@ app.get('/maildebug', function(req, res,next) {
 
 
 app.get('*', function(req, res,next) {
-    const welc = `
-    <div style="display: flex; align-items:center; justify-content: center; height: 100%; width:100%">
-        <h1 style="width:100%; font-family:Arial; text-align: center">Welcome to Marco's EpiSerJob Web Services</h1>
-    </div>
-    `
-    res.status(404).send(welc);
+    res.status(404).send('Pagina non trovata');
     res.end();
 });
 
