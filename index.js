@@ -107,7 +107,7 @@ app.use(bodyParser.urlencoded({limit: '1MB',extended: false}))
 app.use(bodyParser.json());
 
 
-app.all('/rendersj', (req,res)=>{
+app.post('/rendersj', (req,res)=>{
     var t = fs.readFileSync('template.html','utf-8')
     var i = req.body
     var o = Handlebars.compile(t)
