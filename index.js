@@ -7,7 +7,7 @@ var serviceAccount = require('./key.json')
 const porta = process.env.PORT || 3000
 const fs = require('fs')
 const Handlebars = require('handlebars');
-const { json } = require('body-parser');
+const htp = require('html-pdf-node')
 
 
 admin.initializeApp({
@@ -112,7 +112,14 @@ app.post('/rendersj', (req,res)=>{
     var t = fs.readFileSync('template.html','utf-8')
     var i = req.body
     var o = Handlebars.compile(t)
-    res.status(200).send(o(i))
+    const option = {format:'A4'}
+    const file = {content: o(i)}
+    htp.generatePdf(file,option)
+    .catch(err=>{console.log(err)})
+    .then(buf=>{
+        res.status(200).sendFile(buf)
+    })
+    //res.status(200).sendFile()//send(o(i))
 })
 
 app.get('/test', function(req,res){
