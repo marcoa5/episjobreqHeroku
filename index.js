@@ -134,7 +134,7 @@ app.all('/sjpdf1', (req,res)=>{
     const file = {content: o(i)}
     const options = {format: 'A4'}
     htp.generatePdf(file,options, buf=>{
-        res.status(200).send(buf)
+        res.status(200).send(buf.toString())
     })
 })
 
