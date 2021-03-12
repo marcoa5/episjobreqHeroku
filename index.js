@@ -135,6 +135,7 @@ app.post('/rendersjpdf1', (req,res)=>{
     const options = {format: 'A4'}
     htp.generatePdf(file,options, buf=>{
         res.status(200).send(buf)
+    })
 })
 
 app.get('/test', function(req,res){
