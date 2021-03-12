@@ -107,14 +107,14 @@ app.use(bodyParser.urlencoded({limit: '1MB',extended: false}))
 app.use(bodyParser.json());
 
 
-app.post('/rendersj', (req,res)=>{
+app.all('/rendersj', (req,res)=>{
     var t = fs.readFileSync('template.html','utf-8')
     var i = req.body
     var o = Handlebars.compile(t)
     res.status(200).send(o(i))
 })
 
-app.post('/rendersjpdf', (req,res)=>{
+app.all('/rendersjpdf', (req,res)=>{
     var t = fs.readFileSync('template.html','utf-8')
     var i = req.body
     var o = Handlebars.compile(t)
@@ -127,7 +127,7 @@ app.post('/rendersjpdf', (req,res)=>{
     })
 })
 
-app.post('/rendersjpdf1', (req,res)=>{
+app.all('/rendersjpdf1', (req,res)=>{
     var t = fs.readFileSync('template.html','utf-8')
     var i = req.body
     var o = Handlebars.compile(t)
