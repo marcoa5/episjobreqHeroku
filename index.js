@@ -127,6 +127,16 @@ app.post('/rendersjpdf', (req,res)=>{
     })
 })
 
+app.post('/rendersjpdf1', (req,res)=>{
+    var t = fs.readFileSync('template.html','utf-8')
+    var i = req.body
+    var o = Handlebars.compile(t)
+    const file = {content: o(i)}
+    const options = {format: 'A4'}
+    htp.generatePdf(file,options, buf=>{
+        res.status(200).send(buf)
+})
+
 app.get('/test', function(req,res){
     var userN = "Marco"
     var userC = "Arato"
