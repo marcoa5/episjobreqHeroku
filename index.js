@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 const nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
+
 var admin = require("firebase-admin");
 var serviceAccount = require('./key.json')
 const porta = process.env.PORT || 3000
@@ -108,7 +109,7 @@ app.use(bodyParser.urlencoded({limit: '1MB',extended: false}))
 app.use(bodyParser.json());
 
 
-app.post('/rendersj', (req,res)=>{
+app.all('/rendersj', (req,res)=>{
     var t = fs.readFileSync('template.html','utf-8')
     var i = req.body
     var o = Handlebars.compile(t)
@@ -117,7 +118,8 @@ app.post('/rendersj', (req,res)=>{
     htp.generatePdf(file,option)
     .catch(err=>{console.log(err)})
     .then(buf=>{
-        res.status(200).sendFile(buf)
+        fs.writeFileSync('./temp.pdf',buf)
+        res.status(200).sendFile(__dirname + '/temp.pdf')
     })
     //res.status(200).sendFile()//send(o(i))
 })
