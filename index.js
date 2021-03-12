@@ -2,13 +2,11 @@ var express = require('express');
 var app = express();
 const nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
-
 var admin = require("firebase-admin");
 var serviceAccount = require('./key.json')
 const porta = process.env.PORT || 3000
 const fs = require('fs')
 const Handlebars = require('handlebars');
-const htp = require('html-pdf-node')
 
 
 admin.initializeApp({
@@ -113,15 +111,7 @@ app.all('/rendersj', (req,res)=>{
     var t = fs.readFileSync('template.html','utf-8')
     var i = req.body
     var o = Handlebars.compile(t)
-    const option = {format:'A4'}
-    const file = {content: o(i)}
-    htp.generatePdf(file,option)
-    .catch(err=>{console.log(err)})
-    .then(buf=>{
-        fs.writeFileSync(__dirname + './temp.pdf',buf)
-        res.status(200).sendFile(__dirname + '/temp.pdf')
-    })
-    //res.status(200).sendFile()//send(o(i))
+    res.status(200).send(o(i))
 })
 
 app.get('/test', function(req,res){
