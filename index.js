@@ -233,7 +233,7 @@ app.get('/maildebug', function(req, res,next) {
 
 
 app.get('*', function(req, res,next) {
-    res.status(404).send('Pagina non trovata');
+    res.status(404).send('welcome to EpiSerJob Web Services');
     res.end();
 });
 
