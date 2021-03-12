@@ -118,7 +118,7 @@ app.post('/rendersj', (req,res)=>{
     htp.generatePdf(file,option)
     .catch(err=>{console.log(err)})
     .then(buf=>{
-        fs.writeFileSync('./temp.pdf',buf)
+        fs.writeFileSync(__dirname + '/temp/temp.pdf',buf)
         res.status(200).sendFile(__dirname + '/temp.pdf')
     })
     //res.status(200).sendFile()//send(o(i))
