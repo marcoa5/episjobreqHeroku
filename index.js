@@ -120,7 +120,7 @@ app.all('/sjpdf', (req,res)=>{
     var o = Handlebars.compile(t)
     const file = {content: o(i)}
     const options = {format: 'A4'}
-    htp.generatePdf(file,options, buf=>{
+    htp.generatePdf(file,options).then(buf=>{
         var path = __dirname + '/temp.pdf'
         fs.writeFileSync(path, buf)
         res.status(200).sendFile(path)
@@ -133,8 +133,9 @@ app.all('/sjpdf1', (req,res)=>{
     var o = Handlebars.compile(t)
     const file = {content: o(i)}
     const options = {format: 'A4'}
-    htp.generatePdf(file,options, buf=>{
-        res.status(200).send(buf.toString())
+    htp.generatePdf(file,options).then(buf=>{
+        console.log(buf)
+        res.status(200).send(buf)
     })
 })
 
