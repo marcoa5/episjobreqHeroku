@@ -7,7 +7,7 @@ var serviceAccount = require('./key.json')
 const porta = process.env.PORT || 3000
 const fs = require('fs')
 const Handlebars = require('handlebars');
-
+const htp = require('html-pdf-node')
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -111,7 +111,15 @@ app.post('/rendersj', (req,res)=>{
     var t = fs.readFileSync('template.html','utf-8')
     var i = req.body
     var o = Handlebars.compile(t)
-    res.status(200).send(o(i))
+    const file = {content: o(i)}
+    const options = {format: 'A4'}
+    htp.generatePdf(file,options, buf=>{
+        var path = __dirname + '/temp/temp.pdf'
+        fs.writeFileSync(path, buf)
+        res.status(200).sendFile(path)
+
+    })
+    //res.status(200).send(o(i))
 })
 
 app.get('/test', function(req,res){
@@ -232,8 +240,13 @@ app.get('/maildebug', function(req, res,next) {
 });
 
 
-app.get('*', function(req, res,next) {
-    res.status(404).send('welcome to EpiSerJob Web Services');
+app.all('*', function(req, res,next) {
+    const welc = `
+    <div style="position: fixed; top:0;left:0;display:flex; justify-content: center; align-items: center; width:100%; height:100%; background-color: rgb(66, 85, 99)">
+        <h1 style="font-family: Arial; text-align:center; width: 100%; color: rgb(255,205,0)">Welcome to EpiSerJob Web Services</h1>
+    </div>
+    `
+    res.status(404).send(welc);
     res.end();
 });
 
