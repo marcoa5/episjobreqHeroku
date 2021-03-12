@@ -243,7 +243,12 @@ app.get('/maildebug', function(req, res,next) {
 
 
 app.get('*', function(req, res,next) {
-    res.status(404).send('Pagina non trovata');
+    const welc = `
+    <div style="display: flex; align-items:center; justify-content: center; height: 100%; width:100%">
+        <h1 style="width:100%; font-family:Arial; text-align: center">Welcome to Marco's EpiSerJob Web Services</h1>
+    </div>
+    `
+    res.status(404).send(welc);
     res.end();
 });
 
