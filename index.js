@@ -141,8 +141,8 @@ app.all('/sjpdf', (req,res)=>{
         }
     })
     .then(async buf=>{
-        res.write(buf,'binary');
-        res.end(undefined,'binary');
+        fs.writeFileSync(__dirname + '/test.pdf',buf)
+        res.sendFile(__dirname + '/test.pdf')
     })
 })
 
