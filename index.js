@@ -4,7 +4,7 @@ const nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
 var admin = require("firebase-admin");
 var serviceAccount = require('./key.json')
-const porta = process.env.PORT || 3000
+const porta = process.env.PORT || 3001
 const fs = require('fs')
 const Handlebars = require('handlebars');
 const hpt = require('html-pdf-node')
@@ -121,7 +121,7 @@ app.all('/sjpdf', (req,res)=>{
     const options = {format: 'A4'}
     hpt.generatePdf(file,options)
     .then(a=>{
-        res.send(a)
+        res.send(a.toJSON())
     })
 })
 
