@@ -7,8 +7,7 @@ var serviceAccount = require('./key.json')
 const porta = process.env.PORT || 3000
 const fs = require('fs')
 const Handlebars = require('handlebars');
-const pdf  = require('express-html-to-pdf')
-
+const hpt = require('html-pdf-node')
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -105,8 +104,7 @@ function createMailOptionsIntProd(a){
 }
 
 app.use(bodyParser.urlencoded({limit: '5MB',extended: false}))
-app.use(bodyParser.json());
-app.use(pdf.default)
+app.use(bodyParser.json())
 
 app.all('/rendersj', (req,res)=>{
     var t = fs.readFileSync('template.html','utf-8')
@@ -119,7 +117,12 @@ app.all('/sjpdf', (req,res)=>{
     var t = fs.readFileSync('template.html','utf-8')
     var i = req.body
     var o = Handlebars.compile(t)
-    res.pdf(o(i),{pdfOptions: {format: 'A4'}, browserOptions: {args: ['--no-sandbox', '--disable-setuid-sandbox']}})
+    const file = {content: o(i)}
+    const options = {format: 'A4'}
+    hpt.generatePdf(file,options)
+    .then(a=>{
+        res.send(a.toString())
+    })
 })
 
 app.get('/test', function(req,res){
