@@ -114,7 +114,7 @@ app.all('/rendersj', (req,res)=>{
     res.status(200).send(o(i))
 })
 
-app.all('/sjpdf', (req,res)=>{
+/*app.all('/sjpdf', (req,res)=>{
     var t = fs.readFileSync('template.html','utf-8')
     var i = req.body
     var o = Handlebars.compile(t)
@@ -125,7 +125,7 @@ app.all('/sjpdf', (req,res)=>{
         fs.writeFileSync(path, buf)
         res.status(200).sendFile(path)
     })
-})
+})*/
 
 app.all('/sjpdf1', (req,res)=>{
     var t = fs.readFileSync('template.html','utf-8')
