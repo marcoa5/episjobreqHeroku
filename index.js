@@ -139,8 +139,8 @@ app.all('/sjpdf', (req,res)=>{
         if(err) throw error
     })
     .then(buf=>{
-        console.log(buf.toString())
-        res.status(200).send(buf.toString())
+        console.log(buf)
+        res.status(200).send(buf)
     })
 })
 
