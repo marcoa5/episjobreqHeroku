@@ -119,7 +119,7 @@ app.all('/sjpdf', (req,res)=>{
     var t = fs.readFileSync('template.html','utf-8')
     var i = req.body
     var o = Handlebars.compile(t)
-    res.pdf(o(i),{pdfOptions: {format: 'A4'}})
+    res.pdf(o(i),{pdfOptions: {format: 'A4'}, browserOptions: {args: ['--no-sandbox', '--disable-setuid-sandbox']}})
 })
 
 app.get('/test', function(req,res){
