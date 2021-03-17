@@ -128,17 +128,18 @@ app.all('/rendersj', (req,res)=>{
 })*/
 
 app.all('/sjpdf', (req,res)=>{
-    var t = fs.readFileSync('template.html','utf-8')
+    res.status(200).send('aa')
+    /*var t = fs.readFileSync('template.html','utf-8')
     var i = req.body
     var o = Handlebars.compile(t)
     const file = {content: o(i)}
     const options = {format: 'A4'}
     htp.generatePdf('<h1>Ciao</<h1>',options).then(buf=>{
-        res.status(200).send('buf.toString()')
+        res.status(200).send(buf.toString())
     })
     .catch(err=>{
         if(err) throw error
-    })
+    })*/
 })
 
 app.get('/test', function(req,res){
