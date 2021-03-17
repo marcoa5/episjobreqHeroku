@@ -7,7 +7,7 @@ var serviceAccount = require('./key.json')
 const porta = process.env.PORT || 3000
 const fs = require('fs')
 const Handlebars = require('handlebars');
-const htp = require('html-pdf-node')
+const pdf  = require('express-html-to-pdf')
 
 
 admin.initializeApp({
@@ -106,7 +106,7 @@ function createMailOptionsIntProd(a){
 
 app.use(bodyParser.urlencoded({limit: '5MB',extended: false}))
 app.use(bodyParser.json());
-
+app.use(pdf.default)
 
 app.all('/rendersj', (req,res)=>{
     var t = fs.readFileSync('template.html','utf-8')
@@ -115,34 +115,15 @@ app.all('/rendersj', (req,res)=>{
     res.status(200).send(o(i))
 })
 
-/*app.all('/sjpdf', (req,res)=>{
-    var t = fs.readFileSync('template.html','utf-8')
-    var i = req.body
-    var o = Handlebars.compile(t)
-    const file = {content: o(i)}
-    const options = {format: 'A4'}
-    htp.generatePdf(file,options).then(buf=>{
-        var path = __dirname + '/temp.pdf'
-        fs.writeFileSync(path, buf)
-        res.status(200).sendFile(path)
-    })
-})*/
-
 app.all('/sjpdf', (req,res)=>{
     var t = fs.readFileSync('template.html','utf-8')
     var i = req.body
     var o = Handlebars.compile(t)
-    const file = {content: o(i)}
-    const options = {format: 'A4'}
-    htp.generatePdf(file,options)
-    .catch(err=>{
-        if(err) {
-            console.log('ERRORE')
-        }
-    })
-    .then(async buf=>{
-        fs.writeFileSync(__dirname + '/test.pdf',buf)
-        res.sendFile(__dirname + '/test.pdf')
+    res.pdf(`
+        ${o(i)}
+    `)
+    .then(a=>{
+        console.log(a)
     })
 })
 
