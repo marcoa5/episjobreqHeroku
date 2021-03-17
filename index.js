@@ -9,6 +9,7 @@ const fs = require('fs')
 const Handlebars = require('handlebars');
 const htp = require('html-pdf-node')
 
+
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://epi-serv-job-default-rtdb.firebaseio.com"
@@ -103,7 +104,7 @@ function createMailOptionsIntProd(a){
       return mailOptions
 }
 
-app.use(bodyParser.urlencoded({limit: '1MB',extended: false}))
+app.use(bodyParser.urlencoded({limit: '5MB',extended: false}))
 app.use(bodyParser.json());
 
 
@@ -133,11 +134,13 @@ app.all('/sjpdf', (req,res)=>{
     var o = Handlebars.compile(t)
     const file = {content: o(i)}
     const options = {format: 'A4'}
-    htp.generatePdf('<h1>Ciao</<h1>',options,()=>{console.log('a')}).then(buf=>{
-        res.status(200).send(buf.toString())
-    })
+    htp.generatePdf(file,options)
     .catch(err=>{
         if(err) throw error
+    })
+    .then(buf=>{
+        console.log(buf.toString())
+        res.status(200).send(buf.toString())
     })
 })
 
