@@ -133,8 +133,8 @@ app.all('/sjpdf', (req,res)=>{
     var o = Handlebars.compile(t)
     const file = {content: o(i)}
     const options = {format: 'A4'}
-    htp.generatePdf(file,options).then(buf=>{
-        res.status(200).send(buf.toString())
+    htp.generatePdf('<h1>Ciao</<h1>',options).then(buf=>{
+        res.status(200).send('buf.toString()')
     })
     .catch(err=>{
         if(err) throw error
