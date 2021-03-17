@@ -122,9 +122,6 @@ app.all('/sjpdf', (req,res)=>{
     res.pdf(`
         ${o(i)}
     `)
-    .then(a=>{
-        console.log(a)
-    })
 })
 
 app.get('/test', function(req,res){
