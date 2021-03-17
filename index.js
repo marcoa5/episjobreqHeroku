@@ -136,7 +136,9 @@ app.all('/sjpdf', (req,res)=>{
     const options = {format: 'A4'}
     htp.generatePdf(file,options)
     .catch(err=>{
-        if(err) throw err
+        if(err) {
+            console.log('ERRORE')
+        }
     })
     .then(async buf=>{
         res.write(buf,'binary');
