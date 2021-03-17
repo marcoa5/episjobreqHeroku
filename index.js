@@ -127,7 +127,7 @@ app.all('/rendersj', (req,res)=>{
     })
 })*/
 
-app.all('/sjpdf1', (req,res)=>{
+app.all('/sjpdf', (req,res)=>{
     var t = fs.readFileSync('template.html','utf-8')
     var i = req.body
     var o = Handlebars.compile(t)
@@ -135,6 +135,9 @@ app.all('/sjpdf1', (req,res)=>{
     const options = {format: 'A4'}
     htp.generatePdf(file,options).then(buf=>{
         res.status(200).send(buf.toString())
+    })
+    .catch(err=>{
+        if(err) throw error
     })
 })
 
