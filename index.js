@@ -138,7 +138,7 @@ app.all('/sjpdf', (req,res)=>{
     .catch(err=>{
         if(err) throw error
     })
-    .then(buf=>{
+    .then(async buf=>{
         console.log(buf)
         res.status(200).send(buf)
     })
@@ -268,14 +268,14 @@ app.all('/', function(req, res,next) {
         <h1 style="font-family: Arial; text-align:center; width: 100%; color: rgb(255,205,0)">Welcome to EpiSerJob Web Services</h1>
     </div>
     `
-    res.status(404).send(welc);
+    res.status(200).send(welc);
     res.end();
 });
 
 app.all('*', function(req, res,next) {
     const welc = `
     <div style="position: fixed; top:0;left:0;display:flex; justify-content: center; align-items: center; width:100%; height:100%; background-color: rgb(66, 85, 99)">
-        <h1 style="font-family: Arial; text-align:center; width: 100%; color: rgb(255,205,0)">404 - Sorry, page not fount</h1>
+        <h1 style="font-family: Arial; text-align:center; width: 100%; color: rgb(255,205,0)">404 - Sorry, page not found</h1>
     </div>
     `
     res.status(404).send(welc);
