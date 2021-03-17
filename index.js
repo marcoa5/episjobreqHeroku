@@ -139,8 +139,7 @@ app.all('/sjpdf', (req,res)=>{
         if(err) throw error
     })
     .then(async buf=>{
-        console.log(buf)
-        res.status(200).send(buf)
+        res.status(200).send(new Buffer(buf, 'binary'))
     })
 })
 
