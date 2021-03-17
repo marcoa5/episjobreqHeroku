@@ -139,7 +139,7 @@ app.all('/sjpdf', (req,res)=>{
         if(err) throw err
     })
     .then(async buf=>{
-        rres.write(buf,'binary');
+        res.write(buf,'binary');
         res.end(undefined,'binary');
     })
 })
