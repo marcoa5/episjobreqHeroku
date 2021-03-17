@@ -121,7 +121,8 @@ app.all('/sjpdf', (req,res)=>{
     const options = {format: 'A4'}
     hpt.generatePdf(file,options)
     .then(a=>{
-        res.send(a)
+        fs.writeFileSync(__dirname + '/temp.pdf',a)
+        res.sendFile(__dirname + '/temp.pdf')
     })
 })
 
