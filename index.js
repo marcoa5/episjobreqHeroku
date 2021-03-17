@@ -125,6 +125,24 @@ app.all('/sjpdf', (req,res)=>{
     })
 })
 
+app.all('/sjpdffile', (req,res)=>{
+    var t = fs.readFileSync('template.html','utf-8')
+    var i = req.body
+    console.log(i)
+    var o = Handlebars.compile(t)
+    const file = {content: o(i)}
+    const options = {format: 'A4'}
+    hpt.generatePdf(file,options)
+    .then(a=>{ 
+        var tempName = __dirname + '/temp.pdf'
+        fs.writeFile(tempName, a, err=>{
+            if(err) throw err
+            var cl = req.body.cliente11
+            res.download(tempName, cl? `${cl} - prova.pdf`:  "prova.pdf")
+        })
+    })
+})
+
 app.get('/test', function(req,res){
     var userN = "Marco"
     var userC = "Arato"
