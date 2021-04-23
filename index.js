@@ -106,7 +106,7 @@ function createMailOptionsIntProd(a){
 app.use(bodyParser.urlencoded({limit: '5MB',extended: false}))
 app.use(bodyParser.json())
 
-/*app.all('/rendersj', (req,res)=>{
+app.all('/rendersj', (req,res)=>{
     var t = fs.readFileSync('template.html','utf-8')
     var i = req.body
     var o = Handlebars.compile(t)
@@ -141,7 +141,7 @@ app.all('/sjpdffile', (req,res)=>{
             res.download(tempName, cl? `${cl} - prova.pdf`:  "prova.pdf")
         })
     })
-})*/
+})
 
 app.get('/getusers', function(req,res){
     admin.auth().listUsers(1000).then((a)=>{
@@ -263,19 +263,6 @@ app.post('/mailmod', async function(req, res,next) {
 
 app.post('/maildebug', async function(req, res,next) {
     var arg = req.body
-    await refPdf.put(arg.urlPdf)
-    .then(()=>{
-        refPdf.getDownloadURL().then(url=>{
-            if(url) req.urlPdf = url
-            let refMa = admin.storage().ref().child(`${arg.userN} ${arg.userC}/${arg.fileN}.ma`)
-            refMa.put(arg.urlMa)
-            .then(()=>{
-                refMa.getDownloadURL().then(url=>{
-                    if(url) req.urlMa = url
-                })
-            })
-        })
-    })
     if(arg.to1!=undefined){
         transporter.sendMail(createMailOptions(arg), (error, info)=>{
             if (error) {
