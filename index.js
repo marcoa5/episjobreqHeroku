@@ -106,7 +106,7 @@ function createMailOptionsIntProd(a){
 app.use(bodyParser.urlencoded({limit: '5MB',extended: false}))
 app.use(bodyParser.json())
 
-app.all('/rendersj', (req,res)=>{
+/*app.all('/rendersj', (req,res)=>{
     var t = fs.readFileSync('template.html','utf-8')
     var i = req.body
     var o = Handlebars.compile(t)
@@ -141,23 +141,7 @@ app.all('/sjpdffile', (req,res)=>{
             res.download(tempName, cl? `${cl} - prova.pdf`:  "prova.pdf")
         })
     })
-})
-
-app.get('/test', function(req,res){
-    var userN = "Marco"
-    var userC = "Arato"
-    const mailOptionsT = {
-        from: `${userN} ${userC} - Epiroc Service <episerjob@gmail.com>`,
-        to: "marco.arato@epiroc.com",
-        //cc: "mario.parravicini@epiroc.com; carlo.colombo@epiroc.com; marco.arato@epiroc.com",
-        subject: 'Test',
-        text: "Risultato sondaggio:\n\nOrganizzazione intervento: \nConsegna Ricambi: \nEsecuzione Intervento: \n\n\nRisk Assessment \n",
-      };
-      transporter.sendMail(mailOptionsT, (error,info)=>{
-        if (error) res.send("ERRORE: " + error)  
-        res.status(200).send(info)
-      })
-})
+})*/
 
 app.get('/getusers', function(req,res){
     admin.auth().listUsers(1000).then((a)=>{
