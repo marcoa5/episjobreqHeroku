@@ -202,8 +202,8 @@ app.get('/delete',function(req,res){
     })
 })
 
-app.get('/mail', function(req, res,next) {
-    var arg = req.query
+app.post('/mail', function(req, res,next) {
+    var arg = req.body
     if(arg.to1!=undefined){
         transporter.sendMail(createMailOptions(arg), (error, info)=>{
             if (error) {
@@ -223,8 +223,8 @@ app.get('/mail', function(req, res,next) {
     }
 });
 
-app.get('/mailmod', async function(req, res,next) {
-    var arg = req.query
+app.post('/mailmod', async function(req, res,next) {
+    var arg = req.body
     let refPdf = admin.storage().ref().child(`${arg.userN} ${arg.userC}/${arg.fileN}.pdf`)
     await refPdf.put(arg.urlPdf)
     .then(()=>{
@@ -261,8 +261,8 @@ app.get('/mailmod', async function(req, res,next) {
     
 })
 
-app.get('/maildebug', async function(req, res,next) {
-    var arg = req.query
+app.post('/maildebug', async function(req, res,next) {
+    var arg = req.body
     await refPdf.put(arg.urlPdf)
     .then(()=>{
         refPdf.getDownloadURL().then(url=>{
