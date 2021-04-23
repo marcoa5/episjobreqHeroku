@@ -239,6 +239,41 @@ app.get('/mail', function(req, res,next) {
     }
 });
 
+app.get('/mailmod', function(req, res,next) {
+    var arg = req.query
+    let refPdf = admin.storage().ref().child(`${arg.userN} ${arg.userC}/${arg.fileN}.pdf`)
+    await refPdf.put(arg.urlPdf)
+    .then(async ()=>{
+        await refPdf.getDownloadURL().then(async url=>{
+            if(url) req.urlPdf = url
+        })
+    })
+    let refMa = admin.storage().ref().child(`${arg.userN} ${arg.userC}/${arg.fileN}.ma`)
+    await refMa.put(arg.urlMa)
+    .then(async ()=>{
+        await refMa.getDownloadURL().then(async url=>{
+            if(url) req.urlMa = url
+        })
+    })
+    if(arg.to1!=undefined){
+        transporter.sendMail(createMailOptions(arg), (error, info)=>{
+            if (error) {
+            console.log(error);
+            } else {
+                transporter.sendMail(createMailOptionsIntProd(arg), (error, info)=>{
+                    if (error) {
+                    console.log(error);
+                    } else {
+                        res.status(200).send(arg.to1);
+                    }
+                })
+            }
+        });
+    } else {
+        res.send('Mail not sent')
+    }
+});
+
 app.get('/maildebug', function(req, res,next) {
     var arg = req.query
     if(arg.to1!=undefined){
