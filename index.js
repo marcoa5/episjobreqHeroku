@@ -239,7 +239,7 @@ app.get('/mail', function(req, res,next) {
     }
 });
 
-app.get('/mailmod', function(req, res,next) {
+app.get('/mailmod', async function(req, res,next) {
     var arg = req.query
     let refPdf = admin.storage().ref().child(`${arg.userN} ${arg.userC}/${arg.fileN}.pdf`)
     await refPdf.put(arg.urlPdf)
@@ -277,8 +277,21 @@ app.get('/mailmod', function(req, res,next) {
     
 })
 
-app.get('/maildebug', function(req, res,next) {
+app.get('/maildebug', async function(req, res,next) {
     var arg = req.query
+    await refPdf.put(arg.urlPdf)
+    .then(()=>{
+        refPdf.getDownloadURL().then(url=>{
+            if(url) req.urlPdf = url
+            let refMa = admin.storage().ref().child(`${arg.userN} ${arg.userC}/${arg.fileN}.ma`)
+            refMa.put(arg.urlMa)
+            .then(()=>{
+                refMa.getDownloadURL().then(url=>{
+                    if(url) req.urlMa = url
+                })
+            })
+        })
+    })
     if(arg.to1!=undefined){
         transporter.sendMail(createMailOptions(arg), (error, info)=>{
             if (error) {
