@@ -1,5 +1,6 @@
 var express = require('express');
 var app = express();
+var cors = require('cors')
 const nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
 var admin = require("firebase-admin");
@@ -143,7 +144,7 @@ app.all('/sjpdffile', (req,res)=>{
     })
 })
 
-app.get('/getusers', function(req,res){
+app.get('/getusers', cors(), function(req,res){
     admin.auth().listUsers(1000).then((a)=>{
         res.send(a.users)
     })
