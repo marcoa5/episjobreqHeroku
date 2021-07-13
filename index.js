@@ -109,7 +109,6 @@ app.use(bodyParser.json())
 app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001')
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200')
-    res.setHeader('Access-Control-Allow-Origin', 'https://episjobadmin.web.app/')
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE')
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
     res.setHeader('Access-Control-Allow-Credentials', true);
@@ -172,8 +171,6 @@ app.get('/createuser', function(req,res){
     var Cognome = req.query.Cognome
     var Pos=req.query.Pos
     var km = req.query.km
-
-    console.log(req.query)
 	
     admin.auth().createUser({
         email: Mail,
@@ -181,6 +178,7 @@ app.get('/createuser', function(req,res){
         password: 'Epiroc2021',
         disabled: false,
     })
+    .then(()=>res.status(200).json({user: 'created'}))
     .then((userRecord) => {
         admin.database().ref('Users/' + userRecord.uid).set({
             Nome: Nome,
@@ -189,7 +187,7 @@ app.get('/createuser', function(req,res){
             km: km
         })
         .then(()=>{
-           res.send('ok') 
+           res.status(200).send('created') 
         })
         .catch((error) => {
             console.log('Error creating new user:', error);
