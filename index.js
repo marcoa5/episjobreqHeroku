@@ -183,11 +183,12 @@ app.get('/createuser', function(req,res){
            res.status(200).send('created') 
         })
         .catch((error) => {
-            console.log('Error creating new user:', error);
+            res.status(300).send('Errore: ' + error)
         })
     })
     .catch((error) => {
-        console.log('Error creating new user:', error);
+        res.status(300).send('Errore: ' + error)
+
     });
 })
 
