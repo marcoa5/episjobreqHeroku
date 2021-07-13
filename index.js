@@ -106,13 +106,7 @@ function createMailOptionsIntProd(a){
 
 app.use(bodyParser.urlencoded({limit: '100kb',extended: false}))
 app.use(bodyParser.json())
-app.use(function (req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001')
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE')
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-    res.setHeader('Access-Control-Allow-Credentials', true);
-    next();
-});
+
 
 app.all('/rendersj', (req,res)=>{
     var t = fs.readFileSync('template.html','utf-8')
@@ -164,7 +158,7 @@ app.get('/getuserinfo', function(req,res){
     })
 })
 
-app.get('/createuser', function(req,res){
+app.get('/createuser', cors(), function(req,res){
     var Mail = req.query.Mail
     var Nome = req.query.Nome
     var Cognome = req.query.Cognome
@@ -177,7 +171,6 @@ app.get('/createuser', function(req,res){
         password: 'Epiroc2021',
         disabled: false,
     })
-    .then(()=>res.status(200).json({user: 'created'}))
     .then((userRecord) => {
         admin.database().ref('Users/' + userRecord.uid).set({
             Nome: Nome,
