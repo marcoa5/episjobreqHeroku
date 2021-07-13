@@ -106,6 +106,7 @@ function createMailOptionsIntProd(a){
 
 app.use(bodyParser.urlencoded({limit: '100kb',extended: false}))
 app.use(bodyParser.json())
+app.use(cors())
 
 
 app.all('/rendersj', (req,res)=>{
@@ -145,7 +146,7 @@ app.all('/sjpdffile', (req,res)=>{
     })
 })
 
-app.get('/getusers', cors(), function(req,res){
+app.get('/getusers', function(req,res){
     admin.auth().listUsers(1000).then((a)=>{
         res.send(a.users)
     })
@@ -158,7 +159,7 @@ app.get('/getuserinfo', function(req,res){
     })
 })
 
-app.get('/createuser', cors(), function(req,res){
+app.get('/createuser', function(req,res){
     var Mail = req.query.Mail
     var Nome = req.query.Nome
     var Cognome = req.query.Cognome
