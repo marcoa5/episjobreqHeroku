@@ -107,9 +107,7 @@ function createMailOptionsIntProd(a){
 app.use(bodyParser.urlencoded({limit: '100kb',extended: false}))
 app.use(bodyParser.json())
 app.use(function (req, res, next) {
-
-    // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8888');
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
 
     // Request methods you wish to allow
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
@@ -181,6 +179,8 @@ app.get('/createuser', function(req,res){
     var Cognome = req.query.Cognome
     var Pos=req.query.Pos
     var km = req.query.km
+
+    console.log(req.query)
 	
     admin.auth().createUser({
         email: Mail,
