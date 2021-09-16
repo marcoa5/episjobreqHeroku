@@ -21,7 +21,7 @@ const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
       user: 'episerjob@gmail.com',
-      pass: 'Epiroc2020' 
+      pass: 'xvesvmaufsunnzvr' 
     }
   });
 
@@ -108,7 +108,21 @@ app.use(bodyParser.urlencoded({limit: '100kb',extended: false}))
 app.use(bodyParser.json())
 app.use(cors())
 
-
+app.all('/prova',(req,res)=>{
+    const mailOptions = {
+        from: `Prova - Epiroc Service <episerjob@gmail.com>`,
+        to: "marco.arato@epiroc.com",
+        subject: 'Test',
+        text: `This is a test`,
+        attachments: [
+            {
+                filename: 'prova.pdf',
+                path: 'https://firebasestorage.googleapis.com/v0/b/epi-serv-job.appspot.com/o/Marco%20Arato%2F20210916143441%20-%20FASSA%20SRL%20-%20SmartROC%20T35-11%20-%20TMG20SED0068.pdf?alt=media&token=b19967af-4616-4032-8b91-bf67e474cba5'
+            }
+        ]
+      };
+    transporter.sendMail(mailOptions, a=>{console.log('ok')})
+})
 app.all('/rendersj', (req,res)=>{
     var t = fs.readFileSync('template.html','utf-8')
     var i = req.body
