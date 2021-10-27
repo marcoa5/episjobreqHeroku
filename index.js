@@ -6,9 +6,8 @@ const bodyParser = require('body-parser');
 var admin = require("firebase-admin");
 var serviceAccount = require('./key.json')
 const porta = process.env.PORT || 3001
-const fs = require('fs')
-const Handlebars = require('handlebars');
-const hpt = require('html-pdf-node')
+const axios = require('axios')
+var moment = require('moment')
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
