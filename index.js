@@ -255,8 +255,7 @@ app.get('/certiq', function(req,res){
     let machines=[]
     let lung=0
     let itemNr=[]
-    let today = req.query.day
-    let yesterday = moment(today).subtract(1,'days').format('YYYY-MM-DD')
+    let yesterday = req.query.day
     axios({
         method:'get',
         url: 'https://api.epiroc.com/certiq/v2/authentication/login?username=marco.arato@epiroc.com&password=Epiroc2019',
