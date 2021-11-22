@@ -165,6 +165,9 @@ app.get('/updateuser', function(req,res){
         Nome: Nome,
         Pos: Pos
     })
+    .then(a=>rres.status(200).send('updated'))
+    .catch(err=>{res.status(300).send('Errore: ' + error)})
+
 })
 
 app.get('/delete',function(req,res){
