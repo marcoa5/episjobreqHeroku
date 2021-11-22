@@ -154,6 +154,19 @@ app.get('/createuser', function(req,res){
     });
 })
 
+app.get('/updateuser', function(req,res){
+    var Nome = req.query.Nome
+    var Cognome = req.query.Cognome
+    var Pos=req.query.Pos
+    var id = req.query.id
+    console.log(Nome,Cognome,id, Pos)
+    admin.database().ref('Users').child(id).set({
+        Cognome: Cognome,
+        Nome: Nome,
+        Pos: Pos
+    })
+})
+
 app.get('/delete',function(req,res){
     var id = req.query.id
     admin.auth().deleteUser(id)
@@ -298,6 +311,7 @@ app.get('/certiq', function(req,res){
                     }
                 })
                 .then(gg=>{
+                    if(sr.machineSerialNr=='TMG19SED0497') console.log(gg)
                     sr.LastDayEngineHours = Math.round(gg.data.dailyUtilizationEngineHours)
                     axios({
                         method:'get',
