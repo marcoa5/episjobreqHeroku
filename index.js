@@ -7,7 +7,8 @@ var admin = require("firebase-admin");
 var serviceAccount = require('./key.json')
 const porta = process.env.PORT || 3001
 const axios = require('axios')
-var moment = require('moment')
+var moment = require('moment');
+const { auth } = require('firebase-admin');
 
 
 admin.initializeApp({
@@ -154,20 +155,17 @@ app.get('/createuser', function(req,res){
     });
 })
 
-app.get('/updateuser', function(req,res){
+app.all('/updateuser', function(req,res){
     var Nome = req.query.Nome
     var Cognome = req.query.Cognome
     var Pos=req.query.Pos
     var id = req.query.id
-    console.log(Nome,Cognome,id, Pos)
     admin.database().ref('Users').child(id).set({
         Cognome: Cognome,
         Nome: Nome,
         Pos: Pos
     })
-    .then(a=>rres.status(200).send('updated'))
-    .catch(err=>{res.status(300).send('Errore: ' + error)})
-
+    .then(()=>res.status(200).send('ok'))
 })
 
 app.get('/delete',function(req,res){
