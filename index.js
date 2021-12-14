@@ -134,7 +134,7 @@ app.get('/createuser', function(req,res){
     var Cognome = req.query.Cognome
     var Pos=req.query.Pos
     var km = req.query.km
-	
+	var userVisit = req.query.userVisit
     admin.auth().createUser({
         email: Mail,
         emailVerified: false,
@@ -146,7 +146,8 @@ app.get('/createuser', function(req,res){
             Nome: Nome,
             Cognome: Cognome,
             Pos: Pos,
-            km: km
+            km: km,
+            userVisit: userVisit
         })
         .then(()=>{
            res.status(200).send('created') 
@@ -166,10 +167,12 @@ app.all('/updateuser', function(req,res){
     var Cognome = req.query.Cognome
     var Pos=req.query.Pos
     var id = req.query.id
+	var userVisit = req.query.userVisit
     admin.database().ref('Users').child(id).set({
         Cognome: Cognome,
         Nome: Nome,
-        Pos: Pos
+        Pos: Pos,
+        userVisit: userVisit
     })
     .then(()=>res.status(200).send('ok'))
 })
