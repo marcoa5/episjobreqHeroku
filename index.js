@@ -29,30 +29,12 @@ const transporter = nodemailer.createTransport({
 
 
 function createMailOptions(a){
-    let n = a.userN + ' ' + a.userC
-    /*let chFEA=false
+    /*let n = a.userN + ' ' + a.userC
+    let chFEA=false
     admin.database().ref('Tech').child(n).once('value',k=>{
         if(k.val().s.substring(0,6)=='F.E.A.') chFEA=true
     })*/
-    const mailBody=`
-    <table width=600 style="margin: 0 auto;">
-    <tr height=80 style="background-color: rgb(255,205,0);">
-        <h1 style="background-color: rgb(255,205,0);text-align:center;font-family: Arial; color:rgb(66,85,99);">Epiroc Italia srl</h1>
-    </tr>
-    <tr>
-        <img style="width:100%;" src="https://firebasestorage.googleapis.com/v0/b/epi-serv-job.appspot.com/o/car.jpeg?alt=media&token=341d08d3-d0ed-4d91-866f-d5999b6d1595">
-    </tr>
-    <tr>
-        <p style="font-family: Arial; color:rgb(66,85,99)"><br><br>Gentile Cliente,<br>In allegato scheda lavoro relativa all'intervento effettuato dal nostro tecnico Sig. ${a.userN} ${a.userC}.</p>
-        <p style="font-family: Arial; color:rgb(66,85,99)">Vi ringraziamo qualora abbiate aderito al nostro sondaggio</p>
-        <hr>
-        <p style="font-family: Arial; font-size:80%; color:rgb(66,85,99)"><strong>Risultato Sondaggio:</strong></p>
-        <p style="font-family: Arial; font-size:80%; color:rgb(66,85,99)">Organizzazione intervento: ${a.son1}</p>
-        <p style="font-family: Arial; font-size:80%; color:rgb(66,85,99)">Consegna Ricambi: ${a.son2}</p>
-        <p style="font-family: Arial; font-size:80%; color:rgb(66,85,99)">Esecuzione Intervento: ${a.son3}</p>
-    </tr>
-    </table>
-    `
+
     const mailOptions = {
         from: 'Epiroc Service <episerjob@gmail.com>',
         replyTo: 'marco.fumagalli@epiroc.com',
