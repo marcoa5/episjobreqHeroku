@@ -170,13 +170,11 @@ app.all('/updateuser', function(req,res){
 	var userVisit = req.query.userVisit
     var Area
     if(req.query.Area!=undefined) Area = req.query.Area
-    admin.database().ref('Users').child(id).set({
-        Cognome: Cognome,
-        Nome: Nome,
-        Pos: Pos,
-        userVisit: userVisit,
-        Area: Area? Area : undefined
-    })
+    admin.database().ref('Users').child(id).child(Cognome).set(Cognome)
+    admin.database().ref('Users').child(id).child(Nome).set(Nome)
+    admin.database().ref('Users').child(id).child(Pos).set(Pos)
+    admin.database().ref('Users').child(id).child(userVisit).set(userVisit)
+    admin.database().ref('Users').child(id).child(Area).set(Area)
     .then(()=>res.status(200).send('ok'))
 })
 
