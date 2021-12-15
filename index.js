@@ -30,10 +30,10 @@ const transporter = nodemailer.createTransport({
 
 function createMailOptions(a){
     let n = a.userN + ' ' + a.userC
-    let chFEA=false
+    /*let chFEA=false
     admin.database().ref('Tech').child(n).once('value',k=>{
         if(k.val().s.substring(0,6)=='F.E.A.') chFEA=true
-    })
+    })*/
     const mailBody=`
     <table width=600 style="margin: 0 auto;">
     <tr height=80 style="background-color: rgb(255,205,0);">
@@ -57,7 +57,7 @@ function createMailOptions(a){
         from: 'Epiroc Service <episerjob@gmail.com>',
         replyTo: 'marco.fumagalli@epiroc.com',
         to: a.to1,
-        cc: a.userM + chFEA==true?'; fea@feabari.it':'',
+        cc: a.userM,
         subject: a.subject,
         text: `In allegato scheda lavoro relativa all'intervento effettuato dal nostro tecnico Sig. ${a.userN} ${a.userC}.\nVi ringraziamo qualora abbiate aderito al nostro sondaggio.\n\n\nRisultato sondaggio:\n\nOrganizzazione intervento: ${a.son1}\nConsegna Ricambi: ${a.son2}\nEsecuzione Intervento: ${a.son3}`,
         //html:mailBody,
