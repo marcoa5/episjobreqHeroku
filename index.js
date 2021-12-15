@@ -124,16 +124,15 @@ app.get('/createuser', function(req,res){
         disabled: false,
     })
     .then((userRecord) => {
-        admin.database().ref('Users/' + userRecord.uid).set({
-            Nome: Nome,
-            Cognome: Cognome,
-            Pos: Pos,
-            km: km,
-            userVisit: userVisit
-        })
-        .then(()=>{
-           res.status(200).send('created') 
-        })
+        var Area = undefined
+        let id = userRecord.uid
+        if(req.query.Area!=undefined) Area = req.query.Area
+        admin.database().ref('Users').child(id).child('Cognome').set(Cognome)
+        admin.database().ref('Users').child(id).child('Nome').set(Nome)
+        admin.database().ref('Users').child(id).child('Pos').set(Pos)
+        admin.database().ref('Users').child(id).child('userVisit').set(userVisit)
+        admin.database().ref('Users').child(id).child('Area').set(Area)
+        .then(()=>res.status(200).send('ok'))
         .catch((error) => {
             res.status(300).send('Errore: ' + error)
         })
@@ -152,11 +151,11 @@ app.all('/updateuser', function(req,res){
 	var userVisit = req.query.userVisit
     var Area = undefined
     if(req.query.Area!=undefined) Area = req.query.Area
-    admin.database().ref('Users').child(id).child(Cognome).set(Cognome)
-    admin.database().ref('Users').child(id).child(Nome).set(Nome)
-    admin.database().ref('Users').child(id).child(Pos).set(Pos)
-    admin.database().ref('Users').child(id).child(userVisit).set(userVisit)
-    admin.database().ref('Users').child(id).child(Area).set(Area)
+    admin.database().ref('Users').child(id).child('Cognome').set(Cognome)
+    admin.database().ref('Users').child(id).child('Nome').set(Nome)
+    admin.database().ref('Users').child(id).child('Pos').set(Pos)
+    admin.database().ref('Users').child(id).child('userVisit').set(userVisit)
+    admin.database().ref('Users').child(id).child('Area').set(Area)
     .then(()=>res.status(200).send('ok'))
 })
 
