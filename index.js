@@ -267,7 +267,7 @@ app.all('/partreq', function(req,res){
     transporter.sendMail(opt, (error, info)=>{
         if (error) res.status(300).send(error)
         if(info) res.status(200).send(info)
-    });
+    })
 })
 
 app.all('/', function(req, res,next) {
@@ -403,7 +403,7 @@ function createMailParts(a){
     var mailOptions = {
         from: `${a.author} - Epiroc Service <episerjob@gmail.com>`,
         to: a.type=="CustomerSupport"?'nicola.megna@epiroc.com':'marco.fumagalli@epiroc.com',
-        cc: "mario.parravicini@epiroc.com; marco.arato@epiroc.com" + a.type=="CustomerSupport"?'marco.fumagalli@epiroc.com':'',
+        cc: "mario.parravicini@epiroc.com; marco.arato@epiroc.com" + (a.type=='CustomerSupport'?'; marco.fumagalli@epiroc.com; cristiana.besana@epiroc.com':''),
         subject: a.type + ': New Parts request to '+ a.customer + ' - ' + a.model + ' (s/n: ' + a.sn + ')',
         html: html,
     };
