@@ -10,7 +10,7 @@ const axios = require('axios')
 var moment = require('moment');
 const { auth } = require('firebase-admin');
 const functions = require("firebase-functions");
-
+const Handlebars = require("handlebars");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -18,80 +18,6 @@ admin.initializeApp({
 });
 
 app.set('view engine', 'pug');
-
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: 'episerjob@gmail.com',
-      pass: 'xvesvmaufsunnzvr' 
-    }
-  });
-
-
-function createMailOptions(a){
-    /*let n = a.userN + ' ' + a.userC
-    let chFEA=false
-    admin.database().ref('Tech').child(n).once('value',k=>{
-        if(k.val().s.substring(0,6)=='F.E.A.') chFEA=true
-    })*/
-
-    const mailOptions = {
-        from: 'Epiroc Service <episerjob@gmail.com>',
-        replyTo: 'marco.fumagalli@epiroc.com',
-        to: a.to1,
-        cc: a.userM,
-        subject: a.subject,
-        text: `In allegato scheda lavoro relativa all'intervento effettuato dal nostro tecnico Sig. ${a.userN} ${a.userC}.\nVi ringraziamo qualora abbiate aderito al nostro sondaggio.\n\n\nRisultato sondaggio:\n\nOrganizzazione intervento: ${a.son1}\nConsegna Ricambi: ${a.son2}\nEsecuzione Intervento: ${a.son3}`,
-        //html:mailBody,
-        attachments: {
-            filename: a.fileN? a.fileN + '.pdf': '',
-            path: a.urlPdf? a.urlPdf : ''
-        }
-      };
-      return mailOptions
-}
-
-function createMailOptionsInt(a){
-    const mailOptions = {
-        from: `${a.userN} ${a.userC} - Epiroc Service <episerjob@gmail.com>`,
-        to: "marco.arato@epiroc.com", //"marco.fumagalli@epiroc.com"
-        cc: "", //"mario.parravicini@epiroc.com; carlo.colombo@epiroc.com; marco.arato@epiroc.com",
-        subject: a.subject,
-        text: `Risultato sondaggio:\n\nOrganizzazione intervento: ${a.son1}\nConsegna Ricambi: ${a.son2}\nEsecuzione Intervento: ${a.son3} ${a.rap}\n\n\nRisk Assessment \n ${a.rAss}`,
-        attachments: [
-            {
-                filename: a.fileN + '.pdf',
-                path: a.urlPdf
-            },
-            {
-                filename: a.fileN + '.ma',
-                path: a.urlMa
-            }
-        ]
-      };
-      return mailOptions
-}
-
-function createMailOptionsIntProd(a){
-    const mailOptions = {
-        from: `${a.userN} ${a.userC} - Epiroc Service <episerjob@gmail.com>`,
-        to: "marco.fumagalli@epiroc.com",
-        cc: "mario.parravicini@epiroc.com; carlo.colombo@epiroc.com; marco.arato@epiroc.com",
-        subject: a.subject,
-        text: `Risultato sondaggio:\n\nOrganizzazione intervento: ${a.son1}\nConsegna Ricambi: ${a.son2}\nEsecuzione Intervento: ${a.son3} ${a.rap}\n\n\nRisk Assessment \n ${a.rAss}`,
-        attachments: [
-            {
-                filename: a.fileN + '.pdf',
-                path: a.urlPdf
-            },
-            {
-                filename: a.fileN + '.ma',
-                path: a.urlMa
-            }
-        ]
-      };
-      return mailOptions
-}
 
 app.use(bodyParser.urlencoded({limit: '100kb',extended: false}))
 app.use(bodyParser.json())
@@ -336,6 +262,14 @@ app.get('/certiq', function(req,res){
     .catch(e=>console.log(e))
 })
 
+app.all('/partreq', function(req,res){
+    var opt = createMailParts(JSON.parse(req.query.info))
+    transporter.sendMail(opt, (error, info)=>{
+        if (error) res.status(300).send(error)
+        if(info) res.status(200).send(info)
+    });
+})
+
 app.all('/', function(req, res,next) {
     const welc = `
     <div style="position: fixed; top:0;left:0;display:flex; justify-content: center; align-items: center; width:100%; height:100%; background-color: rgb(66, 85, 99)">
@@ -359,3 +293,119 @@ app.all('*', function(req, res,next) {
 app.listen(porta, ()=>{
     console.log(`Running on port:${porta}`)
 });
+
+
+
+
+
+
+
+//FUNCTIONS
+
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'episerjob@gmail.com',
+      pass: 'xvesvmaufsunnzvr' 
+    }
+  });
+
+
+function createMailOptions(a){
+    /*let n = a.userN + ' ' + a.userC
+    let chFEA=false
+    admin.database().ref('Tech').child(n).once('value',k=>{
+        if(k.val().s.substring(0,6)=='F.E.A.') chFEA=true
+    })*/
+
+    const mailOptions = {
+        from: 'Epiroc Service <episerjob@gmail.com>',
+        replyTo: 'marco.fumagalli@epiroc.com',
+        to: a.to1,
+        cc: a.userM,
+        subject: a.subject,
+        text: `In allegato scheda lavoro relativa all'intervento effettuato dal nostro tecnico Sig. ${a.userN} ${a.userC}.\nVi ringraziamo qualora abbiate aderito al nostro sondaggio.\n\n\nRisultato sondaggio:\n\nOrganizzazione intervento: ${a.son1}\nConsegna Ricambi: ${a.son2}\nEsecuzione Intervento: ${a.son3}`,
+        //html:mailBody,
+        attachments: {
+            filename: a.fileN? a.fileN + '.pdf': '',
+            path: a.urlPdf? a.urlPdf : ''
+        }
+      };
+      return mailOptions
+}
+
+function createMailOptionsInt(a){
+    const mailOptions = {
+        from: `${a.userN} ${a.userC} - Epiroc Service <episerjob@gmail.com>`,
+        to: "marco.arato@epiroc.com", //"marco.fumagalli@epiroc.com"
+        cc: "", //"mario.parravicini@epiroc.com; carlo.colombo@epiroc.com; marco.arato@epiroc.com",
+        subject: a.subject,
+        text: `Risultato sondaggio:\n\nOrganizzazione intervento: ${a.son1}\nConsegna Ricambi: ${a.son2}\nEsecuzione Intervento: ${a.son3} ${a.rap}\n\n\nRisk Assessment \n ${a.rAss}`,
+        attachments: [
+            {
+                filename: a.fileN + '.pdf',
+                path: a.urlPdf
+            },
+            {
+                filename: a.fileN + '.ma',
+                path: a.urlMa
+            }
+        ]
+      };
+      return mailOptions
+}
+
+function createMailOptionsIntProd(a){
+    const mailOptions = {
+        from: `${a.userN} ${a.userC} - Epiroc Service <episerjob@gmail.com>`,
+        to: "marco.fumagalli@epiroc.com",
+        cc: "mario.parravicini@epiroc.com; carlo.colombo@epiroc.com; marco.arato@epiroc.com",
+        subject: a.subject,
+        text: `Risultato sondaggio:\n\nOrganizzazione intervento: ${a.son1}\nConsegna Ricambi: ${a.son2}\nEsecuzione Intervento: ${a.son3} ${a.rap}\n\n\nRisk Assessment \n ${a.rAss}`,
+        attachments: [
+            {
+                filename: a.fileN + '.pdf',
+                path: a.urlPdf
+            },
+            {
+                filename: a.fileN + '.ma',
+                path: a.urlMa
+            }
+        ]
+      };
+      return mailOptions
+}
+
+var source=`
+<p>Prego elaborare offerta per il cliente <strong>{{customer}}</strong> relativo alla macchina <strong>{{model}} (s/n: {{sn}})</strong> per i seguenti ricambi:<p>
+<table style="border-collapse: collapse;">
+    <tr>
+        <th style="padding: 5px 20px;border: 1px solid black">Categorico</th>
+        <th style="padding: 5px 20px;border: 1px solid black">Descrizione</th>
+        <th style="padding: 5px 20px; text-align:center;border: 1px solid black">Q.tà</th>
+    </tr>
+    {{#Parts}}
+    <tr>
+        <td style="padding: 5px 20px;border: 1px solid black">{{pn}}</td>
+        <td style="padding: 5px 20px;border: 1px solid black">{{desc}}</td>
+        <td style="padding: 5px 20px; text-align:center;border: 1px solid black">{{qty}}</td>
+    </tr>
+{{/Parts}}</table>
+`
+
+var template=Handlebars.compile(source)
+
+
+
+function createMailParts(a){
+    var data = a
+    var html=template(data)
+    var mailOptions = {
+        from: `${a.author} - Epiroc Service <episerjob@gmail.com>`,
+        to: a.type=="CustomerSupport"?'nicola.megna@epiroc.com':'marco.fumagalli@epiroc.com',
+        cc: "mario.parravicini@epiroc.com; marco.arato@epiroc.com" + a.type=="CustomerSupport"?'marco.fumagalli@epiroc.com':'',
+        subject: a.type + ': New Parts request to '+ a.customer + ' - ' + a.model + ' (s/n: ' + a.sn + ')',
+        html: html,
+    };
+    return mailOptions
+}
