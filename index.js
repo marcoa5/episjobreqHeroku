@@ -377,9 +377,10 @@ function createMailOptionsIntProd(a){
 }
 
 var source=`
-<p>Prego elaborare offerta per il cliente <strong>{{customer}}</strong> relativo alla macchina <strong>{{model}} (s/n: {{sn}})</strong> per i seguenti ricambi:<p>
+<p>Prego elaborare offerta {{#if shipTo.name}}da inoltrare a {{shipTo.name}} {{#if shipTo.email}}({{shipTo.email}}){{/if}}{{/if}} per i ricambi sotto elencati (Cantiere: {{customer}} {{#if shipTo.address}} - {{shipTo.address}} {{/if}}) relativo alla macchina <strong>{{model}} (s/n: {{sn}})</strong> {{#if shipTo.cig}}- CIG: {{shipTo.cig}}{{/if}} {{#if shipTo.cup}} CUP: {{shipTo.cup}}{{/if}}<p>
 <table style="border-collapse: collapse;">
-    <tr>
+<br>    
+<tr>
         <th style="padding: 5px 20px;border: 1px solid black">Categorico</th>
         <th style="padding: 5px 20px;border: 1px solid black">Descrizione</th>
         <th style="padding: 5px 20px; text-align:center;border: 1px solid black">Q.tà</th>
