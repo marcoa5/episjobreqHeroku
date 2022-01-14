@@ -407,7 +407,8 @@ function createMailParts(a){
         admin.auth().getUser(a.origId).then(b=>{
             let cc =''
             admin.database().ref('Users').child(b.uid).child('Pos').once('value',g=>{
-                if(g!=null && (g.val().Pos=='tech' || g.val().Pos=='sales')) cc=  '; ' + b.email
+      
+                if(g!=null && (g.val()=='tech' || g.val()=='sales')) cc=  '; ' + b.email
             })
             .then(()=>{
                 var html=template(data)
