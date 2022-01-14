@@ -404,18 +404,23 @@ var template=Handlebars.compile(source)
 function createMailParts(a){
     return new Promise((res,rej)=>{
         var data = a
-    admin.auth().getUser(a.origId).then(b=>{
-        let cc =''
-        if(b.Pos=='tech' || b.Pos=='sales') cc=  '; ' + b.email
-        var html=template(data)
-        var mailOptions = {
-            from: `${a.author} - Epiroc Service <episerjob@gmail.com>`,
-            to: a.type=="CustomerSupport"?'nicola.megna@epiroc.com':'marco.fumagalli@epiroc.com',
-            cc: "mario.parravicini@epiroc.com; marco.arato@epiroc.com; giordano.perini@epiroc.com" + (a.type=='CustomerSupport'?'; marco.fumagalli@epiroc.com; cristiana.besana@epiroc.com':'')+cc,
-            subject: a.type + ': New Parts request to '+ a.customer + ' - ' + a.model + ' (s/n: ' + a.sn + ')',
-            html: html,
-        };
-        if(mailOptions!=undefined) res(mailOptions)
-    })
+        admin.auth().getUser(a.origId).then(b=>{
+            let cc =''
+            admin.database().ref('Users').child(b.uid).child('Pos').once('value',g=>{
+                if(g!=null && (g.val().Pos=='tech' || g.val().Pos=='sales')) cc=  '; ' + b.email
+            })
+            .then(()=>{
+                var html=template(data)
+                var mailOptions = {
+                    from: `${a.author} - Epiroc Service <episerjob@gmail.com>`,
+                    to: a.type=="CustomerSupport"?'nicola.megna@epiroc.com':'marco.fumagalli@epiroc.com',
+                    cc: "mario.parravicini@epiroc.com; marco.arato@epiroc.com; giordano.perini@epiroc.com" + (a.type=='CustomerSupport'?'; marco.fumagalli@epiroc.com; cristiana.besana@epiroc.com':'') + cc,
+                    subject: a.type + ': New Parts request to '+ a.customer + ' - ' + a.model + ' (s/n: ' + a.sn + ')',
+                    html: html,
+                };
+                if(mailOptions!=undefined) res(mailOptions)    
+            })
+            
+        })
     })
 }
