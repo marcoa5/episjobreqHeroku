@@ -11,6 +11,7 @@ var moment = require('moment');
 const { auth } = require('firebase-admin');
 const functions = require("firebase-functions");
 const Handlebars = require("handlebars");
+const { escapeExpression } = require('handlebars');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -263,10 +264,12 @@ app.get('/certiq', function(req,res){
 })
 
 app.all('/partreq', function(req,res){
-    var opt = createMailParts(JSON.parse(req.query.info))
-    transporter.sendMail(opt, (error, info)=>{
-        if (error) res.status(300).send(error)
-        if(info) res.status(200).send(info)
+    createMailParts(JSON.parse(req.query.info))
+    .then(a=>{
+        transporter.sendMail(a, (error, info)=>{
+            if (error) res.status(300).send(error)
+            if(info) res.status(200).send(info)
+        })
     })
 })
 
@@ -399,14 +402,20 @@ var template=Handlebars.compile(source)
 
 
 function createMailParts(a){
-    var data = a
-    var html=template(data)
-    var mailOptions = {
-        from: `${a.author} - Epiroc Service <episerjob@gmail.com>`,
-        to: a.type=="CustomerSupport"?'nicola.megna@epiroc.com':'marco.fumagalli@epiroc.com',
-        cc: "mario.parravicini@epiroc.com; marco.arato@epiroc.com" + (a.type=='CustomerSupport'?'; marco.fumagalli@epiroc.com; cristiana.besana@epiroc.com':''),
-        subject: a.type + ': New Parts request to '+ a.customer + ' - ' + a.model + ' (s/n: ' + a.sn + ')',
-        html: html,
-    };
-    return mailOptions
+    return new Promise((res,rej)=>{
+        var data = a
+    admin.auth().getUser(a.origId).then(b=>{
+        let cc =''
+        if(b.Pos=='sales') cc=  '; ' + b.email
+        var html=template(data)
+        var mailOptions = {
+            from: `${a.author} - Epiroc Service <episerjob@gmail.com>`,
+            to: a.type=="CustomerSupport"?'nicola.megna@epiroc.com':'marco.fumagalli@epiroc.com',
+            cc: "mario.parravicini@epiroc.com; marco.arato@epiroc.com" + (a.type=='CustomerSupport'?'; marco.fumagalli@epiroc.com; cristiana.besana@epiroc.com':'')+cc,
+            subject: a.type + ': New Parts request to '+ a.customer + ' - ' + a.model + ' (s/n: ' + a.sn + ')',
+            html: html,
+        };
+        if(mailOptions!=undefined) res(mailOptions)
+    })
+    })
 }
