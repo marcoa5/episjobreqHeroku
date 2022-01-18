@@ -266,6 +266,7 @@ app.get('/certiq', function(req,res){
 app.all('/partreq', function(req,res){
     createMailParts(JSON.parse(req.query.info))
     .then(a=>{
+        res.json(a)
         transporter.sendMail(a, (error, info)=>{
             if (error) res.status(300).send(error)
             if(info) res.status(200).send(info)
@@ -380,9 +381,9 @@ function createMailOptionsIntProd(a){
 }
 
 var source=`
-<p>Prego elaborare offerta {{#if shipTo.name}}da inoltrare a {{shipTo.name}} {{#if shipTo.email}}({{shipTo.email}}){{/if}}{{/if}} per i ricambi sotto elencati (Cantiere: {{customer}} {{#if shipTo.address}} - {{shipTo.address}} {{/if}}) relativo alla macchina <strong>{{model}} (s/n: {{sn}})</strong> {{#if shipTo.cig}}- CIG: {{shipTo.cig}}{{/if}} {{#if shipTo.cup}} CUP: {{shipTo.cup}}{{/if}}<p>
-<table style="border-collapse: collapse;">
-<br>    
+<p>Prego elaborare offerta {{#if shipAdd}} da inoltrare a{{#shipAdd}} {{name}} ({{mail}}){{/shipAdd}}{{/if}} per i ricambi sotto elencati (Cantiere: {{customer}} {{#if shipTo.address}} - {{shipTo.address}} {{/if}}) relativo alla macchina <strong>{{model}} (s/n: {{sn}})</strong> {{#if shipTo.cig}}- CIG: {{shipTo.cig}}{{/if}} {{#if shipTo.cup}} CUP: {{shipTo.cup}}{{/if}}<p>
+<br>
+<table style="border-collapse: collapse;">    
 <tr>
         <th style="padding: 5px 20px;border: 1px solid black">Categorico</th>
         <th style="padding: 5px 20px;border: 1px solid black">Descrizione</th>
@@ -394,7 +395,8 @@ var source=`
         <td style="padding: 5px 20px;border: 1px solid black">{{desc}}</td>
         <td style="padding: 5px 20px; text-align:center;border: 1px solid black">{{qty}}</td>
     </tr>
-{{/Parts}}</table>
+    {{/Parts}}
+</table>
 `
 
 var template=Handlebars.compile(source)
@@ -402,26 +404,70 @@ var template=Handlebars.compile(source)
 
 
 function createMailParts(a){
+    let to=['nicola.megna@epiroc.com','marco.fumagalli@epiroc.com']
+    let cc=['mario.parravicini@epiroc.com', 'marco.arato@epiroc.com', 'giordano.perini@epiroc.com']
+    if(a.type=='CustomerSupport') {
+        cc.push('marco.fumagalli@epiroc.com', 'cristiana.besana@epiroc.com')
+    }
     return new Promise((res,rej)=>{
         var data = a
-        admin.auth().getUser(a.origId).then(b=>{
-            let cc =''
-            admin.database().ref('Users').child(b.uid).child('Pos').once('value',g=>{
-      
-                if(g!=null && (g.val()=='tech' || g.val()=='sales')) cc=  '; ' + b.email
+        let ind=0
+        data['shipAdd']=[]
+        if(a.shipTo && a.shipTo.cont.length>0){
+            a.shipTo.cont.forEach(w=>{
+                console.log(ind, w)
+                data['shipAdd'][ind]=w
+                ind++
             })
-            .then(()=>{
+        }
+        getMailCc(a.origId, cc).then((a1)=>{
+            if(a1) cc=a1
+            getSAM(a.sn,cc)
+            .then(a2=>{
+                if(a2) cc=a2
                 var html=template(data)
                 var mailOptions = {
                     from: `${a.author} - Epiroc Service <episerjob@gmail.com>`,
-                    to: a.type=="CustomerSupport"?'nicola.megna@epiroc.com':'marco.fumagalli@epiroc.com',
-                    cc: "mario.parravicini@epiroc.com; marco.arato@epiroc.com; giordano.perini@epiroc.com" + (a.type=='CustomerSupport'?'; marco.fumagalli@epiroc.com; cristiana.besana@epiroc.com':'') + cc,
+                    to: a.type=="CustomerSupport"?to[0]:to[1],
+                    cc: '' + cc.toString().replace(/,/g,'; '),// + (a.type=='CustomerSupport'?'; marco.fumagalli@epiroc.com; cristiana.besana@epiroc.com':'') + cc,
                     subject: a.type + ': New Parts request to '+ a.customer + ' - ' + a.model + ' (s/n: ' + a.sn + ')',
                     html: html,
-                };
-                if(mailOptions!=undefined) res(mailOptions)    
+                }
+                if(mailOptions!=undefined) res(mailOptions)              
             })
-            
+        })
+    })
+}
+
+function getMailCc(a, cc){
+    return new Promise((res,rej)=>{
+        admin.auth().getUser(a).then(b=>{
+            admin.database().ref('Users').child(b.uid).child('Pos').once('value',g=>{
+                if(g!=null && (g.val()=='tech' || g.val()=='sales') && !cc.includes(b.email)) cc.push(b.email)
+                res(cc)
+            })
+        })
+    })
+    
+}
+
+function getSAM(a,cc){
+    return new Promise((res,rej)=>{
+        admin.database().ref('RigAuth').child(a).once('value', h=>{
+            h.forEach(t=>{
+                if(t.val()=='1' && t.key.substring(1,3)<50) {
+                    admin.database().ref('Users').once('value',l=>{
+                        l.forEach(de=>{
+                            if(de.val().Area==t.key.substring(1,3)){
+                                admin.auth().getUser(de.key).then(s=>{
+                                    if(!cc.includes(s.email)) cc.push(s.email)
+                                    res(cc)
+                                })
+                            }
+                        })
+                    })
+                }
+            })
         })
     })
 }
