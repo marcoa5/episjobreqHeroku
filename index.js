@@ -12,6 +12,7 @@ const { auth } = require('firebase-admin');
 const functions = require("firebase-functions");
 const Handlebars = require("handlebars");
 const { escapeExpression } = require('handlebars');
+const { firebaseConfig } = require('firebase-functions');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -272,6 +273,19 @@ app.all('/partreq', function(req,res){
             if(info) res.status(200).send(info)
         })
     })
+})
+
+app.all('/psdllp',function(req,res){
+    let a = req.query.parts
+    let outP ={}
+    let r = a.split(',')
+    r.forEach(b=>{
+        admin.database().ref('PSDItems').child(req.query.child).child(b).child('llp').once('value',p=>{
+            outP[b]=({pn:b,llp: p.val()==null?0:parseFloat(p.val())})
+            if(r.length==Object.keys(outP).length) res.status(200).json(outP)
+        })
+    })
+    
 })
 
 app.all('/', function(req, res,next) {
