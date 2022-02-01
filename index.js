@@ -270,7 +270,6 @@ app.all('/partreq', cors(), function(req,res){
             if (error) res.status(300).send(error)
             if(info) res.status(200).send(info)
         })
-        res.status(200).json(a)
     })
 })
 
