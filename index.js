@@ -266,10 +266,10 @@ app.get('/certiq', function(req,res){
 app.all('/partreq', cors(), function(req,res){
     createMailParts(JSON.parse(req.query.info))
     .then(a=>{
-        /*transporter.sendMail(a, (error, info)=>{
+        transporter.sendMail(a, (error, info)=>{
             if (error) res.status(300).send(error)
             if(info) res.status(200).send(info)
-        })*/
+        })
         res.status(200).json(a)
     })
 })
@@ -428,7 +428,6 @@ function createMailParts(a){
         data['shipAdd']=[]
         if(a.shipTo && a.shipTo.cont.length>0){
             a.shipTo.cont.forEach(w=>{
-                console.log(ind, w)
                 data['shipAdd'][ind]=w
                 ind++
             })
@@ -439,6 +438,7 @@ function createMailParts(a){
             .then(a2=>{
                 if(a2) cc=a2
                 var html=template(data)
+                console.log(html)
                 var mailOptions = {
                     from: `${a.author} - Epiroc Service <episerjob@gmail.com>`,
                     to: a.type=="CustomerSupport"?to[0]:to[1],
@@ -474,8 +474,11 @@ function getSAM(a,cc){
                             if(de.val().Area==t.key.substring(1,3)){
                                 admin.auth().getUser(de.key).then(s=>{
                                     if(!cc.includes(s.email)) cc.push(s.email)
+                                    console.log(cc)
                                     res(cc)
                                 })
+                            } else {
+                                res(cc)
                             }
                         })
                     })
