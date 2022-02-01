@@ -11,19 +11,18 @@ var moment = require('moment');
 const { auth } = require('firebase-admin');
 const functions = require("firebase-functions");
 const Handlebars = require("handlebars");
-const { escapeExpression } = require('handlebars');
-const { firebaseConfig } = require('firebase-functions');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://epi-serv-job-default-rtdb.firebaseio.com"
 });
 
+app.use(cors())
 app.set('view engine', 'pug');
 
 app.use(bodyParser.urlencoded({limit: '100kb',extended: false}))
 app.use(bodyParser.json())
-app.use(cors())
+
 
 app.get('/getusers', function(req,res){
     admin.auth().listUsers(1000).then((a)=>{
@@ -264,7 +263,7 @@ app.get('/certiq', function(req,res){
     .catch(e=>console.log(e))
 })
 
-app.all('/partreq', function(req,res){
+app.all('/partreq', cors(), function(req,res){
     createMailParts(JSON.parse(req.query.info))
     .then(a=>{
         res.json(a)
