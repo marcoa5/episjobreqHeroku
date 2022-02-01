@@ -11,6 +11,7 @@ var moment = require('moment');
 const { auth } = require('firebase-admin');
 const functions = require("firebase-functions");
 const Handlebars = require("handlebars");
+const fs = require('fs');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -284,6 +285,12 @@ app.all('/psdllp',function(req,res){
         })
     })
     
+})
+
+app.all('/sjTemplate', function(req,res){
+    var a = fs.readFileSync('./template.html','utf8')
+    var templ = Handlebars.compile(a)
+    res.status(200).json({html:templ({matricola: 'pp'})})
 })
 
 app.all('/', function(req, res,next) {
