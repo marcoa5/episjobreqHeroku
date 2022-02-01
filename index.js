@@ -266,11 +266,11 @@ app.get('/certiq', function(req,res){
 app.all('/partreq', cors(), function(req,res){
     createMailParts(JSON.parse(req.query.info))
     .then(a=>{
-        res.json(a)
-        transporter.sendMail(a, (error, info)=>{
+        /*transporter.sendMail(a, (error, info)=>{
             if (error) res.status(300).send(error)
             if(info) res.status(200).send(info)
-        })
+        })*/
+        res.status(200).json(a)
     })
 })
 
