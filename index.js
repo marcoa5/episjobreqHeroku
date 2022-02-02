@@ -21,8 +21,8 @@ admin.initializeApp({
 app.use(cors())
 app.set('view engine', 'pug');
 
-app.use(bodyParser.urlencoded({limit: '100kb',extended: false}))
-app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({limit: '50000kb',extended: true}))
+app.use(bodyParser.json({limit: '50000kb'}))
 
 
 app.get('/getusers', function(req,res){
@@ -290,7 +290,7 @@ app.all('/psdllp',function(req,res){
 app.all('/sjTemplate', function(req,res){
     var a = fs.readFileSync('./template.html','utf8')
     var templ = Handlebars.compile(a)
-    res.status(200).json({html:templ({matricola: 'pp'})})
+    res.status(200).json({html:templ(req.body)})
 })
 
 app.all('/', function(req, res,next) {

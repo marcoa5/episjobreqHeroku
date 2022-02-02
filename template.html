@@ -4,6 +4,9 @@
 <head>
 	<title>Epiroc Italia s.r.l. - Service Job</title>
     <style>
+		*{
+			box-sizing: border-box;
+		}
 		.foglio{
 			box-sizing: border-box;
 			width: 21cm;
@@ -15,7 +18,7 @@
 		height: 27cm;
 		width: 18.57375cm;
 		margin: auto;
-		top: 1cm;
+		top: .5cm;
 		}
 
 		.int{
@@ -61,7 +64,7 @@
 		margin:0;
 		padding:0;
 		height: 156px;
-		overflow: hidden;
+		
 		}
 
 
@@ -78,25 +81,26 @@
 		width:100%;
 		text-align: center;
 		border-collapse: collapse;
-		table-layout: fixed;
+		table-layout: auto;
+		}
+	
+		.a1{
+			width: 50%;
+			border-top: 1px solid black;
+			border-left: 1px solid black;
+			border-right: 1px solid black;
+			font-size: 5pt;
+			font-weight: 800; 
+
 		}
 
-		.tabella tr{
-			overflow: hidden;
-			padding: 0;
-			max-height: 15px !important;
+		.tabella td p{
+			margin: -4px;
 		}
-		
-		.a1{
-		width: 50%;
-		border-top: 1px solid black;
-		border-left: 1px solid black;
-		border-right: 1px solid black;
-		font-size: 5pt;
-		font-weight: 800; 
-		box-sizing: border-box;
-		height: 15px !important;
-		background-color: blanchedalmond;
+
+		.tabella td div{
+			margin: -2px;
+			min-height: 20px;
 		}
 
 		.a2{
@@ -141,6 +145,9 @@
 		.spazio{
 		height: 5px;
 		}
+		.spazio1{
+		height: 6.5px;
+		}
 
 		.header{
 		height: 20px;
@@ -154,7 +161,7 @@
 
 		.headertext{
 		position: inline;
-		margin: 2px 0;
+		margin: -2px;
 		font-family: Arial;
 		font-weight: 800;
 		font-size: 10px;
@@ -279,7 +286,6 @@
 		}
 
 		.in {
-		height: 11px;
 		overflow: hidden;
 		font-size: 7pt;
 		}
@@ -326,8 +332,7 @@
 
 		.tabcell, .tabcell1, .tabcell2, .tabcell3 {
 		padding: 0;
-		padding-top: 5px;
-		padding-bottom: 5px;
+		
 		box-sizing: border-box;
 		}
 
@@ -337,13 +342,13 @@
 		}
 
 		.tabcell1{
-		height: 21px;
+		height: 20px;
 		border: 1px solid black;
 		width: 133px;
 		}
 		.tabcell2{
 		width: 35px;
-		height: 21px;
+		height: 20px;
 		border: 1px solid black;
 		}
 
@@ -439,10 +444,7 @@
 
 		}
 
-		body{
-		box-sizing: border-box;
-		text-align: center;
-		}
+		
 
 		.hidden {
 		display: none;
@@ -473,36 +475,40 @@
                                         <div class="dati" id="aamatricola">
                                                 <div id="tl" class="topleft">
                                                         <table class="tabella">
-                                                                <tr><td class="a1" colspan="6">COMMESSA</td></tr>
-                                                                <tr><td class="a2" colspan="6"><div id="commessa1"></div></td></tr>
+                                                                <tr>
+																	<td class="a1" colspan="6"><p>COMMESSA</p></td>
+																</tr>
+                                                                <tr>
+																	<td class="a2" colspan="6"><div id="commessa1"></div></td>
+																</tr>
                                                                 <tr><td class="a3" colspan="6"></td></tr>
                                                                 <tr class="spazio"></tr>
-                                                                <tr><td class="a1" colspan="3">VS. ORDINE</td><td class="a1" colspan="3">NS. OFFERTA</td></tr>
-                                                                <tr><td class="a2" colspan="3"><div class= "in" id="vsordine">{{vsordine}}</div></td><td class="a2" colspan="3"><div id="nsofferta1">{{nsofferta1}}</div></td></tr>
+                                                                <tr><td class="a1" colspan="3"><p>VS. ORDINE</p></td><td class="a1" colspan="3"><p>NS. OFFERTA</p></td></tr>
+                                                                <tr><td class="a2" colspan="3"><div class= "in" id="vsordine"></div></td><td class="a2" colspan="3"><div id="nsofferta1">{{nsofferta1}}</div></td></tr>
                                                                 <tr><td class="a3" colspan="3"></td><td class="a3" colspan="3"></td></tr>
                                                                 <tr class="spazio"></tr>
-                                                                <tr><td class="a1" colspan="3">PRODOTTO</td><td class="a1" colspan="3">MATRICOLA</td></tr>
+                                                                <tr><td class="a1" colspan="3"><p>PRODOTTO</p></td><td class="a1" colspan="3"><p>MATRICOLA</p></td></tr>
                                                                 <tr><td class="a2" colspan="3"><div class= "in" id="prodotto1">{{prodotto1}}</div></td><td class="a2" colspan="3"><div class= "in" id="matricola">{{matricola}}</div></td></tr>
                                                                 <tr><td class="a3" colspan="3"></td><td class="a3" colspan="3"></td></tr>
                                                                 <tr class="spazio"></tr>
-                                                                <tr><td class="a1" colspan="3">ORE MOTORE</td><td class="a1" colspan="3">ORE PERCUSSIONE</td></tr>
-                                                                <tr><td class="a2" colspan="3"><div id="orem1">{{orem1}}</div></td><td class="a4" ><div class="in" id="perc11">{{perc11}}</div></td><td class="a4" ><div class="in" id="perc21">{{perc21}}</div></td><td class="a6" ><div class="in" id="perc31">{{perc31}}</div></td></tr>
+                                                                <tr><td class="a1" colspan="3"><p>ORE MOTORE</p></td><td class="a1" colspan="3"><p>ORE PERCUSSIONE</p></td></tr>
+                                                                <tr><td class="a2" colspan="3"><div id="orem1">{{orem}}</div></td><td class="a4" ><div class="in" id="perc11">{{perc11}}</div></td><td class="a4" ><div class="in" id="perc21">{{perc21}}</div></td><td class="a6" ><div class="in" id="perc31">{{perc31}}</div></td></tr>
                                                                 <tr><td class="a3" colspan="3"></td><td class="a3" colspan="3"></td></tr>
                                                         </table>
                                                 </div>
                                                 <div id="tr" class="topright">
                                                                 <table class="tabella">
-                                                                        <tr><td class="a1" colspan="3">DATA</td><td class="a1" colspan="3">PAGINA</td></tr>
+                                                                        <tr><td class="a1" colspan="3"><p>DATA</p></td><td class="a1" colspan="3"><p>PAGINA</p></td></tr>
                                                                         <tr><td class="a2" colspan="3"><div class="in" id="data11">{{data11}}</div></td><td class="a2" colspan="3"><div class="in">1  di  1</div></td></tr>
                                                                         <tr><td class="a3" colspan="3"></td><td class="a3" colspan="3"></td></tr>
-                                                                        <tr class="spazio"></tr>
-                                                                        <tr><td class="a1" colspan="6">CLIENTE</td></tr>
+                                                                        <tr class="spazio1"></tr>
+                                                                        <tr><td class="a1" colspan="6"><p>CLIENTE</p></td></tr>
                                                                         <tr><td class="a5" colspan="6"><div class="in" id="cliente11">{{cliente11}}</div></td></tr>
                                                                         <tr><td class="a5" colspan="6"><div class="in" id="cliente12">{{cliente12}}</div></td></tr>
                                                                         <tr><td class="a5" colspan="6"><div class="in" id="cliente13">{{cliente13}}</div></td></tr>
                                                                         <tr><td class="a3" colspan="6"></td></tr>
-                                                                        <tr class="spazio"></tr>
-                                                                        <tr><td class="a1" colspan="6">CANTIERE</td></tr>
+                                                                        <tr class="spazio1"></tr>
+                                                                        <tr><td class="a1" colspan="6"><p>CANTIERE</p></td></tr>
                                                                         <tr><td class="a2" colspan="6"><div id="cantiere1">{{cantiere1}}</div></td></tr>
                                                                         <tr><td class="a3" colspan="6"></td></tr>
                                                                 </table>
@@ -586,9 +592,9 @@
 				<td class="tabcell3" id="spov11">{{spov11}}</td>
 				<td class="tabcell3" id="spol11">{{spol11}}</td>
 				<td class="tabcell3" id="spsv11">{{spsv11}}</td>
-				<td class="tabcell3" id="spll11">{{spll11}}</td>
+				<td class="tabcell3" id="spsl11">{{spsl11}}</td>
 				<td class="tabcell3" id="stdv11">{{stdv11}}</td>
-				<td class="tabcell3" id="strl11">{{strl11}}</td>
+				<td class="tabcell3" id="stdl11">{{stdl11}}</td>
 				<td class="tabcell3" id="strv11">{{strv11}}</td>
 				<td class="tabcell3" id="strl11">{{strl11}}</td>
 				<td class="tabcell3" id="mntv11">{{mntv11}}</td>
@@ -609,9 +615,9 @@
 				<td class="tabcell3" id="spov21">{{spov21}}</td>
 				<td class="tabcell3" id="spol21">{{spol21}}</td>
 				<td class="tabcell3" id="spsv21">{{spsv21}}</td>
-				<td class="tabcell3" id="spll21">{{spll21}}</td>
+				<td class="tabcell3" id="spsl21">{{spsl21}}</td>
 				<td class="tabcell3" id="stdv21">{{stdv21}}</td>
-				<td class="tabcell3" id="strl21">{{strl21}}</td>
+				<td class="tabcell3" id="stdl21">{{stdl21}}</td>
 				<td class="tabcell3" id="strv21">{{strv21}}</td>
 				<td class="tabcell3" id="strl21">{{strl21}}</td>
 				<td class="tabcell3" id="mntv21">{{mntv21}}</td>
@@ -632,9 +638,9 @@
 				<td class="tabcell3" id="spov31">{{spov31}}</td>
 				<td class="tabcell3" id="spol31">{{spol31}}</td>
 				<td class="tabcell3" id="spsv31">{{spsv31}}</td>
-				<td class="tabcell3" id="spll31">{{spll31}}</td>
+				<td class="tabcell3" id="spsl31">{{spsl31}}</td>
 				<td class="tabcell3" id="stdv31">{{stdv31}}</td>
-				<td class="tabcell3" id="strl31">{{strl31}}</td>
+				<td class="tabcell3" id="stdl31">{{stdl31}}</td>
 				<td class="tabcell3" id="strv31">{{strv31}}</td>
 				<td class="tabcell3" id="strl31">{{strl31}}</td>
 				<td class="tabcell3" id="mntv31">{{mntv31}}</td>
@@ -655,9 +661,9 @@
 				<td class="tabcell3" id="spov41">{{spov41}}</td>
 				<td class="tabcell3" id="spol41">{{spol41}}</td>
 				<td class="tabcell3" id="spsv41">{{spsv41}}</td>
-				<td class="tabcell3" id="spll41">{{spll41}}</td>
+				<td class="tabcell3" id="spsl41">{{spsl41}}</td>
 				<td class="tabcell3" id="stdv41">{{stdv41}}</td>
-				<td class="tabcell3" id="strl41">{{strl41}}</td>
+				<td class="tabcell3" id="stdl41">{{stdl41}}</td>
 				<td class="tabcell3" id="strv41">{{strv41}}</td>
 				<td class="tabcell3" id="strl41">{{strl41}}</td>
 				<td class="tabcell3" id="mntv41">{{mntv41}}</td>
@@ -678,9 +684,9 @@
 				<td class="tabcell3" id="spov51">{{spov51}}</td>
 				<td class="tabcell3" id="spol51">{{spol51}}</td>
 				<td class="tabcell3" id="spsv51">{{spsv51}}</td>
-				<td class="tabcell3" id="spll51">{{spll51}}</td>
+				<td class="tabcell3" id="spsl51">{{spsl51}}</td>
 				<td class="tabcell3" id="stdv51">{{stdv51}}</td>
-				<td class="tabcell3" id="strl51">{{strl51}}</td>
+				<td class="tabcell3" id="stdl51">{{stdl51}}</td>
 				<td class="tabcell3" id="strv51">{{strv51}}</td>
 				<td class="tabcell3" id="strl51">{{strl51}}</td>
 				<td class="tabcell3" id="mntv51">{{mntv51}}</td>
@@ -701,9 +707,9 @@
 				<td class="tabcell3" id="spov61">{{spov61}}</td>
 				<td class="tabcell3" id="spol61">{{spol61}}</td>
 				<td class="tabcell3" id="spsv61">{{spsv61}}</td>
-				<td class="tabcell3" id="spll61">{{spll61}}</td>
+				<td class="tabcell3" id="spsl61">{{spsl61}}</td>
 				<td class="tabcell3" id="stdv61">{{stdv61}}</td>
-				<td class="tabcell3" id="strl61">{{strl61}}</td>
+				<td class="tabcell3" id="stdl61">{{stdl61}}</td>
 				<td class="tabcell3" id="strv61">{{strv61}}</td>
 				<td class="tabcell3" id="strl61">{{strl61}}</td>
 				<td class="tabcell3" id="mntv61">{{mntv61}}</td>
@@ -724,9 +730,9 @@
 				<td class="tabcell3" id="spov71">{{spov71}}</td>
 				<td class="tabcell3" id="spol71">{{spol71}}</td>
 				<td class="tabcell3" id="spsv71">{{spsv71}}</td>
-				<td class="tabcell3" id="spll71">{{spll71}}</td>
+				<td class="tabcell3" id="spsl71">{{spsl71}}</td>
 				<td class="tabcell3" id="stdv71">{{stdv71}}</td>
-				<td class="tabcell3" id="strl71">{{strl71}}</td>
+				<td class="tabcell3" id="stdl71">{{stdl71}}</td>
 				<td class="tabcell3" id="strv71">{{strv71}}</td>
 				<td class="tabcell3" id="strl71">{{strl71}}</td>
 				<td class="tabcell3" id="mntv71">{{mntv71}}</td>
