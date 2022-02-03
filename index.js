@@ -488,7 +488,7 @@ function getSAM(a,cc){
                             }
                         })
                     })
-                }
+                } else {res(cc)}
             })
         })
     })
