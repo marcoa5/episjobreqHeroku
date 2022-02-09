@@ -21,7 +21,7 @@ admin.initializeApp({
 
 app.use(cors())
 app.set('view engine', 'pug');
-
+app.use('/static', express.static(__dirname+ '/public'))
 app.use(bodyParser.urlencoded({limit: '50000kb',extended: true}))
 app.use(bodyParser.json({limit: '50000kb'}))
 
