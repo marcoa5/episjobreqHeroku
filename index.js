@@ -22,7 +22,7 @@ admin.initializeApp({
 app.use(cors())
 app.use(bodyParser.urlencoded({limit: '50000kb',extended: true}))
 app.use(bodyParser.json({limit: '50000kb'}))
-app.use(express.static(__dirname + '/public'))
+app.use(express.static(__dirname + '/public'));
 
 
 app.get('/getusers', function(req,res){
