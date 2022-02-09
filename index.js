@@ -12,6 +12,7 @@ const { auth } = require('firebase-admin');
 const functions = require("firebase-functions");
 const Handlebars = require("handlebars");
 const fs = require('fs');
+var html_to_pdf = require('html-pdf-node');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -290,7 +291,19 @@ app.all('/psdllp',function(req,res){
 app.all('/sjTemplate', function(req,res){
     var a = fs.readFileSync('./template.html','utf8')
     var templ = Handlebars.compile(a)
-    res.status(200).json({html:templ(req.body)})
+    let options = { format: 'A4' };
+    let file = { content: templ(req.body) }
+    res.json({html: templ(req.body)})
+})
+
+app.post('/testSj', function(req,res){
+    var a = fs.readFileSync('./template.html','utf8')
+    var templ = Handlebars.compile(a)
+    let options = { format: 'A4' , margin: 0};
+    let file = { content: templ(req.body),  }
+    html_to_pdf.generatePdf(file,options).then((d)=>{
+        res.end(d)
+    })
 })
 
 app.all('/', function(req, res,next) {
