@@ -288,15 +288,7 @@ app.all('/psdllp',function(req,res){
     
 })
 
-app.all('/sjTemplate', function(req,res){
-    var a = fs.readFileSync('./template.html','utf8')
-    var templ = Handlebars.compile(a)
-    let options = { format: 'A4' };
-    let file = { content: templ(req.body) }
-    res.json({html: templ(req.body)})
-})
-
-app.post('/testSj', function(req,res){
+app.post('/sjPdf', function(req,res){
     var a = fs.readFileSync('./template.html','utf8')
     var templ = Handlebars.compile(a)
     let options = { format: 'A4' , margin: 0};
@@ -304,6 +296,10 @@ app.post('/testSj', function(req,res){
     html_to_pdf.generatePdf(file,options).then((d)=>{
         res.end(d)
     })
+})
+
+app.post('/sjMa', function(req,res){
+    res.send(req.body)
 })
 
 app.all('/', function(req, res,next) {
