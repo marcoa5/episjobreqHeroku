@@ -304,7 +304,7 @@ app.post('/sjMa', function(req,res){
 app.all('/', function(req, res,next) {
     const welc = `
     <div style="position: fixed; top:0;left:0;display:flex; justify-content: center; align-items: center; width:100%; height:100%; background-color: rgb(66, 85, 99)">
-        <h1 style="font-family: Arial; text-align:center; width: 100%; color: rgb(255,205,0)">Welcome to Epiroc Service Job Web Services</h1>
+        <h1 style="font-family: Arial; text-align:center; width: 100%; color: rgb(255,205,0)">Welcome to Epi Service Job Web Services</h1>
     </div>
     `
     res.status(200).send(welc);
