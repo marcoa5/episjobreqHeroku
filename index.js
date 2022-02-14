@@ -287,7 +287,7 @@ app.all('/psdllp',function(req,res){
     
 })
 
-app.post('/sjPdf', function(req,res){
+app.all('/sjPdf', function(req,res){
     var a = fs.readFileSync('./template.html','utf8')
     var templ = Handlebars.compile(a)
     let options = { format: 'A4' , margin: 0};
