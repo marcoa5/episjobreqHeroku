@@ -290,8 +290,8 @@ app.all('/psdllp',function(req,res){
 app.all('/sjPdf', function(req,res){
     var a = fs.readFileSync('./template.html','utf8')
     var templ = Handlebars.compile(a)
-    let options = { format: 'A4' , margin: 0};
-    let file = { content: templ(req.body),  }
+    let options = {width: '21cm', height: '29.7cm'};
+    let file = {content: templ(req.body)}
     html_to_pdf.generatePdf(file,options).then((d)=>{
         res.end(d)
     })
