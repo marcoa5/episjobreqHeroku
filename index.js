@@ -275,13 +275,15 @@ app.all('/partreq', cors(), function(req,res){
 })
 
 app.all('/psdllp',function(req,res){
+    let kt=0
     let a = req.query.parts
     let outP ={}
     let r = a.split(',')
     r.forEach(b=>{
         admin.database().ref('PSDItems').child(req.query.child).child(b).child('llp').once('value',p=>{
             outP[b]=({pn:b,llp: p.val()==null?0:parseFloat(p.val())})
-            if(r.length==Object.keys(outP).length) res.status(200).json(outP)
+            kt++
+            if(r.length==kt) res.status(200).json(outP)
         })
     })
     
