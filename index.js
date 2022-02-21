@@ -264,7 +264,7 @@ app.get('/certiq', function(req,res){
     .catch(e=>console.log(e))
 })
 
-app.all('/partreq', cors(), function(req,res){
+app.get('/partreq', cors(), function(req,res){
     createMailParts(JSON.parse(req.query.info))
     .then(a=>{
         transporter.sendMail(a, (error, info)=>{
@@ -454,7 +454,6 @@ function createMailParts(a){
             .then(a2=>{
                 if(a2) cc=a2
                 var html=template(data)
-                console.log(html)
                 var mailOptions = {
                     from: `${a.author} - Epiroc Service <episerjob@gmail.com>`,
                     to: a.type=="CustomerSupport"?to[0]:to[1],
@@ -482,6 +481,9 @@ function getMailCc(a, cc){
 
 function getSAM(a,cc){
     return new Promise((res,rej)=>{
+        setTimeout(() => {
+            res(cc)
+        }, 5000);
         admin.database().ref('RigAuth').child(a).once('value', h=>{
             h.forEach(t=>{
                 if(t.val()=='1' && t.key.substring(1,3)<50) {
@@ -490,15 +492,12 @@ function getSAM(a,cc){
                             if(de.val().Area==t.key.substring(1,3)){
                                 admin.auth().getUser(de.key).then(s=>{
                                     if(!cc.includes(s.email)) cc.push(s.email)
-                                    console.log(cc)
                                     res(cc)
                                 })
-                            } else {
-                                res(cc)
-                            }
+                            } 
                         })
                     })
-                } else {res(cc)}
+                }
             })
         })
     })
