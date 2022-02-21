@@ -483,21 +483,26 @@ function getSAM(a,cc){
     return new Promise((res,rej)=>{
         setTimeout(() => {
             res(cc)
-        }, 5000);
+        }, 10000);
         admin.database().ref('RigAuth').child(a).once('value', h=>{
+            let f = Object.values(h.val())
+            let index = 0
             h.forEach(t=>{
                 if(t.val()=='1' && t.key.substring(1,3)<50) {
                     admin.database().ref('Users').once('value',l=>{
                         l.forEach(de=>{
                             if(de.val().Area==t.key.substring(1,3)){
                                 admin.auth().getUser(de.key).then(s=>{
-                                    if(!cc.includes(s.email)) cc.push(s.email)
-                                    res(cc)
+                                    if(!cc.includes(s.email)) {
+                                        cc.push(s.email)
+                                        index++
+                                    }
                                 })
-                            } 
+                            } else {index++}
                         })
                     })
-                }
+                } else {index++}
+                if (index==f.length ) res(cc)
             })
         })
     })
