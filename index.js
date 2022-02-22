@@ -13,12 +13,26 @@ const functions = require("firebase-functions");
 const Handlebars = require("handlebars");
 const fs = require('fs');
 var html_to_pdf = require('html-pdf-node');
+const firebase = require('firebase/app')
+require('firebase/storage')
+const Blob = require('buffer')
+
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://epi-serv-job-default-rtdb.firebaseio.com"
 });
 
+firebase.initializeApp({
+    apiKey: "AIzaSyBtO5C1bOO70EL0IPPO-BDjJ40Kb03erj4",
+    authDomain: "epi-serv-job.firebaseapp.com",
+    databaseURL: "https://epi-serv-job-default-rtdb.firebaseio.com",
+    projectId: "epi-serv-job",
+    storageBucket: "epi-serv-job.appspot.com",
+    messagingSenderId: "793133030101",
+    appId: "1:793133030101:web:1c046e5fcb02b42353a05c",
+    measurementId: "G-Y0638WJK1X"
+  })
 app.use(cors())
 app.use(bodyParser.urlencoded({limit: '50000kb',extended: true}))
 app.use(bodyParser.json({limit: '50000kb'}))
@@ -303,6 +317,23 @@ app.post('/sjMa', function(req,res){
     res.send(req.body)
 })
 
+app.all('/sendSJNew', function(req,res){
+    console.log(req.body)
+    createMA(req.body)
+    createPDF(req.body).then(urlPdf=>{
+        let g = req.body
+        g.info.urlPdf = urlPdf
+        admin.auth().getUser(g.userId).then(user=>{
+            g.info.ccAuth = user.email
+            transporter.sendMail(createMailOptionsNew(g), (error, info)=>{
+                console.log(error, info)
+                if (error) res.status(300).send(error)
+                if(info) res.status(200).send(info)
+            })
+        })
+    })
+})
+
 app.all('/', function(req, res,next) {
     const welc = `
     <div style="position: fixed; top:0;left:0;display:flex; justify-content: center; align-items: center; width:100%; height:100%; background-color: rgb(66, 85, 99)">
@@ -408,6 +439,56 @@ function createMailOptionsIntProd(a){
       };
       return mailOptions
 }
+
+function createPDF(b){
+    return new Promise((res,rej)=>{
+        var a = fs.readFileSync('./template.html','utf8')
+        var templ = Handlebars.compile(a)
+        let options = {width: '21cm', height: '29.7cm'};
+        let file = {content: templ(b)}
+        html_to_pdf.generatePdf(file,options).then((d)=>{
+            let ref = firebase.default.storage().ref(b.author + '/' + b.info.fileName + '.pdf')
+            ref.put(Uint8Array.from(Buffer.from(d)).buffer, {contentType: 'application/pdf'})
+            .then(()=>{
+                ref.getDownloadURL().then(url=>{
+                    res(url)
+                })
+            })
+        })
+    })
+}
+
+function createMA(a){
+    return new Promise((res,rej)=>{
+        let ref = firebase.default.storage().ref(a.author + '/' + a.info.fileName + '.ma')
+        ref.put(Uint8Array.from(Buffer.from(JSON.stringify(a))).buffer)
+        .then(()=>{
+            ref.getDownloadURL().then(url=>{
+                res(url)
+            })
+        })
+    })
+}
+
+function createMailOptionsNew(a){
+    let cc=['mario.parravicini@epiroc.com', 'marco.fumagalli@epiroc.com','carlo.colombo@epiroc.com','marco.arato@epiroc.com']
+    if(!cc.includes(a.info.ccAuth)) cc.push(a.info.ccAuth)
+    const mailOptionsNew = {
+            from: `${a.author} - Epiroc Service <episerjob@gmail.com>`,
+            replyTo: 'marco.fumagalli@epiroc.com',
+            to: a.elencomail,
+            cc: a.info.cc? cc.join(';'):'',
+            subject: a.info.subject,
+            text: `In allegato scheda lavoro relativa all'intervento effettuato dal nostro tecnico Sig. ${a.author}.\nVi ringraziamo qualora abbiate aderito al nostro sondaggio.\n\n\nRisultato sondaggio:\n\nOrganizzazione intervento: ${a.rissondaggio.split('')[0]}\nConsegna Ricambi: ${a.rissondaggio.split('')[1]}\nEsecuzione Intervento: ${a.rissondaggio.split('')[2]}`,
+            attachments: {
+                filename: a.info.fileName + '.pdf',
+                path: a.info.urlPdf
+            }
+        }
+
+    return (mailOptionsNew)
+}
+
 
 var source=`
 <p>Prego elaborare offerta {{#if shipAdd}} da inoltrare a{{#shipAdd}} {{name}} ({{mail}}){{/shipAdd}}{{/if}} per i ricambi sotto elencati (Cantiere: {{customer}} {{#if shipTo.address}} - {{shipTo.address}} {{/if}}) relativo alla macchina <strong>{{model}} (s/n: {{sn}})</strong> {{#if shipTo.cig}}- CIG: {{shipTo.cig}}{{/if}} {{#if shipTo.cup}} CUP: {{shipTo.cup}}{{/if}}<p>
