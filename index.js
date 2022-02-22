@@ -328,9 +328,20 @@ app.all('/sendSJNew', function(req,res){
             transporter.sendMail(createMailOptionsNew(g), (error, info)=>{
                 console.log(error, info)
                 if (error) res.status(300).send(error)
-                if(info) res.status(200).send(info)
+                if(info) {
+                    res.status(200).json({mailResult: info})             
+                }
             })
         })
+    })
+})
+
+app.post('/saveOnSP', function(req,res){
+    var maName=`\\\\home.intranet.epiroc.com@SSL\\DavWWWRoot\\sites\\cc\\iyc\\MRService\\Documents\\test\\`
+    let fName = req.body.fileName
+    console.log(maName + fName + '.pdf')
+    fs.copyFile(req.body.urlPdf,maName + fName + '.pdf', (rea,err)=>{
+        res.status(200).json({res: 'ok'})
     })
 })
 
