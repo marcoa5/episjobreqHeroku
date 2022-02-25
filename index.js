@@ -15,8 +15,6 @@ const fs = require('fs');
 var html_to_pdf = require('html-pdf-node');
 const firebase = require('firebase/app')
 require('firebase/storage')
-const Blob = require('buffer')
-
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -318,8 +316,17 @@ app.post('/sjMa', function(req,res){
 })
 
 app.all('/sendSJNew', function(req,res){
-    console.log(req.body)
-    createMA(req.body)
+    let r = req.body
+    createMA(req.body).then(urlMa=>{
+        r.info.urlMa = urlMa
+        transporter.sendMail(createMailOptionsNewMA(r), (error, info)=>{
+            console.log(error, info)
+            if (error) res.status(300).send(error)
+            if(info) {
+                res.status(200).json({mailResultInt: info})             
+            }
+        })
+    })
     createPDF(req.body).then(urlPdf=>{
         let g = req.body
         g.info.urlPdf = urlPdf
@@ -337,12 +344,7 @@ app.all('/sendSJNew', function(req,res){
 })
 
 app.post('/saveOnSP', function(req,res){
-    var maName=`\\\\home.intranet.epiroc.com@SSL\\DavWWWRoot\\sites\\cc\\iyc\\MRService\\Documents\\test\\`
-    let fName = req.body.fileName
-    console.log(maName + fName + '.pdf')
-    fs.copyFile(req.body.urlPdf,maName + fName + '.pdf', (rea,err)=>{
-        res.status(200).json({res: 'ok'})
-    })
+
 })
 
 app.all('/', function(req, res,next) {
@@ -500,6 +502,21 @@ function createMailOptionsNew(a){
     return (mailOptionsNew)
 }
 
+function createMailOptionsNewMA(a){
+    const mailOptionsNew = {
+            from: `${a.author} - Epiroc Service <episerjob@gmail.com>`,
+            to: 'marco.fumagalli@epiroc.com',
+            cc: 'marco.arato@epiroc.com',
+            subject: a.info.subject,
+            text: `Risultato sondaggio:\n\nOrganizzazione intervento: ${a.son1}\nConsegna Ricambi: ${a.son2}\nEsecuzione Intervento: ${a.son3} ${a.rap}\n\n\nRisk Assessment \n ${a.rAss}`,
+            attachments: {
+                filename: a.info.fileName + '.ma',
+                path: a.info.urlMa
+            }
+        }
+
+    return (mailOptionsNew)
+}
 
 var source=`
 <p>Prego elaborare offerta {{#if shipAdd}} da inoltrare a{{#shipAdd}} {{name}} ({{mail}}){{/shipAdd}}{{/if}} per i ricambi sotto elencati (Cantiere: {{customer}} {{#if shipTo.address}} - {{shipTo.address}} {{/if}}) relativo alla macchina <strong>{{model}} (s/n: {{sn}})</strong> {{#if shipTo.cig}}- CIG: {{shipTo.cig}}{{/if}} {{#if shipTo.cup}} CUP: {{shipTo.cup}}{{/if}}<p>
