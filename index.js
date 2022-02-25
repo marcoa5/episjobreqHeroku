@@ -316,29 +316,26 @@ app.post('/sjMa', function(req,res){
 })
 
 app.all('/sendSJNew', function(req,res){
-    let r = req.body
+    let g = req.body
     createMA(req.body).then(urlMa=>{
-        r.info.urlMa = urlMa
-        transporter.sendMail(createMailOptionsNewMA(r), (error, info)=>{
-            console.log(error, info)
-            if (error) res.status(300).send(error)
+        g.info.urlMa = urlMa
+        console.log(g)
+        transporter.sendMail(createMailOptionsNewMA(g), (error, info)=>{
+            if(error) res.status(300).send(error)
             if(info) {
-                res.status(200).json({mailResultInt: info})             
+                createPDF(req.body).then(urlPdf=>{
+                    g.info.urlPdf = urlPdf
+                    admin.auth().getUser(g.userId).then(user=>{
+                        g.info.ccAuth = user.email
+                        transporter.sendMail(createMailOptionsNew(g), (error, info)=>{
+                            if (error) res.status(300).send(error)
+                            if(info) {
+                                res.status(200).json({mailResult: info})             
+                            }
+                        })
+                    })
+                })       
             }
-        })
-    })
-    createPDF(req.body).then(urlPdf=>{
-        let g = req.body
-        g.info.urlPdf = urlPdf
-        admin.auth().getUser(g.userId).then(user=>{
-            g.info.ccAuth = user.email
-            transporter.sendMail(createMailOptionsNew(g), (error, info)=>{
-                console.log(error, info)
-                if (error) res.status(300).send(error)
-                if(info) {
-                    res.status(200).json({mailResult: info})             
-                }
-            })
         })
     })
 })
@@ -503,7 +500,7 @@ function createMailOptionsNew(a){
 }
 
 function createMailOptionsNewMA(a){
-    const mailOptionsNew = {
+    const mailOptionsNewMA = {
             from: `${a.author} - Epiroc Service <episerjob@gmail.com>`,
             to: 'marco.fumagalli@epiroc.com',
             cc: 'marco.arato@epiroc.com',
@@ -515,7 +512,7 @@ function createMailOptionsNewMA(a){
             }
         }
 
-    return (mailOptionsNew)
+    return (mailOptionsNewMA)
 }
 
 var source=`
