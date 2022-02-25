@@ -320,21 +320,21 @@ app.all('/sendSJNew', function(req,res){
     createMA(req.body).then(urlMa=>{
         g.info.urlMa = urlMa
         console.log(g)
+        createPDF(req.body).then(urlPdf=>{
+            g.info.urlPdf = urlPdf
+            admin.auth().getUser(g.userId).then(user=>{
+                g.info.ccAuth = user.email
+            })
+        })
         transporter.sendMail(createMailOptionsNewMA(g), (error, info)=>{
             if(error) res.status(300).send(error)
             if(info) {
-                createPDF(req.body).then(urlPdf=>{
-                    g.info.urlPdf = urlPdf
-                    admin.auth().getUser(g.userId).then(user=>{
-                        g.info.ccAuth = user.email
-                        transporter.sendMail(createMailOptionsNew(g), (error, info)=>{
-                            if (error) res.status(300).send(error)
-                            if(info) {
-                                res.status(200).json({mailResult: info})             
-                            }
-                        })
-                    })
-                })       
+                transporter.sendMail(createMailOptionsNew(g), (error, info)=>{
+                    if (error) res.status(300).send(error)
+                    if(info) {
+                        res.status(200).json({mailResult: info})             
+                    }
+                })   
             }
         })
     })
@@ -481,7 +481,7 @@ function createMA(a){
 }
 
 function createMailOptionsNew(a){
-    let cc=['mario.parravicini@epiroc.com', 'marco.fumagalli@epiroc.com','carlo.colombo@epiroc.com','marco.arato@epiroc.com']
+    let cc=[]//'mario.parravicini@epiroc.com', 'marco.fumagalli@epiroc.com','carlo.colombo@epiroc.com','marco.arato@epiroc.com']
     if(!cc.includes(a.info.ccAuth)) cc.push(a.info.ccAuth)
     const mailOptionsNew = {
             from: `${a.author} - Epiroc Service <episerjob@gmail.com>`,
@@ -503,13 +503,17 @@ function createMailOptionsNewMA(a){
     const mailOptionsNewMA = {
             from: `${a.author} - Epiroc Service <episerjob@gmail.com>`,
             to: 'marco.fumagalli@epiroc.com',
-            cc: 'marco.arato@epiroc.com',
+            cc: 'marco.arato@epiroc.com',//; mario.parravicini@epiroc.com; carlo.colombo@epiroc.com',
             subject: a.info.subject,
-            text: `Risultato sondaggio:\n\nOrganizzazione intervento: ${a.son1}\nConsegna Ricambi: ${a.son2}\nEsecuzione Intervento: ${a.son3} ${a.rap}\n\n\nRisk Assessment \n ${a.rAss}`,
-            attachments: {
+            text: `Risultato sondaggio:\n\nOrganizzazione intervento: ${a.rissondaggio.split('')[0]}\nConsegna Ricambi: ${a.rissondaggio.split('')[1]}\nEsecuzione Intervento: ${a.rissondaggio.split('')[2]}\n\n${a.rappl1}`,
+            attachments: [{
                 filename: a.info.fileName + '.ma',
                 path: a.info.urlMa
-            }
+            },
+            {
+                filename: a.info.fileName + '.pdf',
+                path: a.info.urlPdf
+            }]
         }
 
     return (mailOptionsNewMA)
