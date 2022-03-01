@@ -317,25 +317,28 @@ app.post('/sjMa', function(req,res){
 
 app.all('/sendSJNew', function(req,res){
     let g = req.body
-    createMA(req.body).then(urlMa=>{
+    createMA(g)
+    .then(urlMa=>{
         g.info.urlMa = urlMa
         console.log(g)
-        createPDF(req.body).then(urlPdf=>{
+        createPDF(g).then(urlPdf=>{
             g.info.urlPdf = urlPdf
             admin.auth().getUser(g.userId).then(user=>{
                 g.info.ccAuth = user.email
             })
         })
-        transporter.sendMail(createMailOptionsNewMA(g), (error, info)=>{
-            if(error) res.status(300).send(error)
-            if(info) {
-                transporter.sendMail(createMailOptionsNew(g), (error, info)=>{
-                    if (error) res.status(300).send(error)
-                    if(info) {
-                        res.status(200).json({mailResult: info})             
-                    }
-                })   
-            }
+        .then(()=>{
+            transporter.sendMail(createMailOptionsNewMA(g), (error, info)=>{
+                if(error) res.status(300).send(error)
+                if(info) {
+                    transporter.sendMail(createMailOptionsNew(g), (error, info)=>{
+                        if (error) res.status(300).send(error)
+                        if(info) {
+                            res.status(200).json({mailResult: info})             
+                        }
+                    })   
+                }
+            })
         })
     })
 })
