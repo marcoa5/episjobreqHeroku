@@ -569,6 +569,7 @@ function createMailParts(a){
                 var html=template(data)
                 var mailOptions = {
                     from: `${a.author} - Epiroc Service <episerjob@gmail.com>`,
+                    replyTo: 'marco.fumagalli@epiroc.com',
                     to: a.type=="CustomerSupport"?to[0]:to[1],
                     cc: '' + cc.toString().replace(/,/g,'; '),// + (a.type=='CustomerSupport'?'; marco.fumagalli@epiroc.com; cristiana.besana@epiroc.com':'') + cc,
                     subject: a.type + ': New Parts request to '+ a.customer + ' - ' + a.model + ' (s/n: ' + a.sn + ')',
