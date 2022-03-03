@@ -416,6 +416,7 @@ function createMailOptionsInt(a){
         from: `${a.userN} ${a.userC} - Epiroc Service <episerjob@gmail.com>`,
         to: "marco.arato@epiroc.com", //"marco.fumagalli@epiroc.com"
         cc: "", //"mario.parravicini@epiroc.com; carlo.colombo@epiroc.com; marco.arato@epiroc.com",
+        replyTo: 'marco.fumagalli@epiroc.com',
         subject: a.subject,
         text: `Risultato sondaggio:\n\nOrganizzazione intervento: ${a.son1}\nConsegna Ricambi: ${a.son2}\nEsecuzione Intervento: ${a.son3} ${a.rap}\n\n\nRisk Assessment \n ${a.rAss}`,
         attachments: [
@@ -435,6 +436,7 @@ function createMailOptionsInt(a){
 function createMailOptionsIntProd(a){
     const mailOptions = {
         from: `${a.userN} ${a.userC} - Epiroc Service <episerjob@gmail.com>`,
+        replyTo: 'marco.fumagalli@epiroc.com',
         to: "marco.fumagalli@epiroc.com",
         cc: "mario.parravicini@epiroc.com; carlo.colombo@epiroc.com; marco.arato@epiroc.com",
         subject: a.subject,
@@ -505,6 +507,7 @@ function createMailOptionsNew(a){
 function createMailOptionsNewMA(a){
     const mailOptionsNewMA = {
             from: `${a.author} - Epiroc Service <episerjob@gmail.com>`,
+            replyTo: 'marco.fumagalli@epiroc.com',
             to: 'marco.fumagalli@epiroc.com',
             cc: 'marco.arato@epiroc.com; mario.parravicini@epiroc.com; carlo.colombo@epiroc.com',
             subject: a.info.subject,
