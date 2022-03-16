@@ -320,24 +320,21 @@ app.all('/sendSJNew', function(req,res){
     createMA(g)
     .then(urlMa=>{
         g.info.urlMa = urlMa
-        console.log(g)
         createPDF(g).then(urlPdf=>{
             g.info.urlPdf = urlPdf
             admin.auth().getUser(g.userId).then(user=>{
                 g.info.ccAuth = user.email
-            })
-        })
-        .then(()=>{
-            transporter.sendMail(createMailOptionsNewMA(g), (error, info)=>{
-                if(error) res.status(300).send(error)
-                if(info) {
-                    transporter.sendMail(createMailOptionsNew(g), (error, info)=>{
-                        if (error) res.status(300).send(error)
-                        if(info) {
-                            res.status(200).json({mailResult: info})             
-                        }
-                    })   
-                }
+                transporter.sendMail(createMailOptionsNewMA(g), (error, info)=>{
+                    if(error) res.status(300).send(error)
+                    if(info) {
+                        transporter.sendMail(createMailOptionsNew(g), (error, info)=>{
+                            if (error) res.status(300).send(error)
+                            if(info) {
+                                res.status(200).json({mailResult: info})             
+                            }
+                        })   
+                    }
+                })
             })
         })
     })
@@ -486,6 +483,7 @@ function createMA(a){
 }
 
 function createMailOptionsNew(a){
+    console.log(a)
     let cc=[]//'mario.parravicini@epiroc.com', 'marco.fumagalli@epiroc.com','carlo.colombo@epiroc.com','marco.arato@epiroc.com']
     if(!cc.includes(a.info.ccAuth)) cc.push(a.info.ccAuth)
     const mailOptionsNew = {
@@ -509,7 +507,7 @@ function createMailOptionsNewMA(a){
             from: `${a.author} - Epiroc Service <episerjob@gmail.com>`,
             replyTo: 'marco.fumagalli@epiroc.com',
             to: 'marco.fumagalli@epiroc.com',
-            cc: 'marco.arato@epiroc.com; mario.parravicini@epiroc.com; carlo.colombo@epiroc.com',
+            cc: a.info.cc?'marco.arato@epiroc.com; mario.parravicini@epiroc.com; carlo.colombo@epiroc.com':'',
             subject: a.info.subject,
             text: `Risultato sondaggio:\n\nOrganizzazione intervento: ${a.rissondaggio.split('')[0]}\nConsegna Ricambi: ${a.rissondaggio.split('')[1]}\nEsecuzione Intervento: ${a.rissondaggio.split('')[2]}\n\nRapporto:\n${a.rappl1}\n\Osservazioni:\n${a.oss1}`,
             attachments: [{
