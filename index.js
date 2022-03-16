@@ -96,7 +96,7 @@ app.all('/updateuser', function(req,res){
     admin.database().ref('Users').child(id).child('Pos').set(Pos)
     admin.database().ref('Users').child(id).child('userVisit').set(userVisit)
     admin.database().ref('Users').child(id).child('Area').set(Area)
-    .then(()=>res.status(200).send('ok'))
+    .then(()=>res.status(200).json({status:'ok'}))
 })
 
 app.get('/delete',function(req,res){
