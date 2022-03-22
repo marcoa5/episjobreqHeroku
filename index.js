@@ -340,8 +340,11 @@ app.all('/sendSJNew', function(req,res){
     })
 })
 
-app.post('/saveOnSP', function(req,res){
-
+app.all('/mailepi', function(req,res){
+    transporter_epiroc.sendMail(createMailOption(),(err,info)=>{
+        if(err) console.log(err)
+        res.json({info:info})
+    })
 })
 
 app.all('/', function(req, res,next) {
@@ -384,6 +387,32 @@ const transporter = nodemailer.createTransport({
     }
   });
 
+const transporter_epiroc = nodemailer.createTransport({
+host: 'smtp.office365.com',
+auth: {
+    user: 'marco.arato@epiroc.com',
+    pass: 'qjjblbjzdrjcllbz' 
+}
+});
+
+
+
+function createMailOption(){
+    /*let n = a.userN + ' ' + a.userC
+    let chFEA=false
+    admin.database().ref('Tech').child(n).once('value',k=>{
+        if(k.val().s.substring(0,6)=='F.E.A.') chFEA=true
+    })*/
+
+    const mailOptions = {
+        from: 'Epiroc Service <marco.arato@epiroc.com>',
+        //replyTo: 'marco.fumagalli@epiroc.com',
+        to: 'marco.arato@gmail.com',
+        subject: 'test',
+        text: 'prova'
+      };
+      return mailOptions
+}
 
 function createMailOptions(a){
     /*let n = a.userN + ' ' + a.userC
