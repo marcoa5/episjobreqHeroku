@@ -12,6 +12,7 @@ const fs = require('fs');
 var html_to_pdf = require('html-pdf-node');
 const firebase = require('firebase/app')
 require('firebase/storage')
+const ver = require('./package.json').version
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -347,7 +348,7 @@ app.all('/mailepi', function(req,res){
 app.all('/', function(req, res,next) {
     const welc = `
     <div style="position: fixed; top:0;left:0;display:flex; justify-content: center; align-items: center; width:100%; height:100%; background-color: rgb(66, 85, 99)">
-        <h1 style="font-family: Arial; text-align:center; width: 100%; color: rgb(255,205,0)">Welcome to Epi_ Service Job Web Services</h1>
+        <h1 style="font-family: Arial; text-align:center; width: 100%; color: rgb(255,205,0)">Welcome to Epiroc Italia Service Job Web Services ver ${ver}</h1>
     </div>
     `
     res.status(200).send(welc);
