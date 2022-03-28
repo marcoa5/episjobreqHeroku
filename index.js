@@ -33,6 +33,7 @@ app.use(cors())
 app.use(bodyParser.urlencoded({limit: '50000kb',extended: true}))
 app.use(bodyParser.json({limit: '50000kb'}))
 app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/template'));
 
 
 app.get('/getusers', function(req,res){
@@ -300,7 +301,7 @@ app.all('/psdllp',function(req,res){
 })
 
 app.all('/sjPdf', function(req,res){
-    var a = fs.readFileSync('./template.html','utf8')
+    var a = fs.readFileSync('template/template.html','utf8')
     var templ = Handlebars.compile(a)
     let options = {width: '21cm', height: '29.7cm'};
     let file = {content: templ(req.body)}

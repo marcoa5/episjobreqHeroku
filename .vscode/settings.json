@@ -1,0 +1,8 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/5b146912-1056-47d4-b250-a69a94445637/resourceGroups/Ita/providers/Microsoft.Web/sites/epiroc-italia",
+    "appService.deploySubpath": "."
+}
