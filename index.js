@@ -7,9 +7,6 @@ var admin = require("firebase-admin");
 var serviceAccount = require('./key.json')
 const porta = process.env.PORT || 3001
 const axios = require('axios')
-var moment = require('moment');
-const { auth } = require('firebase-admin');
-const functions = require("firebase-functions");
 const Handlebars = require("handlebars");
 const fs = require('fs');
 var html_to_pdf = require('html-pdf-node');
@@ -390,8 +387,8 @@ const transporter = nodemailer.createTransport({
 const transporter_epiroc = nodemailer.createTransport({
 host: 'smtp.office365.com',
 auth: {
-    user: 'marco.arato@epiroc.com',
-    pass: 'qjjblbjzdrjcllbz' 
+    user: 'customerservice.italia@epiroc.com',
+    pass: '******' 
 }
 });
 
