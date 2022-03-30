@@ -386,13 +386,13 @@ const transporter = nodemailer.createTransport({
     }
   });
 
-const transporter_epiroc = nodemailer.createTransport({
+/*const transporter_epiroc = nodemailer.createTransport({
 host: 'smtp.office365.com',
 auth: {
     user: 'customerservice.italia@epiroc.com',
     pass: '******' 
 }
-});
+});*/
 
 
 
@@ -482,7 +482,7 @@ function createMailOptionsIntProd(a){
 
 function createPDF(b){
     return new Promise((res,rej)=>{
-        var a = fs.readFileSync('./template.html','utf8')
+        var a = fs.readFileSync('template/template.html','utf8')
         var templ = Handlebars.compile(a)
         let options = {width: '21cm', height: '29.7cm'};
         let file = {content: templ(b)}
@@ -500,18 +500,19 @@ function createPDF(b){
 
 function createMA(a){
     return new Promise((res,rej)=>{
-        let ref = firebase.default.storage().ref(a.author + '/' + a.info.fileName + '.ma')
-        ref.put(Uint8Array.from(Buffer.from(JSON.stringify(a))).buffer)
-        .then(()=>{
-            ref.getDownloadURL().then(url=>{
-                res(url)
-            })
-        })
+        if(a.info.fileName){
+            let ref = firebase.default.storage().ref(a.author + '/' + a.info.fileName + '.ma')
+            ref.put(Uint8Array.from(Buffer.from(JSON.stringify(a))).buffer)
+            .then(()=>{
+                ref.getDownloadURL().then(url=>{
+                    res(url)
+                })
+            })  
+        }
     })
 }
 
 function createMailOptionsNew(a){
-    console.log(a)
     let cc=[]//'mario.parravicini@epiroc.com', 'marco.fumagalli@epiroc.com','carlo.colombo@epiroc.com','marco.arato@epiroc.com']
     if(!cc.includes(a.info.ccAuth)) cc.push(a.info.ccAuth)
     const mailOptionsNew = {
