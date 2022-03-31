@@ -538,7 +538,7 @@ function createMailOptionsNewMA(a){
             to: 'marco.fumagalli@epiroc.com',
             cc: a.info.cc?'marco.arato@epiroc.com; mario.parravicini@epiroc.com; carlo.colombo@epiroc.com':'',
             subject: a.info.subject,
-            text: `Risultato sondaggio:\n\nOrganizzazione intervento: ${a.rissondaggio.split('')[0]}\nConsegna Ricambi: ${a.rissondaggio.split('')[1]}\nEsecuzione Intervento: ${a.rissondaggio.split('')[2]}\n\nRapporto:\n${a.rappl1}\n\Osservazioni:\n${a.oss1}`,
+            text: `Risultato sondaggio:\n\nOrganizzazione intervento: ${a.rissondaggio.split('')[0]}\nConsegna Ricambi: ${a.rissondaggio.split('')[1]}\nEsecuzione Intervento: ${a.rissondaggio.split('')[2]}\n\nRapporto:\n${a.rappl1} ${a.oss1!=''? '\n\nOsservazioni:\n' + a.oss1: ''}`,
             attachments: [{
                 filename: a.info.fileName + '.ma',
                 path: a.info.urlMa
