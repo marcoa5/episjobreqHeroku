@@ -513,15 +513,17 @@ function createMA(a){
 }
 
 function createMailOptionsNew(a){
-    let cc=[]//'mario.parravicini@epiroc.com', 'marco.fumagalli@epiroc.com','carlo.colombo@epiroc.com','marco.arato@epiroc.com']
+    let cc=[]
     if(!cc.includes(a.info.ccAuth)) cc.push(a.info.ccAuth)
+    let tech='tecnico Sig. ' + a.author
+    if(a.author=='Officina Vernia') tech='Service Partner Officina Vernia'
     const mailOptionsNew = {
             from: `${a.author} - Epiroc Service <episerjob@gmail.com>`,
             replyTo: 'marco.fumagalli@epiroc.com',
             to: a.elencomail,
             cc: a.info.cc? cc.join(';'):'',
             subject: a.info.subject,
-            text: `In allegato scheda lavoro relativa all'intervento effettuato dal nostro tecnico Sig. ${a.author}.\nVi ringraziamo qualora abbiate aderito al nostro sondaggio.\n\n\nRisultato sondaggio:\n\nOrganizzazione intervento: ${a.rissondaggio.split('')[0]}\nConsegna Ricambi: ${a.rissondaggio.split('')[1]}\nEsecuzione Intervento: ${a.rissondaggio.split('')[2]}`,
+            text: `In allegato scheda lavoro relativa all'intervento effettuato dal nostro ${tech}.\nVi ringraziamo qualora abbiate aderito al nostro sondaggio.\n\n\nRisultato sondaggio:\n\nOrganizzazione intervento: ${a.rissondaggio.split('')[0]}\nConsegna Ricambi: ${a.rissondaggio.split('')[1]}\nEsecuzione Intervento: ${a.rissondaggio.split('')[2]}`,
             attachments: {
                 filename: a.info.fileName + '.pdf',
                 path: a.info.urlPdf
