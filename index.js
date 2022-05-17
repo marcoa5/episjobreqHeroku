@@ -89,12 +89,15 @@ app.all('/updateuser', function(req,res){
     var id = req.query.id
 	var userVisit = req.query.userVisit
     var Area = undefined
+    var ws = undefined
     if(req.query.Area!=undefined) Area = req.query.Area
+    if(req.query.ws!=undefined) ws = req.query.ws
     admin.database().ref('Users').child(id).child('Cognome').set(Cognome)
     admin.database().ref('Users').child(id).child('Nome').set(Nome)
     admin.database().ref('Users').child(id).child('Pos').set(Pos)
     admin.database().ref('Users').child(id).child('userVisit').set(userVisit)
     admin.database().ref('Users').child(id).child('Area').set(Area)
+    admin.database().ref('Users').child(id).child('ws').set(ws)
     .then(()=>res.status(200).json({status:'ok'}))
 })
 
@@ -314,7 +317,7 @@ app.post('/sjMa', function(req,res){
     res.send(req.body)
 })
 
-app.all('/sendSJNew', function(req,res){
+app.all('/sendSJNew', cors(), function(req,res){
     let g = req.body
     createMA(g)
     .then(urlMa=>{
