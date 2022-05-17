@@ -90,7 +90,7 @@ app.all('/updateuser', function(req,res){
 	var userVisit = req.query.userVisit
     var Area = undefined
     var ws = undefined
-    //
+    console.log(ws)
     if(req.query.Area!=undefined) Area = req.query.Area
     if(req.query.ws!=undefined) ws = req.query.ws
     admin.database().ref('Users').child(id).child('Cognome').set(Cognome)
