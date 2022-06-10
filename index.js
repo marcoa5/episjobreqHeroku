@@ -342,17 +342,6 @@ app.all('/sendSJNew', cors(), function(req,res){
     })
 })
 
-app.all('/prova', function(req,res){
-    const mailopt={
-        from: 'Customer Service',
-        replyTo: 'marco.arato@epiroc.com',
-        to: 'marco.arato@epiroc.com',
-        subject: 'test',
-        text: 'test'
-    }
-    transporter_epiroc.sendMail(mailopt).then(a=>res.json({status:a}))
-})
-
 app.all('/mailepi', function(req,res){
     transporter_epiroc.sendMail(createMailOption(),(err,info)=>{
         if(err) console.log(err)
@@ -400,13 +389,13 @@ const transporter = nodemailer.createTransport({
     }
   });
 
-const transporter_epiroc = nodemailer.createTransport({
+/*const transporter_epiroc = nodemailer.createTransport({
 host: 'smtp.office365.com',
 auth: {
     user: 'marco.arato@epiroc.com',
-    pass: 'rycgmqzvdkwxtdhk' 
+    pass: '***' 
 }
-})
+})*/
 
 
 
