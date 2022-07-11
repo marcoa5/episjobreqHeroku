@@ -279,7 +279,7 @@ app.get('/certiq', function(req,res){
 })
 
 app.all('/partreq', cors(), function(req,res){
-    createMailParts(req.body)
+    createMailParts(req.body?req.body:req.query.info)
     .then(a=>{
         transporter.sendMail(a, (error, info)=>{
             if (error) res.status(300).send(error)
