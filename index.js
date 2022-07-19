@@ -652,15 +652,15 @@ function createMailParts(a){
 }
 
 function createMailPartsImi(a){
-    let to=['andrea.dizioli@imifabi.com','francesco.viviani@imifabi.com']
-    let cc=['mario.parravicini@epiroc.com', 'marco.arato@epiroc.com', 'marco.fumagalli@epiroc.com', 'carlo.colombo@epiroc.com', 'giorgio.rizzi@epiroc.com']
+    let to=['marco.arato@epiroc.com','marco.fumagalli@epiroc.com']//['andrea.dizioli@imifabi.com','francesco.viviani@imifabi.com']
+    let cc=['']//['mario.parravicini@epiroc.com', 'marco.arato@epiroc.com', 'marco.fumagalli@epiroc.com', 'carlo.colombo@epiroc.com', 'giorgio.rizzi@epiroc.com']
     return new Promise((res,rej)=>{
         var html=templateImi(a)
         var mailOptions = {
             from: `${a.author} - Epiroc Service <episerjob@gmail.com>`,
             replyTo: 'marco.fumagalli@epiroc.com',
-            to: to,
-            //cc: cc,
+            to: to.toString().replace(/,/g,'; '),
+            cc: cc.toString().replace(/,/g,'; '),
             subject: 'Epiroc Service: New Parts request for '+ a.model + ' (s/n: ' + a.sn + ')',
             html: html,
         }
