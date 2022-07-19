@@ -279,13 +279,24 @@ app.get('/certiq', function(req,res){
 })
 
 app.all('/partreq', cors(), function(req,res){
-    createMailParts(req.body?req.body:req.query.info)
-    .then(a=>{
-        transporter.sendMail(a, (error, info)=>{
-            if (error) res.status(300).send(error)
-            if(info) res.status(200).send(info)
-        })
-    })
+    let dest = req.body?req.body.type:req.query.info.type
+    if(dest!='Customer'){
+      createMailParts(req.body?req.body:req.query.info)
+        .then(a=>{
+            transporter.sendMail(a, (error, info)=>{
+                if (error) res.status(300).send(error)
+                if(info) res.status(200).send(info)
+            })
+        })  
+    } else {
+        createMailPartsImi(req.body?req.body:req.query.info)
+        .then(a=>{
+            transporter.sendMail(a, (error, info)=>{
+                if (error) res.status(300).send(error)
+                if(info) res.status(200).send(info)
+            })
+        })  
+    } 
 })
 
 app.all('/psdllp',function(req,res){
@@ -580,6 +591,27 @@ var template=Handlebars.compile(source)
 
 
 
+var sourceImi=`
+<p>Prego ordinare i seguenti ricambi relativi alla macchina <strong>{{model}} (s/n: {{sn}})</strong><p>
+<br>
+<table style="border-collapse: collapse;">    
+<!--<tr>
+        <th style="padding: 5px 20px;border: 1px solid black">Categorico</th>
+        <th style="padding: 5px 20px; text-align:center;border: 1px solid black">Q.tà</th>
+    </tr>-->
+    {{#Parts}}
+    <tr>
+        <td style="padding: 5px 20px;border: 1px solid black">{{pn}}</td>
+        <td style="padding: 5px 20px; text-align:center;border: 1px solid black">{{qty}}</td>
+    </tr>
+    {{/Parts}}
+</table>
+`
+
+var templateImi=Handlebars.compile(sourceImi)
+
+
+
 function createMailParts(a){
     let to=['nicola.megna@epiroc.com','marco.fumagalli@epiroc.com']
     let cc=['mario.parravicini@epiroc.com', 'marco.arato@epiroc.com', 'giordano.perini@epiroc.com']
@@ -613,6 +645,23 @@ function createMailParts(a){
                 if(mailOptions!=undefined) res(mailOptions)              
             })
         })
+    })
+}
+
+function createMailPartsImi(a){
+    let to=['marco.arato@epiroc.com']
+    let cc=['mario.parravicini@epiroc.com', 'marco.arato@epiroc.com', 'giordano.perini@epiroc.com']
+    return new Promise((res,rej)=>{
+        var html=templateImi(a)
+        var mailOptions = {
+            from: `${a.author} - Epiroc Service <episerjob@gmail.com>`,
+            replyTo: 'marco.fumagalli@epiroc.com',
+            to: to,
+            //cc: cc,
+            subject: 'Epiroc Service: New Parts request for '+ a.model + ' (s/n: ' + a.sn + ')',
+            html: html,
+        }
+        if(mailOptions!=undefined) res(mailOptions) 
     })
 }
 
