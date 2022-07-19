@@ -594,15 +594,18 @@ var template=Handlebars.compile(source)
 var sourceImi=`
 <p>Prego ordinare i seguenti ricambi relativi alla macchina <strong>{{model}} (s/n: {{sn}})</strong><p>
 <br>
+<p>Copiare ed incollare la seguente lista in ShopOnLine:</p>
 <table style="border-collapse: collapse;">    
 <!--<tr>
         <th style="padding: 5px 20px;border: 1px solid black">Categorico</th>
         <th style="padding: 5px 20px; text-align:center;border: 1px solid black">Q.tà</th>
+        <th style="padding: 5px 20px;border: 1px solid black">Descrizione</th>
     </tr>-->
     {{#Parts}}
     <tr>
         <td style="padding: 5px 20px;border: 1px solid black">{{pn}}</td>
         <td style="padding: 5px 20px; text-align:center;border: 1px solid black">{{qty}}</td>
+        <td style="padding: 5px 20px;border: 1px solid black">{{desc}}</td>
     </tr>
     {{/Parts}}
 </table>
@@ -649,8 +652,8 @@ function createMailParts(a){
 }
 
 function createMailPartsImi(a){
-    let to=['marco.arato@epiroc.com']
-    let cc=['mario.parravicini@epiroc.com', 'marco.arato@epiroc.com', 'giordano.perini@epiroc.com']
+    let to=['andrea.dizioli@imifabi.com','francesco.viviani@imifabi.com']
+    let cc=['mario.parravicini@epiroc.com', 'marco.arato@epiroc.com', 'marco.fumagalli@epiroc.com', 'carlo.colombo@epiroc.com', 'giorgio.rizzi@epiroc.com']
     return new Promise((res,rej)=>{
         var html=templateImi(a)
         var mailOptions = {
