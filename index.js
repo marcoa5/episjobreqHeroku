@@ -569,11 +569,10 @@ function createMailOptionsNewMA(a){
 }
 
 var source=`
-<p>Prego elaborare offerta 
+<p>Prego elaborare offerta per i ricambi sotto elencati
 {{#if shipAdd}}<br> da inoltrare a{{#shipAdd}} {{name}} ({{mail}}){{/shipAdd}}{{/if}} 
-<br>per i ricambi sotto elencati 
-<br>Cantiere: {{customer}} {{#if shipTo.address}} - {{shipTo.address}} {{/if}}) 
-<br><a href="https://episjobadmin.web.app/machine;sn={{sn}}">Macchina: <strong>{{model}} (s/n: {{sn}})</strong></a>
+<br>Destinatario: {{customer}} {{#if shipTo.address}} - {{shipTo.address}} {{/if}}
+<br>Macchina: <a href="https://episjobadmin.web.app/machine;sn={{sn}}"><strong>{{model}} (s/n: {{sn}})</strong></a>
 {{#if shipTo.cig}}<br>CIG: {{shipTo.cig}}{{/if}} {{#if shipTo.cup}} CUP: {{shipTo.cup}}{{/if}}<p>
 <br>
 <table style="border-collapse: collapse;">    
