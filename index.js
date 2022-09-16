@@ -534,8 +534,8 @@ function createMailOptionsNew(a){
     const mailOptionsNew = {
             from: `${a.author} - Epiroc Service <episerjob@gmail.com>`,
             replyTo: 'marco.fumagalli@epiroc.com',
-            to: 'marco.arato@epiroc.com',//a.elencomail,
-            //cc: a.info.cc? cc.join(';'):'',
+            to: a.elencomail,
+            cc: a.info.cc? cc.join(';'):'',
             subject: a.info.subject,
             text: `In allegato scheda lavoro relativa all'intervento effettuato dal nostro ${tech}.\nVi ringraziamo qualora abbiate aderito al nostro sondaggio.\n\n\nRisultato sondaggio:\n\nOrganizzazione intervento: ${a.rissondaggio.split('')[0]}\nConsegna Ricambi: ${a.rissondaggio.split('')[1]}\nEsecuzione Intervento: ${a.rissondaggio.split('')[2]}`,
             attachments: {
@@ -551,8 +551,8 @@ function createMailOptionsNewMA(a){
     const mailOptionsNewMA = {
             from: `${a.author} - Epiroc Service <episerjob@gmail.com>`,
             replyTo: 'marco.fumagalli@epiroc.com',
-            to: 'marco.arato@epiroc.com',//'marco.fumagalli@epiroc.com',
-            //cc: a.info.cc?'marco.arato@epiroc.com; mario.parravicini@epiroc.com; carlo.colombo@epiroc.com':'',
+            to: 'marco.fumagalli@epiroc.com',
+            cc: a.info.cc?'marco.arato@epiroc.com; mario.parravicini@epiroc.com; carlo.colombo@epiroc.com':'',
             subject: a.info.subject,
             text: `Risultato sondaggio:\n\nOrganizzazione intervento: ${a.rissondaggio.split('')[0]}\nConsegna Ricambi: ${a.rissondaggio.split('')[1]}\nEsecuzione Intervento: ${a.rissondaggio.split('')[2]}\n\nRapporto:\n${a.rappl1} ${a.oss1!=''? '\n\nOsservazioni:\n' + a.oss1: ''}`,
             attachments: [{
