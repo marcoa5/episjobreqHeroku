@@ -4,20 +4,29 @@ var cors = require('cors')
 const nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
 var admin = require("firebase-admin");
+var admingrc = require("firebase-admin");
 var serviceAccount = require('./key.json')
+var serviceAccountgrc = require('./keygrc.json')
 const porta = process.env.PORT || 3001
 const axios = require('axios')
 const Handlebars = require("handlebars");
 const fs = require('fs');
 var html_to_pdf = require('html-pdf-node');
 const firebase = require('firebase/app')
+const firebasegrc = require('firebase/app');
+const { config } = require('process');
 require('firebase/storage')
 const ver = require('./package.json').version
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://epi-serv-job-default-rtdb.firebaseio.com"
-});
+},'default')
+
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccountgrc),
+    databaseURL: "https://episjobadmingrc-default-rtdb.europe-west1.firebasedatabase.app",
+},'grc');
 
 firebase.initializeApp({
     apiKey: "AIzaSyBtO5C1bOO70EL0IPPO-BDjJ40Kb03erj4",
@@ -28,23 +37,44 @@ firebase.initializeApp({
     messagingSenderId: "793133030101",
     appId: "1:793133030101:web:1c046e5fcb02b42353a05c",
     measurementId: "G-Y0638WJK1X"
-  })
+},'default')
+firebase.initializeApp({
+    apiKey: "AIzaSyA9OHPbSNKBJUE7DqLAopJkfMMICo8hkHw",
+    authDomain: "episjobadmingrc.firebaseapp.com",
+    databaseURL: "https://episjobadmingrc-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "episjobadmingrc",
+    storageBucket: "episjobadmingrc.appspot.com",
+    messagingSenderId: "918912403305",
+    appId: "1:918912403305:web:4346393bf9409facc91ff8",
+    measurementId: "G-R54FWQY8XB"
+},'grc')
 app.use(cors())
 app.use(bodyParser.urlencoded({limit: '50000kb',extended: true}))
 app.use(bodyParser.json({limit: '50000kb'}))
 app.use(express.static(__dirname + '/public'));
 app.use(express.static(__dirname + '/template'));
 
+app.all('/grc', function(req,res){
+    admin.app('grc').auth().listUsers(1000).then((a)=>{
+        res.send(a.users)
+    })
+})
+
+app.all('/iyc', function(req,res){
+    admin.app('default').auth().listUsers(1000).then((a)=>{
+        res.send(a.users)
+    })
+})
 
 app.get('/getusers', function(req,res){
-    admin.auth().listUsers(1000).then((a)=>{
+    admin.app('default').auth().listUsers(1000).then((a)=>{
         res.send(a.users)
     })
 })
 
 app.get('/getuserinfo', function(req,res){
     var id = req.query.id
-    admin.database().ref('Users/'+ id).once('value', a=>{
+    admin.app('default').database().ref('Users/'+ id).once('value', a=>{
         res.status(200).send(a.val())
     })
 })
@@ -56,7 +86,7 @@ app.get('/createuser', function(req,res){
     var Pos=req.query.Pos
     var km = req.query.km
 	var userVisit = req.query.userVisit
-    admin.auth().createUser({
+    admin.app('default').auth().createUser({
         email: Mail,
         emailVerified: false,
         password: 'Epiroc2021',
@@ -66,11 +96,11 @@ app.get('/createuser', function(req,res){
         var Area = undefined
         let id = userRecord.uid
         if(req.query.Area!=undefined) Area = req.query.Area
-        admin.database().ref('Users').child(id).child('Cognome').set(Cognome)
-        admin.database().ref('Users').child(id).child('Nome').set(Nome)
-        admin.database().ref('Users').child(id).child('Pos').set(Pos)
-        admin.database().ref('Users').child(id).child('userVisit').set(userVisit)
-        admin.database().ref('Users').child(id).child('Area').set(Area)
+        admin.app('default').database().ref('Users').child(id).child('Cognome').set(Cognome)
+        admin.app('default').database().ref('Users').child(id).child('Nome').set(Nome)
+        admin.app('default').database().ref('Users').child(id).child('Pos').set(Pos)
+        admin.app('default').database().ref('Users').child(id).child('userVisit').set(userVisit)
+        admin.app('default').database().ref('Users').child(id).child('Area').set(Area)
         .then(()=>res.status(200).send('ok'))
         .catch((error) => {
             res.status(300).send('Errore: ' + error)
@@ -92,20 +122,20 @@ app.all('/updateuser', function(req,res){
     var ws = undefined
     if(req.query.Area!=undefined) Area = req.query.Area
     if(req.query.ws!=undefined) ws = req.query.ws
-    admin.database().ref('Users').child(id).child('Cognome').set(Cognome)
-    admin.database().ref('Users').child(id).child('Nome').set(Nome)
-    admin.database().ref('Users').child(id).child('Pos').set(Pos)
-    admin.database().ref('Users').child(id).child('userVisit').set(userVisit)
-    admin.database().ref('Users').child(id).child('Area').set(Area)
-    admin.database().ref('Users').child(id).child('ws').set(ws)
+    admin.app('default').database().ref('Users').child(id).child('Cognome').set(Cognome)
+    admin.app('default').database().ref('Users').child(id).child('Nome').set(Nome)
+    admin.app('default').database().ref('Users').child(id).child('Pos').set(Pos)
+    admin.app('default').database().ref('Users').child(id).child('userVisit').set(userVisit)
+    admin.app('default').database().ref('Users').child(id).child('Area').set(Area)
+    admin.app('default').database().ref('Users').child(id).child('ws').set(ws)
     .then(()=>res.status(200).json({status:'ok'}))
 })
 
 app.get('/delete',function(req,res){
     var id = req.query.id
-    admin.auth().deleteUser(id)
+    admin.app('default').auth().deleteUser(id)
     .then(()=>{
-        admin.database().ref('Users/' + id).remove()
+        admin.app('default').database().ref('Users/' + id).remove()
         .then(()=>{
             res.status(200).send('ok') 
          })
@@ -139,12 +169,12 @@ app.all('/mail', function(req, res,next) {
 
 app.all('/mailmod', async function(req, res,next) {
     var arg = req.query
-    let refPdf = admin.storage().ref().child(`${arg.userN} ${arg.userC}/${arg.fileN}.pdf`)
+    let refPdf = admin.app('default').storage().ref().child(`${arg.userN} ${arg.userC}/${arg.fileN}.pdf`)
     await refPdf.put(arg.urlPdf)
     .then(()=>{
         refPdf.getDownloadURL().then(url=>{
             if(url) req.urlPdf = url
-            let refMa = admin.storage().ref().child(`${arg.userN} ${arg.userC}/${arg.fileN}.ma`)
+            let refMa = admin.app('default').storage().ref().child(`${arg.userN} ${arg.userC}/${arg.fileN}.ma`)
             refMa.put(arg.urlMa)
             .then(()=>{
                 refMa.getDownloadURL().then(url=>{
@@ -305,7 +335,7 @@ app.all('/psdllp',function(req,res){
     let outP ={}
     let r = a.split(',')
     r.forEach(b=>{
-        admin.database().ref('PSDItems').child(req.query.child).child(b).child('llp').once('value',p=>{
+        admin.app('default').database().ref('PSDItems').child(req.query.child).child(b).child('llp').once('value',p=>{
             outP[b]=({pn:b,llp: p.val()==null?0:parseFloat(p.val())})
             kt++
             if(r.length==kt) res.status(200).json(outP)
@@ -335,7 +365,7 @@ app.all('/sendSJNew', cors(), function(req,res){
         g.info.urlMa = urlMa
         createPDF(g).then(urlPdf=>{
             g.info.urlPdf = urlPdf
-            admin.auth().getUser(g.userId).then(user=>{
+            admin.app('default').auth().getUser(g.userId).then(user=>{
                 g.info.ccAuth = user.email
                 transporter.sendMail(createMailOptionsNewMA(g), (error, info)=>{
                     if(error) res.status(300).send(error)
@@ -359,6 +389,124 @@ app.all('/mailepi', function(req,res){
         res.json({info:info})
     })
 })
+
+
+ //GRC
+
+app.all('/getusersgrc', function(req,res){
+    admin.app('grc').auth().listUsers(1000).then((a)=>{
+        res.send(a.users)
+    })
+})
+
+app.all('/getuserinfogrc', function(req,res){
+    var id = req.query.id
+    admin.app('grc').database().ref('Users/'+ id).once('value', a=>{
+        res.status(200).send(a.val())
+    })
+})
+
+app.all('/createusergrc', function(req,res){
+    var Mail = req.query.Mail
+    var Nome = req.query.Nome
+    var Cognome = req.query.Cognome
+    var Pos=req.query.Pos
+    var km = req.query.km
+	var userVisit = req.query.userVisit
+    admin.app('grc').auth().createUser({
+        email: Mail,
+        emailVerified: false,
+        password: 'Epiroc2022',
+        disabled: false,
+    })
+    .then((userRecord) => {
+        var Area = undefined
+        let id = userRecord.uid
+        if(req.query.Area!=undefined) Area = req.query.Area
+        admin.app('grc').database().ref('Users').child(id).child('Cognome').set(Cognome)
+        admin.app('grc').database().ref('Users').child(id).child('Nome').set(Nome)
+        admin.app('grc').database().ref('Users').child(id).child('Pos').set(Pos)
+        admin.app('grc').database().ref('Users').child(id).child('userVisit').set(userVisit)
+        admin.app('grc').database().ref('Users').child(id).child('Area').set(Area)
+        .then(()=>res.status(200).send('ok'))
+        .catch((error) => {
+            res.status(300).send('Errore: ' + error)
+        })
+    })
+    .catch((error) => {
+        res.status(300).send('Errore: ' + error)
+    });
+})
+
+app.all('/updateusergrc', function(req,res){
+    var Nome = req.query.Nome
+    var Cognome = req.query.Cognome
+    var Pos=req.query.Pos
+    var id = req.query.id
+	var userVisit = req.query.userVisit
+    var Area = undefined
+    var ws = undefined
+    if(req.query.Area!=undefined) Area = req.query.Area
+    if(req.query.ws!=undefined) ws = req.query.ws
+    admin.app('grc').database().ref('Users').child(id).child('Cognome').set(Cognome)
+    admin.app('grc').database().ref('Users').child(id).child('Nome').set(Nome)
+    admin.app('grc').database().ref('Users').child(id).child('Pos').set(Pos)
+    admin.app('grc').database().ref('Users').child(id).child('userVisit').set(userVisit)
+    admin.app('grc').database().ref('Users').child(id).child('Area').set(Area)
+    admin.app('grc').database().ref('Users').child(id).child('ws').set(ws)
+    .then(()=>res.status(200).json({status:'ok'}))
+})
+
+app.all('/deletegrc',function(req,res){
+    var id = req.query.id
+    admin.app('grc').auth().deleteUser(id)
+    .then(()=>{
+        admin.app('grc').database().ref('Users/' + id).remove()
+        .then(()=>{
+            res.status(200).send('ok') 
+         })
+    })
+    .catch(err=>{
+        console.log(err)
+    })
+})
+
+app.all('/sjPdfgrc', function(req,res){
+    var a = fs.readFileSync('template/templategrc.html','utf8')
+    var templ = Handlebars.compile(a)    
+    let options = {width: '21cm', height: '29.7cm'};
+    let file = {content: templ(req.body)}
+    html_to_pdf.generatePdf(file,options).then((d)=>{
+        if(d) res.end(d)
+        res.send('error')
+    })
+})
+
+app.all('/sjPdfForApprovalgrc', function(req,res){
+    let g = req.body
+    createPDFforApprovalgrc(g)
+    .then(()=>{
+        res.status(200).json({saved:true})
+    })
+})
+
+app.all('/sendSJNewgrc', function(req,res){
+    let g = req.body
+    createPDFgrc(g).then(urlPdf=>{
+        g.info.urlPdf = urlPdf
+        admin.app('grc').auth().getUser(g.userId).then(user=>{
+            g.info.ccAuth = user.email
+            transporter.sendMail(createMailOptionsNewgrc(g), (error, info)=>{
+                if (error) res.status(300).send(error)
+                if (info) {
+                    res.status(200).json({mailResult: info})             
+                }
+            })   
+        })
+    })
+})
+
+//ALL
 
 app.all('/', function(req, res,next) {
     const welc = `
@@ -413,7 +561,7 @@ auth: {
 function createMailOption(){
     /*let n = a.userN + ' ' + a.userC
     let chFEA=false
-    admin.database().ref('Tech').child(n).once('value',k=>{
+    admin.app('default').database().ref('Tech').child(n).once('value',k=>{
         if(k.val().s.substring(0,6)=='F.E.A.') chFEA=true
     })*/
 
@@ -430,7 +578,7 @@ function createMailOption(){
 function createMailOptions(a){
     /*let n = a.userN + ' ' + a.userC
     let chFEA=false
-    admin.database().ref('Tech').child(n).once('value',k=>{
+    admin.app('default').database().ref('Tech').child(n).once('value',k=>{
         if(k.val().s.substring(0,6)=='F.E.A.') chFEA=true
     })*/
 
@@ -674,8 +822,8 @@ function createMailPartsImi(a){
 
 function getMailCc(a, cc){
     return new Promise((res,rej)=>{
-        admin.auth().getUser(a).then(b=>{
-            admin.database().ref('Users').child(b.uid).child('Pos').once('value',g=>{
+        admin.app('default').auth().getUser(a).then(b=>{
+            admin.app('default').database().ref('Users').child(b.uid).child('Pos').once('value',g=>{
                 if(g!=null && (g.val()=='tech' || g.val()=='sales') && !cc.includes(b.email)) cc.push(b.email)
                 res(cc)
             })
@@ -689,15 +837,15 @@ function getSAM(a,cc){
         setTimeout(() => {
             res(cc)
         }, 10000);
-        admin.database().ref('RigAuth').child(a).once('value', h=>{
+        admin.app('default').database().ref('RigAuth').child(a).once('value', h=>{
             let f = Object.values(h.val())
             let index = 0
             h.forEach(t=>{
                 if(t.val()=='1' && t.key.substring(1,3)<50) {
-                    admin.database().ref('Users').once('value',l=>{
+                    admin.app('default').database().ref('Users').once('value',l=>{
                         l.forEach(de=>{
                             if(de.val().Area==t.key.substring(1,3)){
-                                admin.auth().getUser(de.key).then(s=>{
+                                admin.app('default').auth().getUser(de.key).then(s=>{
                                     if(!cc.includes(s.email)) {
                                         cc.push(s.email)
                                         index++
@@ -711,4 +859,65 @@ function getSAM(a,cc){
             })
         })
     })
+}
+
+//GRC
+
+function createPDFgrc(b){
+    return new Promise((res,rej)=>{
+        var a = fs.readFileSync('template/templategrc.html','utf8')
+        var templ = Handlebars.compile(a)
+        let options = {width: '21cm', height: '29.7cm'};
+        let file = {content: templ(b)}
+        html_to_pdf.generatePdf(file,options).then((d)=>{
+            let ref = firebase.app('grc').storage().ref(b.author + '/' + b.info.fileName + '.pdf')
+            ref.put(Uint8Array.from(Buffer.from(d)).buffer, {contentType: 'application/pdf'})
+            .then(()=>{
+                ref.getDownloadURL().then(url=>{
+                    res(url)
+                })
+            })
+        })
+    })
+}
+
+function createPDFforApprovalgrc(b){
+    return new Promise((res,rej)=>{
+        var a = fs.readFileSync('template/templategrc.html','utf8')
+        var templ = Handlebars.compile(a)
+        let options = {width: '21cm', height: '29.7cm'};
+        let file = {content: templ(b)}
+        html_to_pdf.generatePdf(file,options).then((d)=>{
+            let ref = firebase.app('grc').storage().ref('Closed/' + b.info.fileName + '.pdf')
+            ref.put(Uint8Array.from(Buffer.from(d)).buffer, {contentType: 'application/pdf'})
+            .then(()=>{
+                ref.getDownloadURL().then(url=>{
+                    console.log('saved')
+                    res(url)
+                })
+            })
+        })
+    })
+}
+
+function createMailOptionsNewgrc(a){
+    let cc=[]
+    cc.push('dimitris.nikolakopoulos@epiroc.com')
+    cc.push('marco.arato@epiroc.com')
+    if(!cc.includes(a.info.ccAuth)) cc.push(a.info.ccAuth)
+    let tech= a.author
+    const mailOptionsNew = {
+            from: `${a.author} - Epiroc Service GRC <episerjob@gmail.com>`,
+            replyTo: 'dimitris.nikolakopoulos@epiroc.com',
+            to: a.elencomail,
+            cc: a.info.cc? cc.join(';'):'',
+            subject: a.info.subject,
+            text: `Please find attached Service Job by Epiroc techinician Mr. ${tech}.\nThank you for completing the survey.\n\n\nSurvey Results:\n\nPlanning: ${a.rissondaggio.split('')[0]}\nParts Delivery: ${a.rissondaggio.split('')[1]}\nExecution: ${a.rissondaggio.split('')[2]}`,
+            attachments: {
+                filename: a.info.fileName + '.pdf',
+                path: a.info.urlPdf
+            }
+        }
+
+    return (mailOptionsNew)
 }
