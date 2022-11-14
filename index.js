@@ -393,7 +393,7 @@ app.all('/mailepi', function(req,res){
 
  //GRC
 
-app.all('grc//getusers', function(req,res){
+app.all('grc/getusers', function(req,res){
     admin.app('grc').auth().listUsers(1000).then((a)=>{
         res.send(a.users)
     })
