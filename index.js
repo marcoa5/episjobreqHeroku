@@ -393,20 +393,20 @@ app.all('/mailepi', function(req,res){
 
  //GRC
 
-app.all('/getusersgrc', function(req,res){
+app.all('grc//getusers', function(req,res){
     admin.app('grc').auth().listUsers(1000).then((a)=>{
         res.send(a.users)
     })
 })
 
-app.all('/getuserinfogrc', function(req,res){
+app.all('grc/getuserinfo', function(req,res){
     var id = req.query.id
     admin.app('grc').database().ref('Users/'+ id).once('value', a=>{
         res.status(200).send(a.val())
     })
 })
 
-app.all('/createusergrc', function(req,res){
+app.all('grc/createuser', function(req,res){
     var Mail = req.query.Mail
     var Nome = req.query.Nome
     var Cognome = req.query.Cognome
@@ -438,7 +438,7 @@ app.all('/createusergrc', function(req,res){
     });
 })
 
-app.all('/updateusergrc', function(req,res){
+app.all('grc/updateuser', function(req,res){
     var Nome = req.query.Nome
     var Cognome = req.query.Cognome
     var Pos=req.query.Pos
@@ -457,7 +457,7 @@ app.all('/updateusergrc', function(req,res){
     .then(()=>res.status(200).json({status:'ok'}))
 })
 
-app.all('/deletegrc',function(req,res){
+app.all('grc/delete',function(req,res){
     var id = req.query.id
     admin.app('grc').auth().deleteUser(id)
     .then(()=>{
@@ -471,7 +471,7 @@ app.all('/deletegrc',function(req,res){
     })
 })
 
-app.all('/sjPdfgrc', function(req,res){
+app.all('grc/sjPdf', function(req,res){
     var a = fs.readFileSync('template/templategrc.html','utf8')
     var templ = Handlebars.compile(a)    
     let options = {width: '21cm', height: '29.7cm'};
@@ -482,7 +482,7 @@ app.all('/sjPdfgrc', function(req,res){
     })
 })
 
-app.all('/sjPdfForApprovalgrc', function(req,res){
+app.all('grc/sjPdfForApproval', function(req,res){
     let g = req.body
     createPDFforApprovalgrc(g)
     .then(()=>{
@@ -490,7 +490,7 @@ app.all('/sjPdfForApprovalgrc', function(req,res){
     })
 })
 
-app.all('/sendSJNewgrc', function(req,res){
+app.all('grc/sendSJNew', function(req,res){
     let g = req.body
     createPDFgrc(g).then(urlPdf=>{
         g.info.urlPdf = urlPdf
