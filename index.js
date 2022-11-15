@@ -538,6 +538,8 @@ app.listen(porta, ()=>{
     console.log(`Running on port:${porta}`)
 });
 
+//FUNCTIONS
+
 
 function createMA(a){
     return new Promise((res,rej)=>{
@@ -552,9 +554,3 @@ function createMA(a){
         }
     })
 }
-
-
-
-
-
-FUNCTIONS
