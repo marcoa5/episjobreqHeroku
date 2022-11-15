@@ -390,8 +390,7 @@ app.all('/mailepi', function(req,res){
     })
 })
 
-
- //GRC
+//GRC
 
 app.all('/grc/getusers', function(req,res){
     admin.app('grc').auth().listUsers(1000).then((a)=>{
@@ -511,7 +510,7 @@ app.all('/grc/sendSJNew', function(req,res){
 app.all('/', function(req, res,next) {
     const welc = `
     <div style="position: fixed; top:0;left:0;display:flex; justify-content: center; align-items: center; width:100%; height:100%; background-color: rgb(66, 85, 99)">
-        <h1 style="font-family: Arial; text-align:center; width: 100%; color: rgb(255,205,0)">Welcome to Epiroc Italia Service Job Web Services ver ${ver}</h1>
+        <h1 style="font-family: Arial; text-align:center; width: 100%; color: rgb(255,205,0)">Welcome to Epiroc Italia/Hellas Service Job Admin Tool Web Services ver ${ver}</h1>
     </div>
     `
     res.status(200).send(welc);
