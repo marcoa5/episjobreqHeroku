@@ -23,7 +23,7 @@ firebase.initializeApp({
     messagingSenderId: "793133030101",
     appId: "1:793133030101:web:1c046e5fcb02b42353a05c",
     measurementId: "G-Y0638WJK1X"
-},'default')
+})
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -145,7 +145,7 @@ exports.createMailOptionsIntProd = function(a){
 
 exports.createPDF = function(b){
     return new Promise((res,rej)=>{
-        var a = fs.readFileSync('../template/template.html','utf8')
+        var a = fs.readFileSync('template/template.html','utf8')
         var templ = Handlebars.compile(a)
         let options = {width: '21cm', height: '29.7cm'};
         let file = {content: templ(b)}
@@ -313,7 +313,7 @@ function getSAM(a,cc){
 
 exports.createPDFgrc = function(b){
     return new Promise((res,rej)=>{
-        var a = fs.readFileSync('../template/templategrc.html','utf8')
+        var a = fs.readFileSync('template/templategrc.html','utf8')
         var templ = Handlebars.compile(a)
         let options = {width: '21cm', height: '29.7cm'};
         let file = {content: templ(b)}
@@ -331,7 +331,7 @@ exports.createPDFgrc = function(b){
 
 exports.createPDFforApprovalgrc = function(b){
     return new Promise((res,rej)=>{
-        var a = fs.readFileSync('../template/templategrc.html','utf8')
+        var a = fs.readFileSync('template/templategrc.html','utf8')
         var templ = Handlebars.compile(a)
         let options = {width: '21cm', height: '29.7cm'};
         let file = {content: templ(b)}
