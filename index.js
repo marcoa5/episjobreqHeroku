@@ -373,7 +373,7 @@ app.post('/iyc/sjMa', function(req,res){
 
 app.all('/iyc/sendSJNew', cors(), function(req,res){
     let g = req.body
-    external.createMA(g)
+    createMA(g)
     .then(urlMa=>{
         g.info.urlMa = urlMa
         external.createPDF(g).then(urlPdf=>{
@@ -539,7 +539,22 @@ app.listen(porta, ()=>{
 });
 
 
+function createMA(a){
+    return new Promise((res,rej)=>{
+        if(a.info.fileName){
+            let ref = firebase.storage().ref(a.author + '/' + a.info.fileName + '.ma')
+            ref.put(Uint8Array.from(Buffer.from(JSON.stringify(a))).buffer)
+            .then(()=>{
+                ref.getDownloadURL().then(url=>{
+                    res(url)
+                })
+            })  
+        }
+    })
+}
 
 
 
 
+
+FUNCTIONS

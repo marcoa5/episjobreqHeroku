@@ -154,7 +154,7 @@ exports.createPDF = function(b){
 exports.createMA = function(a){
     return new Promise((res,rej)=>{
         if(a.info.fileName){
-            let ref = firebase.default.storage().ref(a.author + '/' + a.info.fileName + '.ma')
+            let ref = firebase.storage().ref(a.author + '/' + a.info.fileName + '.ma')
             ref.put(Uint8Array.from(Buffer.from(JSON.stringify(a))).buffer)
             .then(()=>{
                 ref.getDownloadURL().then(url=>{
