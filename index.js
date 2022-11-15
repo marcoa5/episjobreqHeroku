@@ -29,26 +29,6 @@ admin.initializeApp({
     databaseURL: "https://episjobadmingrc-default-rtdb.europe-west1.firebasedatabase.app",
 },'grc');
 
-firebase.initializeApp({
-    apiKey: "AIzaSyBtO5C1bOO70EL0IPPO-BDjJ40Kb03erj4",
-    authDomain: "epi-serv-job.firebaseapp.com",
-    databaseURL: "https://epi-serv-job-default-rtdb.firebaseio.com",
-    projectId: "epi-serv-job",
-    storageBucket: "epi-serv-job.appspot.com",
-    messagingSenderId: "793133030101",
-    appId: "1:793133030101:web:1c046e5fcb02b42353a05c",
-    measurementId: "G-Y0638WJK1X"
-},'default')
-firebase.initializeApp({
-    apiKey: "AIzaSyA9OHPbSNKBJUE7DqLAopJkfMMICo8hkHw",
-    authDomain: "episjobadmingrc.firebaseapp.com",
-    databaseURL: "https://episjobadmingrc-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "episjobadmingrc",
-    storageBucket: "episjobadmingrc.appspot.com",
-    messagingSenderId: "918912403305",
-    appId: "1:918912403305:web:4346393bf9409facc91ff8",
-    measurementId: "G-R54FWQY8XB"
-},'grc')
 app.use(cors())
 app.use(bodyParser.urlencoded({limit: '50000kb',extended: true}))
 app.use(bodyParser.json({limit: '50000kb'}))
@@ -373,7 +353,7 @@ app.post('/iyc/sjMa', function(req,res){
 
 app.all('/iyc/sendSJNew', cors(), function(req,res){
     let g = req.body
-    createMA(g)
+    external.createMA(g)
     .then(urlMa=>{
         g.info.urlMa = urlMa
         external.createPDF(g).then(urlPdf=>{
@@ -539,18 +519,3 @@ app.listen(porta, ()=>{
 });
 
 //FUNCTIONS
-
-
-function createMA(a){
-    return new Promise((res,rej)=>{
-        if(a.info.fileName){
-            let ref = firebase.default.storage().ref(a.author + '/' + a.info.fileName + '.ma')
-            ref.put(Uint8Array.from(Buffer.from(JSON.stringify(a))).buffer)
-            .then(()=>{
-                ref.getDownloadURL().then(url=>{
-                    res(url)
-                })
-            })  
-        }
-    })
-}
