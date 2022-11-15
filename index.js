@@ -17,6 +17,7 @@ const firebasegrc = require('firebase/app');
 const { config } = require('process');
 require('firebase/storage')
 const ver = require('./package.json').version
+const external = require('./public/functions')
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -51,8 +52,20 @@ firebase.initializeApp({
 app.use(cors())
 app.use(bodyParser.urlencoded({limit: '50000kb',extended: true}))
 app.use(bodyParser.json({limit: '50000kb'}))
-app.use(express.static(__dirname + '/public'));
+app.use('/public',express.static(__dirname + '/public'));
 app.use(express.static(__dirname + '/template'));
+
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'episerjob@gmail.com',
+      pass: 'xvesvmaufsunnzvr' 
+    }
+  });
+
+  app.all('/iyc/test', function(req,res){
+    res.send(external.test())
+})
 
 app.all('/grc', function(req,res){
     admin.app('grc').auth().listUsers(1000).then((a)=>{
@@ -66,20 +79,20 @@ app.all('/iyc', function(req,res){
     })
 })
 
-app.get('/getusers', function(req,res){
+app.get('/iyc/getusers', function(req,res){
     admin.app('default').auth().listUsers(1000).then((a)=>{
         res.send(a.users)
     })
 })
 
-app.get('/getuserinfo', function(req,res){
+app.get('/iyc/getuserinfo', function(req,res){
     var id = req.query.id
     admin.app('default').database().ref('Users/'+ id).once('value', a=>{
         res.status(200).send(a.val())
     })
 })
 
-app.get('/createuser', function(req,res){
+app.get('/iyc/createuser', function(req,res){
     var Mail = req.query.Mail
     var Nome = req.query.Nome
     var Cognome = req.query.Cognome
@@ -112,7 +125,7 @@ app.get('/createuser', function(req,res){
     });
 })
 
-app.all('/updateuser', function(req,res){
+app.all('/iyc/updateuser', function(req,res){
     var Nome = req.query.Nome
     var Cognome = req.query.Cognome
     var Pos=req.query.Pos
@@ -131,7 +144,7 @@ app.all('/updateuser', function(req,res){
     .then(()=>res.status(200).json({status:'ok'}))
 })
 
-app.get('/delete',function(req,res){
+app.get('/iyc/delete',function(req,res){
     var id = req.query.id
     admin.app('default').auth().deleteUser(id)
     .then(()=>{
@@ -146,14 +159,14 @@ app.get('/delete',function(req,res){
 })
 
 
-app.all('/mail', function(req, res,next) {
+app.all('/iyc/mail', function(req, res,next) {
     var arg = req.query
     if(arg.to1!=undefined){
-        transporter.sendMail(createMailOptions(arg), (error, info)=>{
+        transporter.sendMail(external.createMailOptions(arg), (error, info)=>{
             if (error) {
             console.log(error);
             } else {
-                transporter.sendMail(createMailOptionsIntProd(arg), (error, info)=>{
+                transporter.sendMail(external.createMailOptionsIntProd(arg), (error, info)=>{
                     if (error) {
                     console.log(error);
                     } else {
@@ -167,7 +180,7 @@ app.all('/mail', function(req, res,next) {
     }
 });
 
-app.all('/mailmod', async function(req, res,next) {
+app.all('/iyc/mailmod', async function(req, res,next) {
     var arg = req.query
     let refPdf = admin.app('default').storage().ref().child(`${arg.userN} ${arg.userC}/${arg.fileN}.pdf`)
     await refPdf.put(arg.urlPdf)
@@ -185,11 +198,11 @@ app.all('/mailmod', async function(req, res,next) {
     })
     setTimeout(() => {
         if(arg.to1!=undefined){
-            transporter.sendMail(createMailOptions(arg), (error, info)=>{
+            transporter.sendMail(external.createMailOptions(arg), (error, info)=>{
                 if (error) {
                 console.log(error);
                 } else {
-                    transporter.sendMail(createMailOptionsIntProd(arg), (error, info)=>{
+                    transporter.sendMail(external.createMailOptionsIntProd(arg), (error, info)=>{
                         if (error) {
                         console.log(error);
                         } else {
@@ -205,14 +218,14 @@ app.all('/mailmod', async function(req, res,next) {
     
 })
 
-app.all('/maildebug', async function(req, res,next) {
+app.all('/iyc/maildebug', async function(req, res,next) {
     var arg = req.query
     if(arg.to1!=undefined){
-        transporter.sendMail(createMailOptions(arg), (error, info)=>{
+        transporter.sendMail(external.createMailOptions(arg), (error, info)=>{
             if (error) {
             console.log(error);
             } else {
-                transporter.sendMail(createMailOptionsInt(arg), (error, info)=>{
+                transporter.sendMail(external.createMailOptionsInt(arg), (error, info)=>{
                     if (error) {
                     console.log(error);
                     } else {
@@ -226,7 +239,7 @@ app.all('/maildebug', async function(req, res,next) {
     }
 });
 
-app.get('/certiq', function(req,res){
+app.get('/iyc/certiq', function(req,res){
     console.log(req.query)
     let count = 0
     let code=''
@@ -308,10 +321,10 @@ app.get('/certiq', function(req,res){
     .catch(e=>console.log(e))
 })
 
-app.all('/partreq', cors(), function(req,res){
+app.all('/iyc/partreq', cors(), function(req,res){
     let dest = req.body?req.body.type:req.query.info.type
     if(dest!='Customer'){
-      createMailParts(req.body?req.body:req.query.info)
+      external.createMailParts(req.body?req.body:req.query.info)
         .then(a=>{
             transporter.sendMail(a, (error, info)=>{
                 if (error) res.status(300).send(error)
@@ -319,7 +332,7 @@ app.all('/partreq', cors(), function(req,res){
             })
         })  
     } else {
-        createMailPartsImi(req.body?req.body:req.query.info)
+        external.createMailPartsImi(req.body?req.body:req.query.info)
         .then(a=>{
             transporter.sendMail(a, (error, info)=>{
                 if (error) res.status(300).send(error)
@@ -329,7 +342,7 @@ app.all('/partreq', cors(), function(req,res){
     } 
 })
 
-app.all('/psdllp',function(req,res){
+app.all('/iyc/psdllp',function(req,res){
     let kt=0
     let a = req.query.parts
     let outP ={}
@@ -344,7 +357,7 @@ app.all('/psdllp',function(req,res){
     
 })
 
-app.all('/sjPdf', function(req,res){
+app.all('/iyc/sjPdf', function(req,res){
     var a = fs.readFileSync('template/template.html','utf8')
     var templ = Handlebars.compile(a)
     let options = {width: '21cm', height: '29.7cm'};
@@ -354,23 +367,23 @@ app.all('/sjPdf', function(req,res){
     })
 })
 
-app.post('/sjMa', function(req,res){
+app.post('/iyc/sjMa', function(req,res){
     res.send(req.body)
 })
 
-app.all('/sendSJNew', cors(), function(req,res){
+app.all('/iyc/sendSJNew', cors(), function(req,res){
     let g = req.body
-    createMA(g)
+    external.createMA(g)
     .then(urlMa=>{
         g.info.urlMa = urlMa
-        createPDF(g).then(urlPdf=>{
+        external.createPDF(g).then(urlPdf=>{
             g.info.urlPdf = urlPdf
             admin.app('default').auth().getUser(g.userId).then(user=>{
                 g.info.ccAuth = user.email
-                transporter.sendMail(createMailOptionsNewMA(g), (error, info)=>{
+                transporter.sendMail(external.createMailOptionsNewMA(g), (error, info)=>{
                     if(error) res.status(300).send(error)
                     if(info) {
-                        transporter.sendMail(createMailOptionsNew(g), (error, info)=>{
+                        transporter.sendMail(external.createMailOptionsNew(g), (error, info)=>{
                             if (error) res.status(300).send(error)
                             if(info) {
                                 res.status(200).json({mailResult: info})             
@@ -383,12 +396,6 @@ app.all('/sendSJNew', cors(), function(req,res){
     })
 })
 
-app.all('/mailepi', function(req,res){
-    transporter_epiroc.sendMail(createMailOption(),(err,info)=>{
-        if(err) console.log(err)
-        res.json({info:info})
-    })
-})
 
 //GRC
 
@@ -483,7 +490,7 @@ app.all('/grc/sjPdf', function(req,res){
 
 app.all('/grc/sjPdfForApproval', function(req,res){
     let g = req.body
-    createPDFforApprovalgrc(g)
+    external.createPDFforApprovalgrc(g)
     .then(()=>{
         res.status(200).json({saved:true})
     })
@@ -491,11 +498,11 @@ app.all('/grc/sjPdfForApproval', function(req,res){
 
 app.all('/grc/sendSJNew', function(req,res){
     let g = req.body
-    createPDFgrc(g).then(urlPdf=>{
+    external.createPDFgrc(g).then(urlPdf=>{
         g.info.urlPdf = urlPdf
         admin.app('grc').auth().getUser(g.userId).then(user=>{
             g.info.ccAuth = user.email
-            transporter.sendMail(createMailOptionsNewgrc(g), (error, info)=>{
+            transporter.sendMail(external.createMailOptionsNewgrc(g), (error, info)=>{
                 if (error) res.status(300).send(error)
                 if (info) {
                     res.status(200).json({mailResult: info})             
@@ -536,387 +543,3 @@ app.listen(porta, ()=>{
 
 
 
-
-//FUNCTIONS
-
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: 'episerjob@gmail.com',
-      pass: 'xvesvmaufsunnzvr' 
-    }
-  });
-
-/*const transporter_epiroc = nodemailer.createTransport({
-host: 'smtp.office365.com',
-auth: {
-    user: 'marco.arato@epiroc.com',
-    pass: '***' 
-}
-})*/
-
-
-
-function createMailOption(){
-    /*let n = a.userN + ' ' + a.userC
-    let chFEA=false
-    admin.app('default').database().ref('Tech').child(n).once('value',k=>{
-        if(k.val().s.substring(0,6)=='F.E.A.') chFEA=true
-    })*/
-
-    const mailOptions = {
-        from: 'Epiroc Service <marco.arato@epiroc.com>',
-        //replyTo: 'marco.fumagalli@epiroc.com',
-        to: 'marco.arato@gmail.com',
-        subject: 'test',
-        text: 'prova'
-      };
-      return mailOptions
-}
-
-function createMailOptions(a){
-    /*let n = a.userN + ' ' + a.userC
-    let chFEA=false
-    admin.app('default').database().ref('Tech').child(n).once('value',k=>{
-        if(k.val().s.substring(0,6)=='F.E.A.') chFEA=true
-    })*/
-
-    const mailOptions = {
-        from: 'Epiroc Service <episerjob@gmail.com>',
-        replyTo: 'marco.fumagalli@epiroc.com',
-        to: a.to1,
-        cc: a.userM,
-        subject: a.subject,
-        text: `In allegato scheda lavoro relativa all'intervento effettuato dal nostro tecnico Sig. ${a.userN} ${a.userC}.\nVi ringraziamo qualora abbiate aderito al nostro sondaggio.\n\n\nRisultato sondaggio:\n\nOrganizzazione intervento: ${a.son1}\nConsegna Ricambi: ${a.son2}\nEsecuzione Intervento: ${a.son3}`,
-        //html:mailBody,
-        attachments: {
-            filename: a.fileN? a.fileN + '.pdf': '',
-            path: a.urlPdf? a.urlPdf : ''
-        }
-      };
-      return mailOptions
-}
-
-function createMailOptionsInt(a){
-    const mailOptions = {
-        from: `${a.userN} ${a.userC} - Epiroc Service <episerjob@gmail.com>`,
-        to: "marco.arato@epiroc.com", //"marco.fumagalli@epiroc.com"
-        cc: "", //"mario.parravicini@epiroc.com; carlo.colombo@epiroc.com; marco.arato@epiroc.com",
-        replyTo: 'marco.fumagalli@epiroc.com',
-        subject: a.subject,
-        text: `Risultato sondaggio:\n\nOrganizzazione intervento: ${a.son1}\nConsegna Ricambi: ${a.son2}\nEsecuzione Intervento: ${a.son3} ${a.rap}\n\n\nRisk Assessment \n ${a.rAss}`,
-        attachments: [
-            {
-                filename: a.fileN + '.pdf',
-                path: a.urlPdf
-            },
-            {
-                filename: a.fileN + '.ma',
-                path: a.urlMa
-            }
-        ]
-      };
-      return mailOptions
-}
-
-function createMailOptionsIntProd(a){
-    const mailOptions = {
-        from: `${a.userN} ${a.userC} - Epiroc Service <episerjob@gmail.com>`,
-        replyTo: 'marco.fumagalli@epiroc.com',
-        to: "marco.fumagalli@epiroc.com",
-        cc: "mario.parravicini@epiroc.com; carlo.colombo@epiroc.com; marco.arato@epiroc.com",
-        subject: a.subject,
-        text: `Risultato sondaggio:\n\nOrganizzazione intervento: ${a.son1}\nConsegna Ricambi: ${a.son2}\nEsecuzione Intervento: ${a.son3} ${a.rap}\n\n\nRisk Assessment \n ${a.rAss}`,
-        attachments: [
-            {
-                filename: a.fileN + '.pdf',
-                path: a.urlPdf
-            },
-            {
-                filename: a.fileN + '.ma',
-                path: a.urlMa
-            }
-        ]
-      };
-      return mailOptions
-}
-
-function createPDF(b){
-    return new Promise((res,rej)=>{
-        var a = fs.readFileSync('template/template.html','utf8')
-        var templ = Handlebars.compile(a)
-        let options = {width: '21cm', height: '29.7cm'};
-        let file = {content: templ(b)}
-        html_to_pdf.generatePdf(file,options).then((d)=>{
-            let ref = firebase.default.storage().ref(b.author + '/' + b.info.fileName + '.pdf')
-            ref.put(Uint8Array.from(Buffer.from(d)).buffer, {contentType: 'application/pdf'})
-            .then(()=>{
-                ref.getDownloadURL().then(url=>{
-                    res(url)
-                })
-            })
-        })
-    })
-}
-
-function createMA(a){
-    return new Promise((res,rej)=>{
-        if(a.info.fileName){
-            let ref = firebase.default.storage().ref(a.author + '/' + a.info.fileName + '.ma')
-            ref.put(Uint8Array.from(Buffer.from(JSON.stringify(a))).buffer)
-            .then(()=>{
-                ref.getDownloadURL().then(url=>{
-                    res(url)
-                })
-            })  
-        }
-    })
-}
-
-function createMailOptionsNew(a){
-    let cc=[]
-    if(!cc.includes(a.info.ccAuth)) cc.push(a.info.ccAuth)
-    let tech='tecnico Sig. ' + a.author
-    if(a.author=='Officina Vernia') tech='Service Partner Officina Vernia'
-    const mailOptionsNew = {
-            from: `${a.author} - Epiroc Service <episerjob@gmail.com>`,
-            replyTo: 'marco.fumagalli@epiroc.com',
-            to: a.elencomail,
-            cc: a.info.cc? cc.join(';'):'',
-            subject: a.info.subject,
-            text: `In allegato scheda lavoro relativa all'intervento effettuato dal nostro ${tech}.\nVi ringraziamo qualora abbiate aderito al nostro sondaggio.\n\n\nRisultato sondaggio:\n\nOrganizzazione intervento: ${a.rissondaggio.split('')[0]}\nConsegna Ricambi: ${a.rissondaggio.split('')[1]}\nEsecuzione Intervento: ${a.rissondaggio.split('')[2]}`,
-            attachments: {
-                filename: a.info.fileName + '.pdf',
-                path: a.info.urlPdf
-            }
-        }
-
-    return (mailOptionsNew)
-}
-
-function createMailOptionsNewMA(a){
-    const mailOptionsNewMA = {
-            from: `${a.author} - Epiroc Service <episerjob@gmail.com>`,
-            replyTo: 'marco.fumagalli@epiroc.com',
-            to: 'marco.fumagalli@epiroc.com',
-            cc: a.info.cc?'marco.arato@epiroc.com; mario.parravicini@epiroc.com; carlo.colombo@epiroc.com':'',
-            subject: a.info.subject,
-            text: `Risultato sondaggio:\n\nOrganizzazione intervento: ${a.rissondaggio.split('')[0]}\nConsegna Ricambi: ${a.rissondaggio.split('')[1]}\nEsecuzione Intervento: ${a.rissondaggio.split('')[2]}\n\nRapporto:\n${a.rappl1} ${a.oss1!=''? '\n\nOsservazioni:\n' + a.oss1: ''}`,
-            attachments: [{
-                filename: a.info.fileName + '.ma',
-                path: a.info.urlMa
-            },
-            {
-                filename: a.info.fileName + '.pdf',
-                path: a.info.urlPdf
-            }]
-        }
-
-    return (mailOptionsNewMA)
-}
-
-var source=`
-<p>Prego elaborare offerta per i ricambi sotto elencati
-{{#if shipAdd}}<br> da inoltrare a{{#shipAdd}} {{name}} ({{mail}}){{/shipAdd}}{{/if}} 
-<br>Destinatario: {{customer}} {{#if shipTo.address}} - {{shipTo.address}} {{/if}}
-<br>Macchina: <a href="https://episjobadmin.web.app/machine;sn={{sn}}"><strong>{{model}} (s/n: {{sn}})</strong></a>
-{{#if shipTo.cig}}<br>CIG: {{shipTo.cig}}{{/if}} {{#if shipTo.cup}} CUP: {{shipTo.cup}}{{/if}}<p>
-<br>
-<table style="border-collapse: collapse;">    
-<tr>
-        <th style="padding: 5px 20px;border: 1px solid black">Categorico</th>
-        <th style="padding: 5px 20px;border: 1px solid black">Descrizione</th>
-        <th style="padding: 5px 20px; text-align:center;border: 1px solid black">Q.tà</th>
-    </tr>
-    {{#Parts}}
-    <tr>
-        <td style="padding: 5px 20px;border: 1px solid black">{{pn}}</td>
-        <td style="padding: 5px 20px;border: 1px solid black">{{desc}}</td>
-        <td style="padding: 5px 20px; text-align:center;border: 1px solid black">{{qty}}</td>
-    </tr>
-    {{/Parts}}
-</table>
-`
-
-var template=Handlebars.compile(source)
-
-
-
-var sourceImi=`
-<p>Prego ordinare i seguenti ricambi relativi alla macchina <strong>{{model}} (s/n: {{sn}})</strong><p>
-<br>
-<p>Copiare ed incollare la seguente lista in ShopOnLine:</p>
-<table style="border-collapse: collapse;">    
-<!--<tr>
-        <th style="padding: 5px 20px;border: 1px solid black">Categorico</th>
-        <th style="padding: 5px 20px; text-align:center;border: 1px solid black">Q.tà</th>
-        <th style="padding: 5px 20px;border: 1px solid black">Descrizione</th>
-    </tr>-->
-    {{#Parts}}
-    <tr>
-        <td style="padding: 5px 20px;border: 1px solid black">{{pn}}</td>
-        <td style="padding: 5px 20px; text-align:center;border: 1px solid black">{{qty}}</td>
-        <td style="padding: 5px 20px;border: 1px solid black">{{desc}}</td>
-    </tr>
-    {{/Parts}}
-</table>
-`
-
-var templateImi=Handlebars.compile(sourceImi)
-
-
-
-function createMailParts(a){
-    let to=['nicola.megna@epiroc.com','marco.fumagalli@epiroc.com']
-    let cc=['mario.parravicini@epiroc.com', 'marco.arato@epiroc.com', 'giordano.perini@epiroc.com']
-    if(a.type=='CustomerSupport') {
-        cc.push('marco.fumagalli@epiroc.com', 'cristiana.besana@epiroc.com')
-    }
-    return new Promise((res,rej)=>{
-        var data = a
-        let ind=0
-        data['shipAdd']=[]
-        if(a.shipTo && a.shipTo.cont.length>0){
-            a.shipTo.cont.forEach(w=>{
-                data['shipAdd'][ind]=w
-                ind++
-            })
-        }
-        getMailCc(a.origId, cc).then((a1)=>{
-            if(a1) cc=a1
-            getSAM(a.sn,cc)
-            .then(a2=>{
-                if(a2) cc=a2
-                var html=template(data)
-                var mailOptions = {
-                    from: `${a.author} - Epiroc Service <episerjob@gmail.com>`,
-                    replyTo: 'marco.fumagalli@epiroc.com',
-                    to: a.type=="CustomerSupport"?to[0]:to[1],
-                    cc: '' + cc.toString().replace(/,/g,'; '),// + (a.type=='CustomerSupport'?'; marco.fumagalli@epiroc.com; cristiana.besana@epiroc.com':'') + cc,
-                    subject: a.type + ': New Parts request to '+ a.customer + ' - ' + a.model + ' (s/n: ' + a.sn + ')',
-                    html: html,
-                }
-                if(mailOptions!=undefined) res(mailOptions)              
-            })
-        })
-    })
-}
-
-function createMailPartsImi(a){
-    let to=['marco.arato@epiroc.com','marco.fumagalli@epiroc.com']//['andrea.dizioli@imifabi.com','francesco.viviani@imifabi.com']
-    let cc=['']//['mario.parravicini@epiroc.com', 'marco.arato@epiroc.com', 'marco.fumagalli@epiroc.com', 'carlo.colombo@epiroc.com', 'giorgio.rizzi@epiroc.com']
-    return new Promise((res,rej)=>{
-        var html=templateImi(a)
-        var mailOptions = {
-            from: `${a.author} - Epiroc Service <episerjob@gmail.com>`,
-            replyTo: 'marco.fumagalli@epiroc.com',
-            to: to.toString().replace(/,/g,'; '),
-            cc: cc.toString().replace(/,/g,'; '),
-            subject: 'Epiroc Service: New Parts request for '+ a.model + ' (s/n: ' + a.sn + ')',
-            html: html,
-        }
-        if(mailOptions!=undefined) res(mailOptions) 
-    })
-}
-
-function getMailCc(a, cc){
-    return new Promise((res,rej)=>{
-        admin.app('default').auth().getUser(a).then(b=>{
-            admin.app('default').database().ref('Users').child(b.uid).child('Pos').once('value',g=>{
-                if(g!=null && (g.val()=='tech' || g.val()=='sales') && !cc.includes(b.email)) cc.push(b.email)
-                res(cc)
-            })
-        })
-    })
-    
-}
-
-function getSAM(a,cc){
-    return new Promise((res,rej)=>{
-        setTimeout(() => {
-            res(cc)
-        }, 10000);
-        admin.app('default').database().ref('RigAuth').child(a).once('value', h=>{
-            let f = Object.values(h.val())
-            let index = 0
-            h.forEach(t=>{
-                if(t.val()=='1' && t.key.substring(1,3)<50) {
-                    admin.app('default').database().ref('Users').once('value',l=>{
-                        l.forEach(de=>{
-                            if(de.val().Area==t.key.substring(1,3)){
-                                admin.app('default').auth().getUser(de.key).then(s=>{
-                                    if(!cc.includes(s.email)) {
-                                        cc.push(s.email)
-                                        index++
-                                    }
-                                })
-                            } else {index++}
-                        })
-                    })
-                } else {index++}
-                if (index==f.length ) res(cc)
-            })
-        })
-    })
-}
-
-//GRC
-
-function createPDFgrc(b){
-    return new Promise((res,rej)=>{
-        var a = fs.readFileSync('template/templategrc.html','utf8')
-        var templ = Handlebars.compile(a)
-        let options = {width: '21cm', height: '29.7cm'};
-        let file = {content: templ(b)}
-        html_to_pdf.generatePdf(file,options).then((d)=>{
-            let ref = firebase.app('grc').storage().ref(b.author + '/' + b.info.fileName + '.pdf')
-            ref.put(Uint8Array.from(Buffer.from(d)).buffer, {contentType: 'application/pdf'})
-            .then(()=>{
-                ref.getDownloadURL().then(url=>{
-                    res(url)
-                })
-            })
-        })
-    })
-}
-
-function createPDFforApprovalgrc(b){
-    return new Promise((res,rej)=>{
-        var a = fs.readFileSync('template/templategrc.html','utf8')
-        var templ = Handlebars.compile(a)
-        let options = {width: '21cm', height: '29.7cm'};
-        let file = {content: templ(b)}
-        html_to_pdf.generatePdf(file,options).then((d)=>{
-            let ref = firebase.app('grc').storage().ref('Closed/' + b.info.fileName + '.pdf')
-            ref.put(Uint8Array.from(Buffer.from(d)).buffer, {contentType: 'application/pdf'})
-            .then(()=>{
-                ref.getDownloadURL().then(url=>{
-                    console.log('saved')
-                    res(url)
-                })
-            })
-        })
-    })
-}
-
-function createMailOptionsNewgrc(a){
-    let cc=[]
-    cc.push('dimitris.nikolakopoulos@epiroc.com')
-    cc.push('marco.arato@epiroc.com')
-    if(!cc.includes(a.info.ccAuth)) cc.push(a.info.ccAuth)
-    let tech= a.author
-    const mailOptionsNew = {
-            from: `${a.author} - Epiroc Service GRC <episerjob@gmail.com>`,
-            replyTo: 'dimitris.nikolakopoulos@epiroc.com',
-            to: a.elencomail,
-            cc: a.info.cc? cc.join(';'):'',
-            subject: a.info.subject,
-            text: `Please find attached Service Job by Epiroc techinician Mr. ${tech}.\nThank you for completing the survey.\n\n\nSurvey Results:\n\nPlanning: ${a.rissondaggio.split('')[0]}\nParts Delivery: ${a.rissondaggio.split('')[1]}\nExecution: ${a.rissondaggio.split('')[2]}`,
-            attachments: {
-                filename: a.info.fileName + '.pdf',
-                path: a.info.urlPdf
-            }
-        }
-
-    return (mailOptionsNew)
-}
