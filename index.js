@@ -12,12 +12,11 @@ const axios = require('axios')
 const Handlebars = require("handlebars");
 const fs = require('fs');
 var html_to_pdf = require('html-pdf-node');
-const firebase = require('firebase/app')
-const firebasegrc = require('firebase/app');
 const { config } = require('process');
 require('firebase/storage')
 const ver = require('./package.json').version
-const external = require('./public/functions')
+const iyc = require('./public/iyc')
+const grc = require('./public/grc')
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -42,10 +41,6 @@ const transporter = nodemailer.createTransport({
       pass: 'xvesvmaufsunnzvr' 
     }
   });
-
-  app.all('/iyc/test', function(req,res){
-    res.send(external.test())
-})
 
 app.all('/grc', function(req,res){
     admin.app('grc').auth().listUsers(1000).then((a)=>{
@@ -142,11 +137,11 @@ app.get('/iyc/delete',function(req,res){
 app.all('/iyc/mail', function(req, res,next) {
     var arg = req.query
     if(arg.to1!=undefined){
-        transporter.sendMail(external.createMailOptions(arg), (error, info)=>{
+        transporter.sendMail(iyc.createMailOptions(arg), (error, info)=>{
             if (error) {
             console.log(error);
             } else {
-                transporter.sendMail(external.createMailOptionsIntProd(arg), (error, info)=>{
+                transporter.sendMail(iyc.createMailOptionsIntProd(arg), (error, info)=>{
                     if (error) {
                     console.log(error);
                     } else {
@@ -178,11 +173,11 @@ app.all('/iyc/mailmod', async function(req, res,next) {
     })
     setTimeout(() => {
         if(arg.to1!=undefined){
-            transporter.sendMail(external.createMailOptions(arg), (error, info)=>{
+            transporter.sendMail(iyc.createMailOptions(arg), (error, info)=>{
                 if (error) {
                 console.log(error);
                 } else {
-                    transporter.sendMail(external.createMailOptionsIntProd(arg), (error, info)=>{
+                    transporter.sendMail(iyc.createMailOptionsIntProd(arg), (error, info)=>{
                         if (error) {
                         console.log(error);
                         } else {
@@ -201,11 +196,11 @@ app.all('/iyc/mailmod', async function(req, res,next) {
 app.all('/iyc/maildebug', async function(req, res,next) {
     var arg = req.query
     if(arg.to1!=undefined){
-        transporter.sendMail(external.createMailOptions(arg), (error, info)=>{
+        transporter.sendMail(iyc.createMailOptions(arg), (error, info)=>{
             if (error) {
             console.log(error);
             } else {
-                transporter.sendMail(external.createMailOptionsInt(arg), (error, info)=>{
+                transporter.sendMail(iyc.createMailOptionsInt(arg), (error, info)=>{
                     if (error) {
                     console.log(error);
                     } else {
@@ -304,7 +299,7 @@ app.get('/iyc/certiq', function(req,res){
 app.all('/iyc/partreq', cors(), function(req,res){
     let dest = req.body?req.body.type:req.query.info.type
     if(dest!='Customer'){
-      external.createMailParts(req.body?req.body:req.query.info)
+      iyc.createMailParts(req.body?req.body:req.query.info)
         .then(a=>{
             transporter.sendMail(a, (error, info)=>{
                 if (error) res.status(300).send(error)
@@ -312,7 +307,7 @@ app.all('/iyc/partreq', cors(), function(req,res){
             })
         })  
     } else {
-        external.createMailPartsImi(req.body?req.body:req.query.info)
+        iyc.createMailPartsImi(req.body?req.body:req.query.info)
         .then(a=>{
             transporter.sendMail(a, (error, info)=>{
                 if (error) res.status(300).send(error)
@@ -353,17 +348,17 @@ app.post('/iyc/sjMa', function(req,res){
 
 app.all('/iyc/sendSJNew', cors(), function(req,res){
     let g = req.body
-    external.createMA(g)
+    iyc.createMA(g)
     .then(urlMa=>{
         g.info.urlMa = urlMa
-        external.createPDF(g).then(urlPdf=>{
+        iyc.createPDF(g).then(urlPdf=>{
             g.info.urlPdf = urlPdf
             admin.app('default').auth().getUser(g.userId).then(user=>{
                 g.info.ccAuth = user.email
-                transporter.sendMail(external.createMailOptionsNewMA(g), (error, info)=>{
+                transporter.sendMail(iyc.createMailOptionsNewMA(g), (error, info)=>{
                     if(error) res.status(300).send(error)
                     if(info) {
-                        transporter.sendMail(external.createMailOptionsNew(g), (error, info)=>{
+                        transporter.sendMail(iyc.createMailOptionsNew(g), (error, info)=>{
                             if (error) res.status(300).send(error)
                             if(info) {
                                 res.status(200).json({mailResult: info})             
@@ -464,13 +459,12 @@ app.all('/grc/sjPdf', function(req,res){
     let file = {content: templ(req.body)}
     html_to_pdf.generatePdf(file,options).then((d)=>{
         if(d) res.end(d)
-        res.send('error')
     })
 })
 
 app.all('/grc/sjPdfForApproval', function(req,res){
     let g = req.body
-    external.createPDFforApprovalgrc(g)
+    grc.createPDFforApprovalgrc(g)
     .then(()=>{
         res.status(200).json({saved:true})
     })
@@ -478,11 +472,11 @@ app.all('/grc/sjPdfForApproval', function(req,res){
 
 app.all('/grc/sendSJNew', function(req,res){
     let g = req.body
-    external.createPDFgrc(g).then(urlPdf=>{
+    grc.createPDFgrc(g).then(urlPdf=>{
         g.info.urlPdf = urlPdf
         admin.app('grc').auth().getUser(g.userId).then(user=>{
             g.info.ccAuth = user.email
-            transporter.sendMail(external.createMailOptionsNewgrc(g), (error, info)=>{
+            transporter.sendMail(grc.createMailOptionsNewgrc(g), (error, info)=>{
                 if (error) res.status(300).send(error)
                 if (info) {
                     res.status(200).json({mailResult: info})             
