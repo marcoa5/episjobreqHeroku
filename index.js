@@ -224,7 +224,7 @@ app.get('/iyc/certiq', function(req,res){
     let yesterday = req.query.day
     axios({
         method:'get',
-        url: 'https://api.epiroc.com/certiq/v2/authentication/login?username=marco.arato@epiroc.com&password=Epiroc2019',
+        url: 'https://api.epiroc.com/certiq/v2/authentication/login?username=marco.arato@epiroc.com&password=' + process.env.certiqPassword,
         headers: {
             'Ocp-Apim-Subscription-Key':'3b705806444d47f3b2308cf6c138ac74'
         }
@@ -484,6 +484,10 @@ app.all('/grc/sendSJNew', function(req,res){
             })   
         })
     })
+})
+
+app.all('iyc/certiqHrs',function(req,res){
+
 })
 
 //ALL
