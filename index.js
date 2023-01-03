@@ -8,6 +8,7 @@ var admingrc = require("firebase-admin");
 var serviceAccount = require('./key.json')
 var serviceAccountgrc = require('./keygrc.json')
 const porta = process.env.PORT || 3001
+const certiqOcp = process.env.certiqOcp
 const axios = require('axios')
 const Handlebars = require("handlebars");
 const fs = require('fs');
@@ -16,7 +17,9 @@ const { config } = require('process');
 require('firebase/storage')
 const ver = require('./package.json').version
 const iyc = require('./public/iyc')
-const grc = require('./public/grc')
+const grc = require('./public/grc');
+const { machine } = require('os');
+const moment = require('moment/moment');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -226,7 +229,7 @@ app.get('/iyc/certiq', function(req,res){
         method:'get',
         url: 'https://api.epiroc.com/certiq/v2/authentication/login?username=marco.arato@epiroc.com&password=' + process.env.certiqPassword,
         headers: {
-            'Ocp-Apim-Subscription-Key':'3b705806444d47f3b2308cf6c138ac74'
+            'Ocp-Apim-Subscription-Key':certiqOcp
         }
     })
     .then(data=>{
@@ -236,7 +239,7 @@ app.get('/iyc/certiq', function(req,res){
             method:'get',
             url: 'https://api.epiroc.com/certiq/v2/machines',
             headers: {
-                'Ocp-Apim-Subscription-Key':'3b705806444d47f3b2308cf6c138ac74',
+                'Ocp-Apim-Subscription-Key':certiqOcp,
                 'X-Auth-Token':code
             }
         })
@@ -259,7 +262,7 @@ app.get('/iyc/certiq', function(req,res){
                     method:'get',
                     url: 'https://api.epiroc.com/certiq/v2/machines/'+ sr.machineItemNumber +'/kpis/' + yesterday,
                     headers: {
-                        'Ocp-Apim-Subscription-Key':'3b705806444d47f3b2308cf6c138ac74',
+                        'Ocp-Apim-Subscription-Key':certiqOcp,
                         'X-Auth-Token':code
                     }
                 })
@@ -270,7 +273,7 @@ app.get('/iyc/certiq', function(req,res){
                         method:'get',
                         url: 'https://api.epiroc.com/certiq/v2/machines/'+ sr.machineItemNumber +'/serviceStatus',
                         headers: {
-                            'Ocp-Apim-Subscription-Key':'3b705806444d47f3b2308cf6c138ac74',
+                            'Ocp-Apim-Subscription-Key':certiqOcp,
                             'X-Auth-Token':code
                         }
                     })
@@ -486,8 +489,79 @@ app.all('/grc/sendSJNew', function(req,res){
     })
 })
 
-app.all('iyc/certiqHrs',function(req,res){
+app.all('/iyc/certiqHrs',function(req,res){
+    axios({
+        method:'get',
+        url: 'https://api.epiroc.com/certiq/v2/authentication/login?username=marco.arato@epiroc.com&password=' + process.env.certiqPassword,
+        headers: {
+            'Ocp-Apim-Subscription-Key':certiqOcp
+        }
+    })
+    .then(data=>{
+        let uCode = data.data.userCode
+        axios({
+            method:'get',
+            url: 'https://api.epiroc.com/certiq/v2/machines',
+            headers: {
+                'Ocp-Apim-Subscription-Key':certiqOcp,
+                'X-Auth-Token':uCode
+            }
+        })
+        .then((info)=>{
+            let machines = info.data.data
+            let count = machines.length
+            let index=0
+            var list=list||{}
+            machines.forEach(m=>{
+                let yy = /(?<= - ).*(?= - )/g
+                let arr = yy.exec(m.machineName)
+                let name=''
+                try{
+                    name=[arr[0]]
+                    list[name]=list[name]||{}
+                } catch{}
 
+                //list[m.machineName]=list[m.machineName]||{}
+                axios({
+                    method:'get',
+                    url:'https://api.epiroc.com/certiq/v2/machines/'+m.machineItemNumber+'/kpiOverview/',
+                    headers:{
+                       'Ocp-Apim-Subscription-Key':certiqOcp,
+                        'X-Auth-Token':uCode, 
+                    }
+                })
+                .then(d=>{
+                    let leng = d.data.length
+                    let ing = 0
+                    let stamp=''
+                    let eng=0
+                    let perc1=0
+                    let perc2=0
+                    let perc3=0
+                    d.data.forEach(f=>{
+                        if(moment(f.timeStamp).format('YYYYMMDD')>stamp) stamp = moment(f.timeStamp).format('YYYYMMDD') 
+                        if(f.name=='cumulativeEngineHours') eng = Math.round(f.value)
+                        if(f.name=='cumulativeDrillHours' && f.nodeIndex==1) perc1 = Math.round(f.value)
+                        if(f.name=='cumulativeDrillHours' && f.nodeIndex==2) perc2 = Math.round(f.value)
+                        if(f.name=='cumulativeDrillHours' && f.nodeIndex==3) perc3 = Math.round(f.value)
+                        ing++
+                        if(ing==leng) {
+                            try{
+                                list[name][stamp]=list[name][stamp]||{}
+                            list[name][stamp]['orem']=eng
+                            if(perc1>0) list[name][stamp]['perc1']=perc1
+                            if(perc2>0) list[name][stamp]['perc2']=perc2
+                            if(perc3>0) list[name][stamp]['perc3']=perc3
+                            } catch{}
+                            index++
+                            if(index==count) res.json(list)
+                        }
+                    })
+                })
+            })
+            
+        })
+    })
 })
 
 //ALL
