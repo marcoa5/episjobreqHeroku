@@ -520,8 +520,6 @@ app.all('/iyc/certiqHrs',function(req,res){
                     name=[arr[0]]
                     list[name]=list[name]||{}
                 } catch{}
-
-                //list[m.machineName]=list[m.machineName]||{}
                 axios({
                     method:'get',
                     url:'https://api.epiroc.com/certiq/v2/machines/'+m.machineItemNumber+'/kpiOverview/',
@@ -531,47 +529,14 @@ app.all('/iyc/certiqHrs',function(req,res){
                     }
                 })
                 .then(d=>{
-                    let leng = d.data.length
-                    let ing = 0
-                    let stamp=''
-                    let eng=0
-                    let perc1=0
-                    let perc2=0
-                    let perc3=0
-                    d.data.forEach(f=>{
-                        if(moment(f.timeStamp).format('YYYYMMDD')>stamp) stamp = moment(f.timeStamp).format('YYYYMMDD') 
-                        if(f.name=='cumulativeEngineHours') eng = Math.round(f.value)
-                        if(f.name=='cumulativeDrillHours' && f.nodeIndex==1) perc1 = Math.round(f.value)
-                        if(f.name=='cumulativeDrillHours' && f.nodeIndex==2) perc2 = Math.round(f.value)
-                        if(f.name=='cumulativeDrillHours' && f.nodeIndex==3) perc3 = Math.round(f.value)
-                        ing++
-                        let ore
-                        if(ing==leng) {
-                            try{
-                                list[name][stamp]=list[name][stamp]||{}
-                                if(eng>10) {
-                                    //list[name][stamp]['orem']=eng
-                                    ore={
-                                        orem:eng,
-                                        perc1:perc1>0?perc1:undefined,
-                                        perc2:perc2>0?perc2:undefined,
-                                        perc3:perc3>0?perc3:undefined
-                                    }
-                                    list[name][stamp]=ore
-                                    /*if(perc1>0) list[name][stamp]['perc1']=perc1
-                                    if(perc2>0) list[name][stamp]['perc2']=perc2
-                                    if(perc3>0) list[name][stamp]['perc3']=perc3*/
-                                }
-                            } catch{}
-                            if(ore===undefined) {
-                                delete list[name]
-                                console.log(name + ' deleted')
-                            }
-                            index++
-                            console.log(name, stamp, eng,perc1,perc2,perc3, ' - ' , index, count, ' - ' ,ore)
-                            if(index==count) res.json(list)
-                        }
-                    })
+                    list[name]= d.data
+                })
+                .catch((err)=>{
+                    console.log('ERROR')
+                })
+                .finally(()=>{
+                    index++
+                    if(index==count) res.json(list)
                 })
             })
             
