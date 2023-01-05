@@ -545,15 +545,30 @@ app.all('/iyc/certiqHrs',function(req,res){
                         if(f.name=='cumulativeDrillHours' && f.nodeIndex==2) perc2 = Math.round(f.value)
                         if(f.name=='cumulativeDrillHours' && f.nodeIndex==3) perc3 = Math.round(f.value)
                         ing++
+                        let ore
                         if(ing==leng) {
                             try{
                                 list[name][stamp]=list[name][stamp]||{}
-                            list[name][stamp]['orem']=eng
-                            if(perc1>0) list[name][stamp]['perc1']=perc1
-                            if(perc2>0) list[name][stamp]['perc2']=perc2
-                            if(perc3>0) list[name][stamp]['perc3']=perc3
+                                if(eng>10) {
+                                    //list[name][stamp]['orem']=eng
+                                    ore={
+                                        orem:eng,
+                                        perc1:perc1>0?perc1:undefined,
+                                        perc2:perc2>0?perc2:undefined,
+                                        perc3:perc3>0?perc3:undefined
+                                    }
+                                    list[name][stamp]=ore
+                                    /*if(perc1>0) list[name][stamp]['perc1']=perc1
+                                    if(perc2>0) list[name][stamp]['perc2']=perc2
+                                    if(perc3>0) list[name][stamp]['perc3']=perc3*/
+                                }
                             } catch{}
+                            if(ore===undefined) {
+                                delete list[name]
+                                console.log(name + ' deleted')
+                            }
                             index++
+                            console.log(name, stamp, eng,perc1,perc2,perc3, ' - ' , index, count, ' - ' ,ore)
                             if(index==count) res.json(list)
                         }
                     })
