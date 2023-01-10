@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+	<title>Epiroc Italia s.r.l. - Consuntivo</title>
+    <style>
+        .foglio{
+            font-family: sans-serif;
+            border: 1px solid grey;
+            background-color: white;
+            height: 297mm;
+            width: 210mm;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .header{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo{
+            height: 1.5cm;
+            margin:1.5cm;
+        }
+
+        .fr{
+            height: 1.2cm;
+            margin:1.5cm;
+
+        }
+
+        .content{
+            margin: 0 1.5cm;
+            height: 100%;
+        }
+
+        .footer{
+            margin:1.5cm;
+        }
+
+        .foo{
+            width:18cm;
+        }
+
+        .main{
+            border-collapse: collapse;
+            width:100%;
+            height: 100%;
+        }
+
+        td{
+            border-left: 1px solid black;
+            border-right: 1px solid black;
+            padding: 1mm;
+        }
+
+        .title{
+            height: 0.3cm;
+            font-size: .2cm;
+            border-bottom: none;
+            border-top: 1px solid black;
+
+        }
+
+        .titolo{
+            font-size: .5cm;
+            text-align: center;
+        }
+
+        .cont{
+            font-size: .4cm;
+            height: .6cm;
+            border-top: none;
+        }
+
+        .row4{
+            border-bottom: none;
+        }
+
+        .row12{
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="foglio">
+        <div class="header">
+            <img class="logo" src="data:image/png;base64,{{logo}}">
+            <img class="fr" src="data:image/png;base64,{{frase}}">    
+        </div>
+        <div class="content">
+            
+            <table class="main">
+                <colgroup>
+                    <col span="1" style="width: 12.5%;">
+                    <col span="1" style="width: 12.5%;">
+                    <col span="1" style="width: 12.5%;">
+                    <col span="1" style="width: 12.5%;">
+                    <col span="1" style="width: 12.5%;">
+                    <col span="1" style="width: 12.5%;">
+                    <col span="1" style="width: 12.5%;">
+                    <col span="1" style="width: 12.5%;">
+                 </colgroup>
+                <tr class="row1 title">
+                    <td colspan="2">CODICE CLIENTE</td>
+                    <td colspan="4"></td>
+                    <td>DATA</td>
+                    <td>NUMERO</td>
+                </tr>
+                <tr class="row2 cont">
+                    <td colspan="2">{{custCode}}</td>
+                    <td colspan="4" class="titolo">CONSUNTIVO</td>
+                    <td>{{data}}</td>
+                    <td>{{docBPCS}}</td>
+                </tr>
+                <tr class="row3 title">
+                    <td colspan="4">DESTINATARIO MERCE</td>
+                    <td colspan="4">CLIENTE</td>
+                </tr>
+                <tr class="row4 cont">
+                    <td colspan="4">{{shipTo1}}</td>
+                    <td colspan="4">{{customer1}}</td>
+                </tr>
+                <tr class="row5 cont">
+                    <td colspan="4">{{shipTo2}}</td>
+                    <td colspan="4">{{customer2}}</td>
+                </tr>
+                <tr class="row6 cont">
+                    <td colspan="4">{{shipTo3}}</td>
+                    <td colspan="4">{{customer3}}</td>
+                </tr>
+                <tr class="row7 cont">
+                    <td colspan="4">{{shipTo4}}</td>
+                    <td colspan="4">{{customer4}}</td>
+                </tr>
+                <tr class="row8 title">
+                    <td colspan="4">VOSTRO RIFERIMENTO</td>
+                    <td colspan="4">NOSTRO RIFERIMENTO</td>
+                </tr>
+                <tr class="row9 cont">
+                    <td colspan="4">{{yourRef}}</td>
+                    <td colspan="4">{{ourRef}}</td>
+                </tr>
+                <tr class="row10 title">
+                    <td colspan="8">PAGAMENTO</td>
+                </tr>
+                <tr class="row11 cont">
+                    <td colspan="8">{{terms}}</td>
+                </tr>
+                <tr class="row12 title">
+                    <td colspan="2">CATALOGO</td>
+                    <td colspan="2">DESCRIZIONE</td>
+                    <td>PREZZO UNITARIO</td>
+                    <td>Q.TÀ</td>
+                    <td>% SC.</td>
+                    <td>IMPORTO NETTO</td>
+                </tr>
+                <tr class="row13 cont">
+                    <td colspan="2">CATALOGO</td>
+                    <td colspan="2">DESCRIZIONE</td>
+                    <td>PREZZO UNITARIO</td>
+                    <td>Q.TÀ</td>
+                    <td>% SC.</td>
+                    <td>IMPORTO NETTO</td>
+                </tr>
+                <tr></tr>
+            </table>
+
+            </table>
+        </div>
+        <div class="footer">
+            <img class="foo" src="data:image/png;base64,{{footer}}"> 
+        </div>
+    </div>
+</body>

@@ -36,6 +36,7 @@ app.use(bodyParser.urlencoded({limit: '50000kb',extended: true}))
 app.use(bodyParser.json({limit: '50000kb'}))
 app.use('/public',express.static(__dirname + '/public'));
 app.use(express.static(__dirname + '/template'));
+app.use(express.static(__dirname + '/imgs'));
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -544,6 +545,34 @@ app.all('/iyc/certiqHrs',function(req,res){
     })
 })
 
+app.all('/iyc/consuntivo', function(req,res){
+    var data    = fs.readFileSync('./template/consuntivo.html','utf8')
+    var temp = Handlebars.compile(data)
+    var img = fs.readFileSync('./imgs/frase.png')
+    var logo = fs.readFileSync('./imgs/logo.png')
+    var footer = fs.readFileSync('./imgs/footer.png')
+    console.log()
+    res.send(temp({
+        frase:img.toString('base64'),
+        logo:logo.toString('base64'),
+        footer:footer.toString('base64'),
+        custCode: '123456',
+        data: '10/01/2023',
+        docBPCS: '654321',
+        shipTo1: 'Cliente1',
+        shipTo2: 'indirizzo1',
+        shipTo3: 'indirizzo2',
+        shipTo4: 'indirizzo3',
+        customer1: 'Customer1',
+        customer2: 'Customer2',
+        customer3: 'Customer3',
+        customer4: 'Customer4',
+        yourRef:'numero offerta',
+        ourRef:'MAF',
+        terms:'R.B. 120GG DF FM'
+
+    }))
+})
 //ALL
 
 app.all('/', function(req, res,next) {
