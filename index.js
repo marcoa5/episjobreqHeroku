@@ -38,6 +38,28 @@ app.use('/public',express.static(__dirname + '/public'));
 app.use(express.static(__dirname + '/template'));
 app.use(express.static(__dirname + '/imgs'));
 
+Handlebars.registerHelper("sum", function(amt,qty){
+    if(amt!=null && qty!=null){
+        return new Intl.NumberFormat("it", {
+            minimumIntegerDigits: 1,
+            minimumFractionDigits: 2,
+          }).format(amt*qty)
+    }else{
+        return ' '
+    }
+})
+
+Handlebars.registerHelper('twoDigits', function(value){
+    if(value!=null){
+        return new Intl.NumberFormat("it", {
+            minimumIntegerDigits: 1,
+            minimumFractionDigits: 2,
+          }).format(value)
+    }else{
+        return ' '
+    }
+})
+
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -548,30 +570,18 @@ app.all('/iyc/certiqHrs',function(req,res){
 app.all('/iyc/consuntivo', function(req,res){
     var data    = fs.readFileSync('./template/consuntivo.html','utf8')
     var temp = Handlebars.compile(data)
-    var img = fs.readFileSync('./imgs/frase.png')
-    var logo = fs.readFileSync('./imgs/logo.png')
-    var footer = fs.readFileSync('./imgs/footer.png')
-    console.log()
-    res.send(temp({
-        frase:img.toString('base64'),
-        logo:logo.toString('base64'),
-        footer:footer.toString('base64'),
-        custCode: '123456',
-        data: '10/01/2023',
-        docBPCS: '654321',
-        shipTo1: 'Cliente1',
-        shipTo2: 'indirizzo1',
-        shipTo3: 'indirizzo2',
-        shipTo4: 'indirizzo3',
-        customer1: 'Customer1',
-        customer2: 'Customer2',
-        customer3: 'Customer3',
-        customer4: 'Customer4',
-        yourRef:'numero offerta',
-        ourRef:'MAF',
-        terms:'R.B. 120GG DF FM'
-
-    }))
+    let info=req.body.info
+    info.frase=iyc.img.toString('base64')
+    info.logo=iyc.logo.toString('base64')
+    info.footer=iyc.footer.toString('base64')
+    let options = {format: 'A4', margin:{top:0,bottom:0,left:0,right:0}};
+    if(req.body.type=='preview') {
+        res.json({res:temp(info)})
+    }else {
+        let file = {content: temp(info)}
+        html_to_pdf.generatePdf(file,options).then((d)=>{if(d) res.end(d)})  
+    }
+    
 })
 //ALL
 

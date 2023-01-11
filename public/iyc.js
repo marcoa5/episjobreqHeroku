@@ -303,4 +303,7 @@ function getSAM(a,cc){
     })
 }
 
+exports.img = fs.readFileSync('./imgs/frase.png')
+exports.logo = fs.readFileSync('./imgs/logo.png')
+exports.footer = fs.readFileSync('./imgs/footer.png')
  
