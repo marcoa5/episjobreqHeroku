@@ -54,7 +54,7 @@ Handlebars.registerHelper('twoDigits', function(value){
         return new Intl.NumberFormat("it", {
             minimumIntegerDigits: 1,
             minimumFractionDigits: 2,
-          }).format(value)
+        }).format(value)
     }else{
         return ' '
     }
@@ -577,6 +577,7 @@ app.all('/iyc/consuntivo', function(req,res){
     let options = {format: 'A4', margin:{top:0,bottom:0,left:0,right:0}};
     if(req.body.type=='preview') {
         res.json({res:temp(info)})
+        //res.send(temp(info))
     }else {
         let file = {content: temp(info)}
         html_to_pdf.generatePdf(file,options).then((d)=>{if(d) res.end(d)})  

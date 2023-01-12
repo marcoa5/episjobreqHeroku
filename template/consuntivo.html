@@ -54,6 +54,8 @@
 
         table{
             table-layout: fixed;
+            min-height: 22cm;
+            max-height: 22cm;
         }
 
         td{
@@ -88,7 +90,7 @@
 
 
         .small{
-            font-size: .32cm;
+            font-size: .25cm;
             border-left:none;
             border-right:none;
         }
@@ -125,6 +127,10 @@
             overflow:hidden;
             white-space: no-wrap;
         }
+
+        .center{
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -150,13 +156,13 @@
                         <td colspan="2">CODICE CLIENTE</td>
                         <td colspan="4"></td>
                         <td>DATA</td>
-                        <td>NUMERO</td>
+                        <td>SCHEDA LAVORO</td>
                     </tr>
                     <tr class="cont">
                         <td colspan="2">{{custCode}}</td>
                         <td colspan="4" class="titolo">CONSUNTIVO</td>
                         <td>{{data}}</td>
-                        <td>{{docBPCS}}</td>
+                        <td class="center">{{docBPCS}}</td>
                     </tr>
                     <tr class="title">
                         <td colspan="4">DESTINATARIO MERCE</td>
@@ -193,17 +199,17 @@
                         <td colspan="8">{{terms}}</td>
                     </tr>  
                     <tr class="title">
-                        <td colspan="8"></td>
+                        <td colspan="8">MACCHINA</td>
                     </tr>
                     <tr class="cont">
-                        <td colspan="8"></td>
+                        <td colspan="8">{{rig}}</td>
                     </tr>  
                     <tr class="title small_t">
                         <td colspan="1">CATALOGO</td>
                         <td colspan="4">DESCRIZIONE</td>
                         <td colspan="1">PREZZO UNITARIO</td>
                         <td colspan="1">Q.TÀ</td>
-                        <td colspan="1">IMPORTO NETTO</td>
+                        <td colspan="1">IMPORTO TOTALE</td>
                     </tr>
                     {{#each items}}
                     <tr class="cont">
