@@ -12,7 +12,6 @@
             top:0;
             left:0;
             font-family: sans-serif;
-
             display: flex;
             flex-direction: column;
             margin:0;
@@ -26,7 +25,7 @@
 
         .logo{
             height: 1.5cm;
-            margin:1cm 1.5cm;
+            margin:1.5cm 1.5cm 1cm 1.5cm;
         }
 
         .fr{
@@ -54,8 +53,8 @@
 
         table{
             table-layout: fixed;
-            min-height: 22cm;
-            max-height: 22cm;
+            min-height: 21.5cm;
+            max-height: 21.5cm;
         }
 
         td{
@@ -69,8 +68,23 @@
             height: 0.3cm;
             font-size: .2cm;
             border-bottom: none;
-            border-top: 1px solid black;
+            border: none;
+            background-color: rgb(66,85,99);
+            color:rgb(255,205,0);
+            font-weight: 800;
+        }
 
+        .title td{
+            border-left:1px solid rgb(255,205,0);
+            border-right:1px solid rgb(255,205,0);
+        }
+
+        .title td:first-child{
+            border-left:1px solid black;
+        }
+
+        .title td:last-child{
+            border-right:1px solid black;
         }
 
         .titolo{
@@ -79,7 +93,7 @@
         }
 
         .cont{
-            font-size: .4cm;
+            font-size: .32cm;
             height: .6cm;
             border-top: none;
         }
@@ -155,17 +169,17 @@
                     <tr class="title">
                         <td colspan="2">CODICE CLIENTE</td>
                         <td colspan="4"></td>
-                        <td>DATA</td>
-                        <td>SCHEDA LAVORO</td>
+                        <td class="center">DATA</td>
+                        <td class="center">SCHEDA LAVORO</td>
                     </tr>
                     <tr class="cont">
                         <td colspan="2">{{custCode}}</td>
                         <td colspan="4" class="titolo">CONSUNTIVO</td>
-                        <td>{{data}}</td>
+                        <td class="center">{{data}}</td>
                         <td class="center">{{docBPCS}}</td>
                     </tr>
                     <tr class="title">
-                        <td colspan="4">DESTINATARIO MERCE</td>
+                        <td class="dark" colspan="4">DESTINATARIO MERCE</td>
                         <td colspan="4">CLIENTE</td>
                     </tr>
                     <tr class="cont">
@@ -207,7 +221,7 @@
                     <tr class="title small_t">
                         <td colspan="1">CATALOGO</td>
                         <td colspan="4">DESCRIZIONE</td>
-                        <td colspan="1">PREZZO UNITARIO</td>
+                        <td colspan="1">PREZZO UNIT.</td>
                         <td colspan="1">Q.TÀ</td>
                         <td colspan="1">IMPORTO TOTALE</td>
                     </tr>
@@ -216,7 +230,7 @@
                         <td colspan="1" class="small number">{{pn}}</td>
                         <td colspan="4" class="small desc" nowrap>{{item}}</td>
                         <td colspan="1" class="small currency">{{twoDigits amt}}</td>
-                        <td colspan="1" class="small number">{{twoDigits qty}}</td>
+                        <td colspan="1" class="small number">{{qty}}</td>
                         <td colspan="1" class="small currency">{{sum amt qty}}</td>
                     </tr>
                     {{/each}}

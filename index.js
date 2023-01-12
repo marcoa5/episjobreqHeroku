@@ -570,14 +570,14 @@ app.all('/iyc/certiqHrs',function(req,res){
 app.all('/iyc/consuntivo', function(req,res){
     var data    = fs.readFileSync('./template/consuntivo.html','utf8')
     var temp = Handlebars.compile(data)
-    let info=req.body.info
+    let info=req.body.info?req.body.info:{}
     info.frase=iyc.img.toString('base64')
     info.logo=iyc.logo.toString('base64')
     info.footer=iyc.footer.toString('base64')
-    let options = {format: 'A4', margin:{top:0,bottom:0,left:0,right:0}};
+    let options = {format: 'A4', margin:{top:0,bottom:0,left:0,right:0},printBackground: true};
     if(req.body.type=='preview') {
-        res.json({res:temp(info)})
-        //res.send(temp(info))
+        //res.json({res:temp(info)})
+        res.send(temp(info))
     }else {
         let file = {content: temp(info)}
         html_to_pdf.generatePdf(file,options).then((d)=>{if(d) res.end(d)})  
