@@ -95,7 +95,7 @@
         }
 
         .cont{
-            font-size: .32cm;
+            font-size: .27cm;
             height: .5cm;
             max-height: .5cm;
             border-top: none;
@@ -253,7 +253,7 @@
                         <td class="right small currency borders" colspan="1">{{twoDigits sumSer}}</td>
                     </tr>
                     {{/if}}
-                    {{#if sumPar}}          
+                    {{#psd sumPar}}          
                     <tr class="cont">
                         <td class="right small borders" colspan="7">Totale Ricambi {{#psd __psdDiscount}}- Sconto {{int __psdDiscount}}% già applicato{{/psd}}:</td>
                         <td class="right small currency borders" colspan="1">{{twoDigits sumPar}}</td>
@@ -270,7 +270,7 @@
                                 <td class="right small currency borders" colspan="1">{{twoDigits tc}}</td>                       
                             </tr>
                         {{/seTruck}}
-                    {{/if}}
+                    {{/psd}}
                     <tr class="cont">
                         <td class="right small borders" colspan="7">Totale Complessivo:</td>
                         <td class="right small currency borders" colspan="1">{{sum3 sumPar sumSer tc}}</td>                       

@@ -13,14 +13,12 @@ const axios = require('axios')
 const Handlebars = require("handlebars");
 const fs = require('fs');
 var html_to_pdf = require('html-pdf-node');
-const { config } = require('process');
 require('firebase/storage')
 const ver = require('./package.json').version
 const iyc = require('./public/iyc')
 const grc = require('./public/grc');
-const { machine } = require('os');
 const moment = require('moment/moment');
-const { isSymbolObject } = require('util/types');
+
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -39,18 +37,6 @@ app.use('/public',express.static(__dirname + '/public'));
 app.use(express.static(__dirname + '/template'));
 app.use(express.static(__dirname + '/imgs'));
 
-Handlebars.registerHelper("sum2", function(amt1,amt2){
-    if(amt1!=null && amt1!='' && amt2!=null && amt2!=''){
-        return '€ ' + new Intl.NumberFormat("it", {
-            minimumIntegerDigits: 1,
-            minimumFractionDigits: 2,
-            maximumFractionDigits:2,
-          }).format(parseFloat(amt1)+parseFloat(amt2))
-    }else{
-        return null
-    }
-})
-
 Handlebars.registerHelper("int", function(qty){
     if(!isNaN(qty) && qty>0){
         return parseInt(qty)
@@ -66,7 +52,25 @@ Handlebars.registerHelper("sum3", function(amt1,amt2, amt3){
             minimumFractionDigits: 2,
             maximumFractionDigits:2,
           }).format(parseFloat(amt1)+parseFloat(amt2)+parseFloat(amt3))
-    }else{
+    }else if(amt1!=null && amt1!='' && amt2!=null && amt2!=''){
+        return '€ ' + new Intl.NumberFormat("it", {
+            minimumIntegerDigits: 1,
+            minimumFractionDigits: 2,
+            maximumFractionDigits:2,
+          }).format(parseFloat(amt1)+parseFloat(amt2))
+    }else if(amt1!=null && amt1!='' && amt3!=null && amt3!=''){
+        return '€ ' + new Intl.NumberFormat("it", {
+            minimumIntegerDigits: 1,
+            minimumFractionDigits: 2,
+            maximumFractionDigits:2,
+          }).format(parseFloat(amt1)+parseFloat(amt3))
+    }else if(amt2!=null && amt2!='' && amt3!=null && amt3!=''){
+        return '€ ' + new Intl.NumberFormat("it", {
+            minimumIntegerDigits: 1,
+            minimumFractionDigits: 2,
+            maximumFractionDigits:2,
+          }).format(parseFloat(amt2)+parseFloat(amt3))
+    }{
         return null
     }
 })
