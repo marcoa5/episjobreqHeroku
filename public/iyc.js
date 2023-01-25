@@ -309,7 +309,6 @@ exports.getAmount = function(info){
     let tem={} 
     return new Promise((res,rej)=>{
         keys.forEach(k=>{
-            console.log(info[k])
             if(k.substring(0,2)=='__'){
             }else if(k.substring(0,1)=='_'){
                 let key = k.substring(1,4)

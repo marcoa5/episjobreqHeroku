@@ -260,13 +260,14 @@
                     </tr>
                         {{#seAir __type}}
                             <tr class="cont">
-                                <td class="right small borders" colspan="7">Costi di Trasporto {{#psd __transAirF}} - € {{__transAirF}} {{/psd}} {{#psd __transAirP}}+{{__transAirP}}%{{/psd}}:</td>
+                                <td class="right small borders" colspan="7">Costi di Trasporto via Aerea {{#psd __transAirF}} - {{twoDigits __transAirF}} {{/psd}} {{#psd __transAirP}}+ {{__transAirP}}%{{/psd}}:</td>
                                 <td class="right small currency borders" colspan="1">{{twoDigits tc}}</td>                       
                             </tr>
                         {{/seAir}}
                         {{#seTruck __type}}
                             <tr class="cont">
-                                <td class="right small borders" colspan="7">Costi di Trasporto (€ {{__transTruckF}} + {{__transTruckP}}%):</td>
+                                <td class="right small borders" colspan="7">Costi di Trasporto via Camion {{#psd __transTruckF}} - {{twoDigits __transTruck}} {{/psd}} {{#psd __transTruckP}}+ {{__transTruckP}}%{{/psd}}:</td>
+
                                 <td class="right small currency borders" colspan="1">{{twoDigits tc}}</td>                       
                             </tr>
                         {{/seTruck}}
