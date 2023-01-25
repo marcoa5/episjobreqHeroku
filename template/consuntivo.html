@@ -96,8 +96,8 @@
 
         .cont{
             font-size: .32cm;
-            height: .6cm;
-            max-height: .6cm;
+            height: .5cm;
+            max-height: .5cm;
             border-top: none;
         }
 
@@ -110,7 +110,7 @@
             font-size: .25cm;
             border-left:none;
             border-right:none;
-            height: .3cm;
+            height: .25cm;
         }
 
         .small:first-child{
@@ -246,29 +246,35 @@
                         <td colspan="1" class="small number">{{qty}}</td>
                         <td colspan="1" class="small currency">{{twoDigits tot}}</td>
                     </tr>
-                    {{/each}}            
+                    {{/each}}  
+                    {{#if sumSer}}          
                     <tr class="cont">
-                        <td class="right small borders" colspan="7">Totale Netto {{#psd __psdDiscount}}(Sconto PSD: {{__psdDiscount}}%){{/psd}}</td>
-                        <td class="right small currency borders" colspan="1">{{twoDigits sumTot}}</td>
+                        <td class="right small borders" colspan="7">Totale Service:</td>
+                        <td class="right small currency borders" colspan="1">{{twoDigits sumSer}}</td>
                     </tr>
-                    {{#if tc}}
+                    {{/if}}
+                    {{#if sumPar}}          
+                    <tr class="cont">
+                        <td class="right small borders" colspan="7">Totale Ricambi {{#psd __psdDiscount}}- Sconto {{int __psdDiscount}}% già applicato{{/psd}}:</td>
+                        <td class="right small currency borders" colspan="1">{{twoDigits sumPar}}</td>
+                    </tr>
                         {{#seAir __type}}
                             <tr class="cont">
-                                <td class="right small borders" colspan="7">Costi di Trasporto (€ {{__transAirF}} + {{__transAirP}}%)</td>
+                                <td class="right small borders" colspan="7">Costi di Trasporto {{#psd __transAirF}} - € {{__transAirF}} {{/psd}} {{#psd __transAirP}}+{{__transAirP}}%{{/psd}}:</td>
                                 <td class="right small currency borders" colspan="1">{{twoDigits tc}}</td>                       
                             </tr>
                         {{/seAir}}
                         {{#seTruck __type}}
                             <tr class="cont">
-                                <td class="right small borders" colspan="7">Costi di Trasporto (€ {{__transTruckF}} + {{__transTruckP}}%)</td>
+                                <td class="right small borders" colspan="7">Costi di Trasporto (€ {{__transTruckF}} + {{__transTruckP}}%):</td>
                                 <td class="right small currency borders" colspan="1">{{twoDigits tc}}</td>                       
                             </tr>
                         {{/seTruck}}
-                    <tr class="cont">
-                        <td class="right small borders" colspan="7">Totale Complessivo</td>
-                        <td class="right small currency borders" colspan="1">{{sum sumTot tc}}</td>                       
-                    </tr>
                     {{/if}}
+                    <tr class="cont">
+                        <td class="right small borders" colspan="7">Totale Complessivo:</td>
+                        <td class="right small currency borders" colspan="1">{{sum3 sumPar sumSer tc}}</td>                       
+                    </tr>
                 </table>
             </div>
             <div class="footer">

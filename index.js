@@ -39,13 +39,33 @@ app.use('/public',express.static(__dirname + '/public'));
 app.use(express.static(__dirname + '/template'));
 app.use(express.static(__dirname + '/imgs'));
 
-Handlebars.registerHelper("sum", function(amt1,amt2){
+Handlebars.registerHelper("sum2", function(amt1,amt2){
     if(amt1!=null && amt1!='' && amt2!=null && amt2!=''){
         return '€ ' + new Intl.NumberFormat("it", {
             minimumIntegerDigits: 1,
             minimumFractionDigits: 2,
             maximumFractionDigits:2,
           }).format(parseFloat(amt1)+parseFloat(amt2))
+    }else{
+        return null
+    }
+})
+
+Handlebars.registerHelper("int", function(qty){
+    if(!isNaN(qty) && qty>0){
+        return parseInt(qty)
+    }else{
+        return null
+    }
+})
+
+Handlebars.registerHelper("sum3", function(amt1,amt2, amt3){
+    if(amt1!=null && amt1!='' && amt2!=null && amt2!='' && amt3!=null && amt3!=''){
+        return '€ ' + new Intl.NumberFormat("it", {
+            minimumIntegerDigits: 1,
+            minimumFractionDigits: 2,
+            maximumFractionDigits:2,
+          }).format(parseFloat(amt1)+parseFloat(amt2)+parseFloat(amt3))
     }else{
         return null
     }
@@ -477,15 +497,18 @@ app.all('/iyc/consuntivo', async function(req,res){
     iyc.getAmount(info)
     .then(tem=>{
         let k=Object.keys(tem)
-        let sum=0
+        let sumSer=0
+        let sumPar=0
         k.forEach(ke=>{
-            if(!isNaN(tem[ke].tot) && tem[ke].tot!='') sum+=parseFloat(tem[ke].tot)
-            //if(tem[ke].ite=='') {delete tem[ke]}
+            if(!isNaN(tem[ke].tot) && tem[ke].tot!=''  && tem[ke].pnr!='') sumPar+=parseFloat(tem[ke].tot)
+            if(!isNaN(tem[ke].tot) && tem[ke].tot!=''  && tem[ke].pnr=='') sumSer+=parseFloat(tem[ke].tot)
         })
         iyc.getTransportCost(tem,info)
         .then((tc)=>{
+            if (info.a220terms=='') info.a220terms='Solito in uso'
             info.tc=tc
-            info.sumTot = sum.toFixed(2)
+            info.sumSer = sumSer.toFixed(2)
+            info.sumPar = sumPar.toFixed(2)
             info.items = Object.values(tem)
             info.frase=iyc.img.toString('base64')
             info.logo=iyc.logo.toString('base64')
