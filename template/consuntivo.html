@@ -66,6 +66,8 @@
 
         .title{
             height: 0.3cm;
+            max-height: 0.3cm;
+            min-height: 0.3cm;
             font-size: .2cm;
             border-bottom: none;
             border: none;
@@ -95,6 +97,7 @@
         .cont{
             font-size: .32cm;
             height: .6cm;
+            max-height: .6cm;
             border-top: none;
         }
 
@@ -107,6 +110,7 @@
             font-size: .25cm;
             border-left:none;
             border-right:none;
+            height: .3cm;
         }
 
         .small:first-child{
@@ -134,6 +138,7 @@
 
         .closing{
             border-bottom: 1px solid black;
+            height: 0.000001cm
         }
 
         .desc{
@@ -144,6 +149,14 @@
 
         .center{
             text-align: center;
+        }
+
+        .right{
+            text-align: right;
+        }
+
+        .borders{
+            border: 1px solid black;
         }
     </style>
 </head>
@@ -173,70 +186,89 @@
                         <td class="center">SCHEDA LAVORO</td>
                     </tr>
                     <tr class="cont">
-                        <td colspan="2">{{custCode}}</td>
+                        <td colspan="2">{{a100custCode}}</td>
                         <td colspan="4" class="titolo">CONSUNTIVO</td>
-                        <td class="center">{{data}}</td>
-                        <td class="center">{{docBPCS}}</td>
+                        <td class="center">{{a110data}}</td>
+                        <td class="center">{{a120docBPCS}}</td>
                     </tr>
                     <tr class="title">
                         <td class="dark" colspan="4">DESTINATARIO MERCE</td>
                         <td colspan="4">CLIENTE</td>
                     </tr>
                     <tr class="cont">
-                        <td colspan="4">{{shipTo1}}</td>
-                        <td colspan="4">{{customer1}}</td>
+                        <td colspan="4">{{a130shipTo1}}</td>
+                        <td colspan="4">{{a170customer1}}</td>
                     </tr>
                     <tr class="cont">
-                        <td colspan="4">{{shipTo2}}</td>
-                        <td colspan="4">{{customer2}}</td>
+                        <td colspan="4">{{a140shipTo2}}</td>
+                        <td colspan="4">{{a180customer2}}</td>
                     </tr>
                     <tr class="cont">
-                        <td colspan="4">{{shipTo3}}</td>
-                        <td colspan="4">{{customer3}}</td>
+                        <td colspan="4">{{a150shipTo3}}</td>
+                        <td colspan="4">{{a190customer3}}</td>
                     </tr>
                     <tr class="cont">
-                        <td colspan="4">{{shipTo4}}</td>
-                        <td colspan="4">{{customer4}}</td>
+                        <td colspan="4">{{a160shipTo4}}</td>
+                        <td colspan="4"></td>
                     </tr>
                     <tr class="title">
                         <td colspan="4">VOSTRO RIFERIMENTO</td>
                         <td colspan="4">NOSTRO RIFERIMENTO</td>
                     </tr>
                     <tr class="cont">
-                        <td colspan="4">{{yourRef}}</td>
-                        <td colspan="4">{{ourRef}}</td>
+                        <td colspan="4">{{a200yourRef}}</td>
+                        <td colspan="4">{{a210ourRef}}</td>
                     </tr>
                     <tr class="title">
                         <td colspan="8">PAGAMENTO</td>
                     </tr>
                     <tr class="cont">
-                        <td colspan="8">{{terms}}</td>
+                        <td colspan="8">{{a220terms}}</td>
                     </tr>  
                     <tr class="title">
                         <td colspan="8">MACCHINA</td>
                     </tr>
                     <tr class="cont">
-                        <td colspan="8">{{rig}}</td>
+                        <td colspan="8">{{a230rig}}</td>
                     </tr>  
                     <tr class="title small_t">
                         <td colspan="1">CATALOGO</td>
                         <td colspan="4">DESCRIZIONE</td>
-                        <td colspan="1">PREZZO UNIT.</td>
+                        <td colspan="1">NETTO UNIT.</td>
                         <td colspan="1">Q.TÀ</td>
                         <td colspan="1">IMPORTO TOTALE</td>
                     </tr>
                     {{#each items}}
                     <tr class="cont">
-                        <td colspan="1" class="small number">{{pn}}</td>
-                        <td colspan="4" class="small desc" nowrap>{{item}}</td>
-                        <td colspan="1" class="small currency">{{twoDigits amt}}</td>
+                        <td colspan="1" class="small number">{{pnr}}</td>
+                        <td colspan="4" class="small desc" nowrap>{{ite}}</td>
+                        <td colspan="1" class="small currency">{{twoDigits net}}</td>
                         <td colspan="1" class="small number">{{qty}}</td>
-                        <td colspan="1" class="small currency">{{sum amt qty}}</td>
+                        <td colspan="1" class="small currency">{{twoDigits tot}}</td>
                     </tr>
-                    {{/each}}
-                    <tr class="closing">
-                        <td colspan="8"></td>
+                    {{/each}}            
+                    <tr class="cont">
+                        <td class="right small borders" colspan="7">Totale Netto {{#psd __psdDiscount}}(Sconto PSD: {{__psdDiscount}}%){{/psd}}</td>
+                        <td class="right small currency borders" colspan="1">{{twoDigits sumTot}}</td>
                     </tr>
+                    {{#if tc}}
+                        {{#seAir __type}}
+                            <tr class="cont">
+                                <td class="right small borders" colspan="7">Costi di Trasporto (€ {{__transAirF}} + {{__transAirP}}%)</td>
+                                <td class="right small currency borders" colspan="1">{{twoDigits tc}}</td>                       
+                            </tr>
+                        {{/seAir}}
+                        {{#seTruck __type}}
+                            <tr class="cont">
+                                <td class="right small borders" colspan="7">Costi di Trasporto (€ {{__transTruckF}} + {{__transTruckP}}%)</td>
+                                <td class="right small currency borders" colspan="1">{{twoDigits tc}}</td>                       
+                            </tr>
+                        {{/seTruck}}
+                    <tr class="cont">
+                        <td class="right small borders" colspan="7">Totale Complessivo</td>
+                        <td class="right small currency borders" colspan="1">{{sum sumTot tc}}</td>                       
+                    </tr>
+                    {{/if}}
                 </table>
             </div>
             <div class="footer">

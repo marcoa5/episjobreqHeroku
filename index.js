@@ -20,6 +20,7 @@ const iyc = require('./public/iyc')
 const grc = require('./public/grc');
 const { machine } = require('os');
 const moment = require('moment/moment');
+const { isSymbolObject } = require('util/types');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -38,26 +39,43 @@ app.use('/public',express.static(__dirname + '/public'));
 app.use(express.static(__dirname + '/template'));
 app.use(express.static(__dirname + '/imgs'));
 
-Handlebars.registerHelper("sum", function(amt,qty){
-    if(amt!=null && qty!=null){
-        return new Intl.NumberFormat("it", {
+Handlebars.registerHelper("sum", function(amt1,amt2){
+    if(amt1!=null && amt1!='' && amt2!=null && amt2!=''){
+        return '€ ' + new Intl.NumberFormat("it", {
             minimumIntegerDigits: 1,
             minimumFractionDigits: 2,
-          }).format(amt*qty)
+            maximumFractionDigits:2,
+          }).format(parseFloat(amt1)+parseFloat(amt2))
     }else{
-        return ' '
+        return null
     }
 })
 
-Handlebars.registerHelper('twoDigits', function(value){
-    if(value!=null){
-        return new Intl.NumberFormat("it", {
+Handlebars.registerHelper('twoDigits', function(value, disc){
+    if(value!=null && value!='' && disc){
+        return '€ ' + new Intl.NumberFormat("it", {
             minimumIntegerDigits: 1,
             minimumFractionDigits: 2,
+            maximumFractionDigits:2,
         }).format(value)
     }else{
-        return ' '
+        return null
     }
+})
+
+Handlebars.registerHelper("seAir", function(type, options){
+    if(type=='Air') return options.fn(this)
+    return options.inverse(this)
+})
+
+Handlebars.registerHelper("seTruck", function(type, options){
+    if(type=='Truck') return options.fn(this)
+    return options.inverse(this)
+})
+
+Handlebars.registerHelper("psd", function(val, options){
+    if(parseFloat(val)>0) return options.fn(this)
+    return options.inverse(this)
 })
 
 const transporter = nodemailer.createTransport({
@@ -397,6 +415,92 @@ app.all('/iyc/sendSJNew', cors(), function(req,res){
     })
 })
 
+app.all('/iyc/certiqHrs',function(req,res){
+    axios({
+        method:'get',
+        url: 'https://api.epiroc.com/certiq/v2/authentication/login?username=marco.arato@epiroc.com&password=' + process.env.certiqPassword,
+        headers: {
+            'Ocp-Apim-Subscription-Key':certiqOcp
+        }
+    })
+    .then(data=>{
+        let uCode = data.data.userCode
+        axios({
+            method:'get',
+            url: 'https://api.epiroc.com/certiq/v2/machines',
+            headers: {
+                'Ocp-Apim-Subscription-Key':certiqOcp,
+                'X-Auth-Token':uCode
+            }
+        })
+        .then((info)=>{
+            let machines = info.data.data
+            let count = machines.length
+            let index=0
+            var list=list||{}
+            machines.forEach(m=>{
+                let yy = /(?<= - ).*(?= - )/g
+                let arr = yy.exec(m.machineName)
+                let name=''
+                try{
+                    name=[arr[0]]
+                    list[name]=list[name]||{}
+                } catch{}
+                axios({
+                    method:'get',
+                    url:'https://api.epiroc.com/certiq/v2/machines/'+m.machineItemNumber+'/kpiOverview/',
+                    headers:{
+                       'Ocp-Apim-Subscription-Key':certiqOcp,
+                        'X-Auth-Token':uCode, 
+                    }
+                })
+                .then(d=>{
+                    list[name]= d.data
+                })
+                .catch((err)=>{
+                    console.log('ERROR')
+                })
+                .finally(()=>{
+                    index++
+                    if(index==count) res.json(list)
+                })
+            })
+            
+        })
+    })
+})
+
+app.all('/iyc/consuntivo', async function(req,res){
+    var data    = fs.readFileSync('./template/consuntivo.html','utf8')
+    var temp = Handlebars.compile(data)
+    let info=req.body?req.body:{}   
+    iyc.getAmount(info)
+    .then(tem=>{
+        let k=Object.keys(tem)
+        let sum=0
+        k.forEach(ke=>{
+            if(!isNaN(tem[ke].tot) && tem[ke].tot!='') sum+=parseFloat(tem[ke].tot)
+            //if(tem[ke].ite=='') {delete tem[ke]}
+        })
+        iyc.getTransportCost(tem,info)
+        .then((tc)=>{
+            info.tc=tc
+            info.sumTot = sum.toFixed(2)
+            info.items = Object.values(tem)
+            info.frase=iyc.img.toString('base64')
+            info.logo=iyc.logo.toString('base64')
+            info.footer=iyc.footer.toString('base64')
+            let options = {format: 'A4', margin:{top:0,bottom:0,left:0,right:0},printBackground: true};
+            if(req.body.type=='preview') {
+                //res.json({res:temp(info)})
+                res.send(temp(info))
+            }else {
+                let file = {content: temp(info)}
+                html_to_pdf.generatePdf(file,options).then((d)=>{if(d) res.end(d)})  
+            }
+        })
+    })
+})
 
 //GRC
 
@@ -512,78 +616,7 @@ app.all('/grc/sendSJNew', function(req,res){
     })
 })
 
-app.all('/iyc/certiqHrs',function(req,res){
-    axios({
-        method:'get',
-        url: 'https://api.epiroc.com/certiq/v2/authentication/login?username=marco.arato@epiroc.com&password=' + process.env.certiqPassword,
-        headers: {
-            'Ocp-Apim-Subscription-Key':certiqOcp
-        }
-    })
-    .then(data=>{
-        let uCode = data.data.userCode
-        axios({
-            method:'get',
-            url: 'https://api.epiroc.com/certiq/v2/machines',
-            headers: {
-                'Ocp-Apim-Subscription-Key':certiqOcp,
-                'X-Auth-Token':uCode
-            }
-        })
-        .then((info)=>{
-            let machines = info.data.data
-            let count = machines.length
-            let index=0
-            var list=list||{}
-            machines.forEach(m=>{
-                let yy = /(?<= - ).*(?= - )/g
-                let arr = yy.exec(m.machineName)
-                let name=''
-                try{
-                    name=[arr[0]]
-                    list[name]=list[name]||{}
-                } catch{}
-                axios({
-                    method:'get',
-                    url:'https://api.epiroc.com/certiq/v2/machines/'+m.machineItemNumber+'/kpiOverview/',
-                    headers:{
-                       'Ocp-Apim-Subscription-Key':certiqOcp,
-                        'X-Auth-Token':uCode, 
-                    }
-                })
-                .then(d=>{
-                    list[name]= d.data
-                })
-                .catch((err)=>{
-                    console.log('ERROR')
-                })
-                .finally(()=>{
-                    index++
-                    if(index==count) res.json(list)
-                })
-            })
-            
-        })
-    })
-})
 
-app.all('/iyc/consuntivo', function(req,res){
-    var data    = fs.readFileSync('./template/consuntivo.html','utf8')
-    var temp = Handlebars.compile(data)
-    let info=req.body.info?req.body.info:{}
-    info.frase=iyc.img.toString('base64')
-    info.logo=iyc.logo.toString('base64')
-    info.footer=iyc.footer.toString('base64')
-    let options = {format: 'A4', margin:{top:0,bottom:0,left:0,right:0},printBackground: true};
-    if(req.body.type=='preview') {
-        //res.json({res:temp(info)})
-        res.send(temp(info))
-    }else {
-        let file = {content: temp(info)}
-        html_to_pdf.generatePdf(file,options).then((d)=>{if(d) res.end(d)})  
-    }
-    
-})
 //ALL
 
 app.all('/', function(req, res,next) {

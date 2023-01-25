@@ -3,7 +3,8 @@ var admin = require("firebase-admin")
 const Handlebars = require("handlebars");
 const fs = require('fs');
 var html_to_pdf = require('html-pdf-node');
-const firebase = require('firebase/app')
+const firebase = require('firebase/app');
+const { object } = require('firebase-functions/v1/storage');
 require('firebase/storage')
 
 firebase.initializeApp({
@@ -300,6 +301,59 @@ function getSAM(a,cc){
                 if (index==f.length ) res(cc)
             })
         })
+    })
+}
+
+exports.getAmount = function(info){
+    let keys=Object.keys(info)
+    let tem={} 
+    return new Promise((res,rej)=>{
+        keys.forEach(k=>{
+            if(k.substring(0,2)=='__'){
+            }else if(k.substring(0,1)=='_'){
+                let key = k.substring(1,4)
+                let index=  k.substring(4,1000)
+                let val = info[k]
+                if(tem[index]==undefined) tem[index]={}
+                tem[index][key]=val
+                if(info['_pnr'+index]!='' && info['__RDT' + index]==true) {
+                    tem[index].dis=info.__rdtDiscount
+                } else if(info['_pnr'+index]!='' && info['__RDT' + index]==false){
+                    tem[index].dis=info.__psdDiscount
+                }
+                if(tem[index].dis) {
+                    tem[index].net=((1-tem[index].dis/100)*tem[index].llp).toFixed(2)
+                    tem[index].tot=(((1-tem[index].dis/100)*tem[index].llp)*tem[index].qty).toFixed(2)
+                    if(parseFloat(tem[index].tot)==0) tem[index].tot=''
+                } else {
+                    tem[index].net=(tem[index].llp)
+                    tem[index].tot=(tem[index].llp*tem[index].qty).toFixed(2)
+                    if(parseFloat(tem[index].tot)==0) tem[index].tot=''
+                }
+            }
+        })
+        setTimeout(() => {
+            res(tem)
+        }, 50);
+    })
+}
+
+exports.getTransportCost= function(items, info){
+    return new Promise((res,rej)=>{
+        let keys = Object.keys(items)
+        let sum=0
+        keys.forEach(k=>{
+            if(items[k].pnr) {
+                sum+=parseFloat(items[k].tot)
+            }
+        })
+        let transpCost=0
+        if(sum>0 && info.__type=='Air'){
+            transpCost=(sum*parseFloat(info.__transAirP)/100+parseFloat(info.__transAirF)).toFixed(2)
+        } else if(sum>0 && info.__type=='Truck') {
+            transpCost=(sum*parseFloat(info.__transTruckP)/100+parseFloat(info.__transTruckF)).toFixed(2)
+        }
+        res(transpCost) 
     })
 }
 
