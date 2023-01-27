@@ -159,6 +159,38 @@
         .borders{
             border: 1px solid black;
         }
+        
+        :root{
+            --column1:12.5%;
+            --column2:10%;
+            --columnAmt: 16%;
+            --columnQty:8%;
+        }
+
+        .column1{
+            width: var(--column1);
+            min-width: var(--column1);
+            max-width: var(--column1);
+        }
+
+        .column2{
+            width: var(--column2);
+            min-width: var(--column2);
+            max-width: var(--column2);
+        }
+
+        .columnAmt{
+            width: var(--columnAmt);
+            min-width: var(--columnAmt);
+            max-width: var(--columnAmt);
+        }
+
+        .columnQty{
+            width: var(--columnQty);
+            min-width: var(--columnQty);
+            max-width: var(--columnQty);
+        }
+
     </style>
 </head>
 <body>
@@ -170,14 +202,14 @@
         <div class="content">
                 <table class="main">
                     <colgroup>
-                        <col span="1" style="width: 12.5%;min-width: 12.5%;max-width: 12.5%">
-                        <col span="1" style="width: 12.5%;min-width: 12.5%;max-width: 12.5%">
-                        <col span="1" style="width: 12.5%;min-width: 12.5%;max-width: 12.5%">
-                        <col span="1" style="width: 12.5%;min-width: 12.5%;max-width: 12.5%">
-                        <col span="1" style="width: 12.5%;min-width: 12.5%;max-width: 12.5%">
-                        <col span="1" style="width: 12.5%;min-width: 12.5%;max-width: 12.5%">
-                        <col span="1" style="width: 12.5%;min-width: 12.5%;max-width: 12.5%">
-                        <col span="1" style="width: 12.5%;min-width: 12.5%;max-width: 12.5%">
+                        <col span="1" class="column1">
+                        <col span="1" class="column1">
+                        <col span="1" class="column1">
+                        <col span="1" class="column1">
+                        <col span="1" class="column2">
+                        <col span="1" class="columnAmt">
+                        <col span="1" class="columnQty">
+                        <col span="1" class="columnAmt">
 
                     </colgroup>
                     <tr class="title">
