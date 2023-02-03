@@ -28,7 +28,7 @@ const transporter = nodemailer.createTransport({
 
   var source=`
   <p>Prego elaborare offerta per i ricambi sotto elencati
-  {{#if shipAdd}}<br> da inoltrare a{{#shipAdd}} {{name}} ({{mail}}){{/shipAdd}}{{/if}} 
+  {{#if shipAdd}}<br> da inoltrare a{{#shipAdd}} {{name}} {{surname}} ({{mail}}){{/shipAdd}}{{/if}} 
   <br>Destinatario: {{customer}} {{#if shipTo.address}} - {{shipTo.address}} {{/if}}
   <br>Macchina: <a href="https://episjobadmin.web.app/machine;sn={{sn}}"><strong>{{model}} (s/n: {{sn}})</strong></a>
   {{#if shipTo.cig}}<br>CIG: {{shipTo.cig}}{{/if}} {{#if shipTo.cup}} CUP: {{shipTo.cup}}{{/if}}<p>
