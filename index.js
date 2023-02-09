@@ -497,7 +497,8 @@ app.all('/iyc/certiqHrs',function(req,res){
 app.all('/iyc/consuntivo', async function(req,res){
     var data    = fs.readFileSync('./template/consuntivo.html','utf8')
     var temp = Handlebars.compile(data)
-    let info=req.body?req.body:{}   
+    let info=req.body?req.body:{} 
+    if(info.___type=="quote") {info.title="OFFERTA"} else {info.title="CONSUNTIVO"}
     iyc.getAmount(info)
     .then(tem=>{
         let k=Object.keys(tem)
