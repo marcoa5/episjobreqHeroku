@@ -3,11 +3,11 @@ var admin = require("firebase-admin")
 const Handlebars = require("handlebars");
 const fs = require('fs');
 var html_to_pdf = require('html-pdf-node');
-const firebaseiyc = require('firebase/app');
+const firebase = require('firebase/app');
 const { object } = require('firebase-functions/v1/storage');
-require('firebase/storage')
+//require('firebase/storage')
 
-firebaseiyc.default.initializeApp({
+firebase.initializeApp({
     apiKey: "AIzaSyBtO5C1bOO70EL0IPPO-BDjJ40Kb03erj4",
     authDomain: "epi-serv-job.firebaseapp.com",
     databaseURL: "https://epi-serv-job-default-rtdb.firebaseio.com",
@@ -16,7 +16,7 @@ firebaseiyc.default.initializeApp({
     messagingSenderId: "793133030101",
     appId: "1:793133030101:web:1c046e5fcb02b42353a05c",
     measurementId: "G-Y0638WJK1X"
-})
+},'iyc')
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -144,7 +144,7 @@ exports.createPDF = function(b){
         let file = {content: templ(b)}
         html_to_pdf.generatePdf(file,options).then((d)=>{
             
-            let ref = firebaseiyc.default.storage().ref(b.author + '/' + b.info.fileName + '.pdf')
+            let ref = firebase.default.storage().ref(b.author + '/' + b.info.fileName + '.pdf')
             ref.put(Uint8Array.from(Buffer.from(d)).buffer, {contentType: 'application/pdf'})
             .then(()=>{
                 ref.getDownloadURL().then(url=>{
@@ -158,7 +158,7 @@ exports.createPDF = function(b){
 exports.createMA = function(a){
     return new Promise((res,rej)=>{
         if(a.info.fileName){
-            let ref = firebaseiyc.default.storage().ref(a.author + '/' + a.info.fileName + '.ma')
+            let ref = firebase.default.storage().ref(a.author + '/' + a.info.fileName + '.ma')
             ref.put(Uint8Array.from(Buffer.from(JSON.stringify(a))).buffer)
             .then(()=>{
                 ref.getDownloadURL().then(url=>{
