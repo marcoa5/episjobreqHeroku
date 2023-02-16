@@ -87,6 +87,18 @@ Handlebars.registerHelper('twoDigits', function(value, disc){
     }
 })
 
+Handlebars.registerHelper('thousands', function(value, disc){
+    if(value!=null && value!='' && disc){
+        return new Intl.NumberFormat("it", {
+            minimumIntegerDigits: 1,
+            minimumFractionDigits: 0,
+            maximumFractionDigits:0,
+        }).format(value)
+    }else{
+        return null
+    }
+})
+
 Handlebars.registerHelper("seAir", function(type, options){
     if(type=='Air') return options.fn(this)
     return options.inverse(this)
@@ -498,7 +510,8 @@ app.all('/iyc/consuntivo', async function(req,res){
     var data    = fs.readFileSync('./template/consuntivo.html','utf8')
     var temp = Handlebars.compile(data)
     let info=req.body?req.body:{} 
-    if(info.___type=="quote") {info.title="OFFERTA"} else {info.title="CONSUNTIVO"}
+    info.title="CONSUNTIVO"
+    info.sj = "SCHEDA LAVORO"
     iyc.getAmount(info)
     .then(tem=>{
         let k=Object.keys(tem)
@@ -528,6 +541,17 @@ app.all('/iyc/consuntivo', async function(req,res){
             }
         })
     })
+})
+
+app.all('/iyc/offerta', async function(req,res){
+    var data=fs.readFileSync('./template/offerta.html','utf8')
+    var temp = Handlebars.compile(data)
+    let info={}
+    info.frase=iyc.img.toString('base64')
+    info.logo=iyc.logo.toString('base64')
+    info.footer=iyc.footer.toString('base64')
+    info.title='OFFERTA'
+    res.send(temp(info))
 })
 
 //GRC

@@ -1,7 +1,6 @@
 const Handlebars = require("handlebars");
 const fs = require('fs');
-var html_to_pdf = require('html-pdf-node');
-const firebase = require('firebase/app')
+var html_to_pdf = require('html-pdf-node')
 require('firebase/storage')
 const firebasegrc = require('firebase/app')
 
