@@ -75,6 +75,18 @@ Handlebars.registerHelper("sum3", function(amt1,amt2, amt3){
     }
 })
 
+Handlebars.registerHelper('maxTwoDigits', function(value, disc){
+    if(value!=null && value!='' && disc){
+        return new Intl.NumberFormat("it", {
+            minimumIntegerDigits: 1,
+            minimumFractionDigits: 0,
+            maximumFractionDigits:2,
+        }).format(value)
+    }else{
+        return null
+    }
+})
+
 Handlebars.registerHelper('twoDigits', function(value, disc){
     if(value!=null && value!='' && disc){
         return '€ ' + new Intl.NumberFormat("it", {
@@ -526,6 +538,8 @@ app.all('/iyc/consuntivo', async function(req,res){
             if (info.a220terms=='') info.a220terms='Solito in uso'
             info.tc=tc
             info.sumSer = sumSer.toFixed(2)
+            info.safetyFactor = 3
+            info.safety = (info.sumSer * info.safetyFactor/100).toFixed(2)
             info.sumPar = sumPar.toFixed(2)
             info.items = Object.values(tem)
             info.frase=iyc.img.toString('base64')

@@ -276,14 +276,18 @@
                         <td colspan="1" class="small number">{{pnr}}</td>
                         <td colspan="4" class="small desc" nowrap>{{ite}}</td>
                         <td colspan="1" class="small currency">{{twoDigits net}}</td>
-                        <td colspan="1" class="small number">{{thousands qty}}</td>
+                        <td colspan="1" class="small number">{{maxTwoDigits qty}}</td>
                         <td colspan="1" class="small currency">{{twoDigits tot}}</td>
                     </tr>
                     {{/each}}  
                     {{#if sumSer}}          
                     <tr class="cont">
-                        <td class="right small borders" colspan="7">Totale Service:</td>
+                        <td class="right small borders" colspan="7">Totale Manodopera:</td>
                         <td class="right small currency borders" colspan="1">{{twoDigits sumSer}}</td>
+                    </tr>
+                    <tr class="cont">
+                        <td class="right small borders" colspan="7">Oneri sicurezza ({{safetyFactor}}% già incluso):</td>
+                        <td class="right small currency borders" colspan="1">({{twoDigits safety}})</td>
                     </tr>
                     {{/if}}
                     {{#psd sumPar}}          
