@@ -524,15 +524,20 @@ app.all('/iyc/consuntivo', async function(req,res){
     let info=req.body?req.body:{} 
     info.title="CONSUNTIVO"
     info.sj = "SCHEDA LAVORO"
+    console.log(info)
     iyc.getAmount(info)
     .then(tem=>{
         let k=Object.keys(tem)
         let sumSer=0
         let sumPar=0
+        let sumGross=0
         k.forEach(ke=>{
-            if(!isNaN(tem[ke].tot) && tem[ke].tot!=''  && tem[ke].pnr!='') sumPar+=parseFloat(tem[ke].tot)
+            if(!isNaN(tem[ke].tot) && tem[ke].tot!=''  && tem[ke].pnr!='') {
+                sumPar+=parseFloat(tem[ke].llp)*parseFloat(tem[ke].qty)
+            }
             if(!isNaN(tem[ke].tot) && tem[ke].tot!=''  && tem[ke].pnr=='') sumSer+=parseFloat(tem[ke].tot)
         })
+        sumPar=sumPar*(1-info.__psdDiscount/100)
         iyc.getTransportCost(tem,info)
         .then((tc)=>{
             if (info.a220terms=='') info.a220terms='Solito in uso'
