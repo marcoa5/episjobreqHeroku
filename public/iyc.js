@@ -5,13 +5,7 @@ const fs = require('fs');
 var html_to_pdf = require('html-pdf-node');
 const firebase = require('firebase/app');
 const { object } = require('firebase-functions/v1/storage');
-const distributionList = [
-    'mario.parravicini@epiroc.com', 
-    'marco.arato@epiroc.com', 
-    'giordano.perini@epiroc.com', 
-    'francesco.soffredini@epiroc.com',
-    'michel.pascal@epiroc.com'
-]
+//require('firebase/storage')
 
 firebase.initializeApp({
     apiKey: "AIzaSyBtO5C1bOO70EL0IPPO-BDjJ40Kb03erj4",
@@ -125,7 +119,7 @@ exports.createMailOptionsIntProd = function(a){
         from: `${a.userN} ${a.userC} - Epiroc Service <episerjob@gmail.com>`,
         replyTo: 'marco.fumagalli@epiroc.com',
         to: "marco.fumagalli@epiroc.com",
-        cc: distributionList.toString().replace(/,/g,';'),
+        cc: "mario.parravicini@epiroc.com; carlo.colombo@epiroc.com; marco.arato@epiroc.com",
         subject: a.subject,
         text: `Risultato sondaggio:\n\nOrganizzazione intervento: ${a.son1}\nConsegna Ricambi: ${a.son2}\nEsecuzione Intervento: ${a.son3} ${a.rap}\n\n\nRisk Assessment \n ${a.rAss}`,
         attachments: [
@@ -200,7 +194,7 @@ exports.createMailOptionsNewMA =function(a){
             from: `${a.author} - Epiroc Service <episerjob@gmail.com>`,
             replyTo: 'marco.fumagalli@epiroc.com',
             to: 'marco.fumagalli@epiroc.com',
-            cc: a.info.cc?distributionList.toString().replace(/,/g,';'):'',
+            cc: a.info.cc?'marco.arato@epiroc.com; mario.parravicini@epiroc.com; carlo.colombo@epiroc.com':'',
             subject: a.info.subject,
             text: `Risultato sondaggio:\n\nOrganizzazione intervento: ${a.rissondaggio.split('')[0]}\nConsegna Ricambi: ${a.rissondaggio.split('')[1]}\nEsecuzione Intervento: ${a.rissondaggio.split('')[2]}\n\nRapporto:\n${a.rappl1} ${a.oss1!=''? '\n\nOsservazioni:\n' + a.oss1: ''}`,
             attachments: [{
@@ -218,7 +212,7 @@ exports.createMailOptionsNewMA =function(a){
 
 exports.createMailParts=function(a){
     let to=['nicola.megna@epiroc.com','marco.fumagalli@epiroc.com']
-    let cc=distributionList
+    let cc=['mario.parravicini@epiroc.com', 'marco.arato@epiroc.com', 'giordano.perini@epiroc.com']
     if(a.type=='CustomerSupport') {
         cc.push('marco.fumagalli@epiroc.com', 'cristiana.besana@epiroc.com')
     }
