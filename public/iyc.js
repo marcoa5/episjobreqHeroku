@@ -194,7 +194,7 @@ exports.createMailOptionsNewMA =function(a){
             from: `${a.author} - Epiroc Service <episerjob@gmail.com>`,
             replyTo: 'marco.fumagalli@epiroc.com',
             to: 'marco.fumagalli@epiroc.com',
-            cc: a.info.cc?'marco.arato@epiroc.com; mario.parravicini@epiroc.com; carlo.colombo@epiroc.com':'',
+            cc: a.info.cc?'marco.arato@epiroc.com; mario.parravicini@epiroc.com; carlo.colombo@epiroc.com; francesco.soffredini@epiroc.com; michel.pascal@epiroc.com':'',
             subject: a.info.subject,
             text: `Risultato sondaggio:\n\nOrganizzazione intervento: ${a.rissondaggio.split('')[0]}\nConsegna Ricambi: ${a.rissondaggio.split('')[1]}\nEsecuzione Intervento: ${a.rissondaggio.split('')[2]}\n\nRapporto:\n${a.rappl1} ${a.oss1!=''? '\n\nOsservazioni:\n' + a.oss1: ''}`,
             attachments: [{
@@ -212,7 +212,7 @@ exports.createMailOptionsNewMA =function(a){
 
 exports.createMailParts=function(a){
     let to=['nicola.megna@epiroc.com','marco.fumagalli@epiroc.com']
-    let cc=['mario.parravicini@epiroc.com', 'marco.arato@epiroc.com', 'giordano.perini@epiroc.com']
+    let cc=['mario.parravicini@epiroc.com', 'marco.arato@epiroc.com', 'giordano.perini@epiroc.com', 'francesco.soffredini@epiroc.com','michel.pascal@epiroc.com']
     if(a.type=='CustomerSupport') {
         cc.push('marco.fumagalli@epiroc.com', 'cristiana.besana@epiroc.com')
     }
