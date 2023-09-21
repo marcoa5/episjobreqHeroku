@@ -211,8 +211,10 @@ exports.createMailOptionsNewMA =function(a){
 }
 
 exports.createMailParts=function(a){
+    console.log(a)
     let to=['nicola.megna@epiroc.com','marco.fumagalli@epiroc.com']
-    let cc=['mario.parravicini@epiroc.com', 'marco.arato@epiroc.com', 'carlo.colombo@epiroc.com','giordano.perini@epiroc.com', 'francesco.soffredini@epiroc.com','michel.pascal@epiroc.com']
+    let cc=['mario.parravicini@epiroc.com', 'marco.arato@epiroc.com', 'francesco.soffredini@epiroc.com']
+    a.div=='Surface'?cc.push('michel.pascal@epiroc.com'):cc.push('carlo.colombo@epiroc.com')
     if(a.type=='CustomerSupport') {
         cc.push('marco.fumagalli@epiroc.com', 'cristiana.besana@epiroc.com')
     }
