@@ -212,7 +212,7 @@ exports.createMailOptionsNewMA =function(a){
 
 exports.createMailParts=function(a){
     let to=['nicola.megna@epiroc.com','marco.fumagalli@epiroc.com']
-    let cc=['mario.parravicini@epiroc.com', 'marco.arato@epiroc.com', 'giordano.perini@epiroc.com', 'francesco.soffredini@epiroc.com','michel.pascal@epiroc.com']
+    let cc=['mario.parravicini@epiroc.com', 'marco.arato@epiroc.com', 'carlo.colombo@epiroc.com','giordano.perini@epiroc.com', 'francesco.soffredini@epiroc.com','michel.pascal@epiroc.com']
     if(a.type=='CustomerSupport') {
         cc.push('marco.fumagalli@epiroc.com', 'cristiana.besana@epiroc.com')
     }
