@@ -189,12 +189,22 @@ exports.createMailOptionsNew = function(a){
     return (mailOptionsNew)
 }
 
-exports.createMailOptionsNewMA =function(a){
+exports.createMailOptionsNewMA =async function(a){
+    let division=''
+    await getBL(a.matricola)
+    .then(div=>division = div)
+    .catch(()=>{})
+    let copy='marco.arato@epiroc.com; mario.parravicini@epiroc.com; francesco.soffredini@epiroc.com;'
+    if (division=='Surface') {
+        copy += 'michel.pascal@epiroc.com'
+    } else if (division=='Underground')  {
+        copy+= 'carlo.colombo@epiroc.com'
+    }
     const mailOptionsNewMA = {
             from: `${a.author} - Epiroc Service <episerjob@gmail.com>`,
             replyTo: 'marco.fumagalli@epiroc.com',
             to: 'marco.fumagalli@epiroc.com',
-            cc: a.info.cc?'marco.arato@epiroc.com; mario.parravicini@epiroc.com; carlo.colombo@epiroc.com; francesco.soffredini@epiroc.com; michel.pascal@epiroc.com':'',
+            cc: a.info.cc?copy:'',
             subject: a.info.subject,
             text: `Risultato sondaggio:\n\nOrganizzazione intervento: ${a.rissondaggio.split('')[0]}\nConsegna Ricambi: ${a.rissondaggio.split('')[1]}\nEsecuzione Intervento: ${a.rissondaggio.split('')[2]}\n\nRapporto:\n${a.rappl1} ${a.oss1!=''? '\n\nOsservazioni:\n' + a.oss1: ''}`,
             attachments: [{
@@ -358,6 +368,14 @@ exports.getTransportCost= function(items, info){
         }
         res(transpCost) 
     })
+}
+
+function getBL(sn){
+    return new Promise((res,rej)=>{
+        admin.app('default').database().ref('Categ').child(sn).child('div').once('value',a=>{
+            res(a.val())
+        })  
+    }) 
 }
 
 exports.img = fs.readFileSync('./imgs/frase.png')

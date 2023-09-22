@@ -463,6 +463,12 @@ app.all('/iyc/sendSJNew', cors(), function(req,res){
     })
 })
 
+app.all('/iyc/testNew', function(req,res){
+    iyc.getBL(req.body.matricola).then(div=>{
+        res.json({BL:div})
+    })
+})
+
 app.all('/iyc/certiqHrs',function(req,res){
     axios({
         method:'get',
