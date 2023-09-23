@@ -190,21 +190,22 @@ exports.createMailOptionsNew = function(a){
 }
 
 exports.createMailOptionsNewMA =async function(a){
+    console.log(a.matricola)
     let division=''
     await getBL(a.matricola)
     .then(div=>division = div)
     .catch(()=>{})
-    let copy='marco.arato@epiroc.com; mario.parravicini@epiroc.com; francesco.soffredini@epiroc.com;'
+    let copia='marco.arato@epiroc.com; mario.parravicini@epiroc.com; francesco.soffredini@epiroc.com; '
     if (division=='Surface') {
-        copy += 'michel.pascal@epiroc.com'
+        copia += 'michel.pascal@epiroc.com;'
     } else if (division=='Underground')  {
-        copy+= 'carlo.colombo@epiroc.com'
+        copia+= 'carlo.colombo@epiroc.com;'
     }
     const mailOptionsNewMA = {
             from: `${a.author} - Epiroc Service <episerjob@gmail.com>`,
             replyTo: 'marco.fumagalli@epiroc.com',
             to: 'marco.fumagalli@epiroc.com',
-            cc: a.info.cc?copy:'',
+            cc: a.info.cc?copia:'',
             subject: a.info.subject,
             text: `Risultato sondaggio:\n\nOrganizzazione intervento: ${a.rissondaggio.split('')[0]}\nConsegna Ricambi: ${a.rissondaggio.split('')[1]}\nEsecuzione Intervento: ${a.rissondaggio.split('')[2]}\n\nRapporto:\n${a.rappl1} ${a.oss1!=''? '\n\nOsservazioni:\n' + a.oss1: ''}`,
             attachments: [{
@@ -216,7 +217,6 @@ exports.createMailOptionsNewMA =async function(a){
                 path: a.info.urlPdf
             }]
         }
-
     return (mailOptionsNewMA)
 }
 
