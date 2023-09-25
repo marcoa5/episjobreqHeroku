@@ -191,22 +191,38 @@ exports.createMailOptionsNew = function(a){
 
 exports.createMailOptionsNewMA =function(a){
     const mailOptionsNewMA = {
-            from: `${a.author} - Epiroc Service <episerjob@gmail.com>`,
-            replyTo: 'marco.fumagalli@epiroc.com',
-            to: 'marco.fumagalli@epiroc.com',
-            cc: a.info.cc?'marco.arato@epiroc.com; mario.parravicini@epiroc.com; carlo.colombo@epiroc.com; francesco.soffredini@epiroc.com; michel.pascal@epiroc.com':'',
-            subject: a.info.subject,
-            text: `Risultato sondaggio:\n\nOrganizzazione intervento: ${a.rissondaggio.split('')[0]}\nConsegna Ricambi: ${a.rissondaggio.split('')[1]}\nEsecuzione Intervento: ${a.rissondaggio.split('')[2]}\n\nRapporto:\n${a.rappl1} ${a.oss1!=''? '\n\nOsservazioni:\n' + a.oss1: ''}`,
-            attachments: [{
-                filename: a.info.fileName + '.ma',
-                path: a.info.urlMa
-            },
-            {
-                filename: a.info.fileName + '.pdf',
-                path: a.info.urlPdf
-            }]
-        }
-    return (mailOptionsNewMA)
+        from: `${a.author} - Epiroc Service <episerjob@gmail.com>`,
+        replyTo: 'marco.fumagalli@epiroc.com',
+        to: 'marco.fumagalli@epiroc.com',
+        cc: a.info.cc?a.copia:'',
+        subject: a.info.subject,
+        text: `Risultato sondaggio:\n\nOrganizzazione intervento: ${a.rissondaggio.split('')[0]}\nConsegna Ricambi: ${a.rissondaggio.split('')[1]}\nEsecuzione Intervento: ${a.rissondaggio.split('')[2]}\n\nRapporto:\n${a.rappl1} ${a.oss1!=''? '\n\nOsservazioni:\n' + a.oss1: ''}`,
+        attachments: [{
+            filename: a.info.fileName + '.ma',
+            path: a.info.urlMa
+        },
+        {
+            filename: a.info.fileName + '.pdf',
+            path: a.info.urlPdf
+        }]
+    }
+return (mailOptionsNewMA)
+}
+
+exports.getBL=function(a){
+    let copia = 'marco.arato@epiroc.com; mario.parravicini@epiroc.com; francesco.soffredini@epiroc.com; '
+    return new Promise((res,rej)=>{
+        admin.app('default').database().ref('Categ').child(a.matricola).child('div').once('value',y=>{
+            if(y.val()=='Underground'){
+                copia += 'carlo.colombo@epiroc.com'
+                res(copia)
+            } else if(y.val()=='Surface'){
+                copia += 'michel.pascal@epiroc.com'
+                res(copia)
+            }
+        })
+    })
+    
 }
 
 exports.createMailParts=function(a){

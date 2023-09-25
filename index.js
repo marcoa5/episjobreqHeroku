@@ -438,8 +438,9 @@ app.post('/iyc/sjMa', function(req,res){
     res.send(req.body)
 })
 
-app.all('/iyc/sendSJNew', cors(), function(req,res){
+app.all('/iyc/sendSJNew', cors(), async function(req,res){
     let g = req.body
+    await iyc.getBL(g).then(c=>{g.copia=c})
     iyc.createMA(g)
     .then(urlMa=>{
         g.info.urlMa = urlMa
