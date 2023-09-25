@@ -206,7 +206,6 @@ exports.createMailOptionsNewMA =function(a){
                 path: a.info.urlPdf
             }]
         }
-
     return (mailOptionsNewMA)
 }
 
