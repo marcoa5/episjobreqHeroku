@@ -448,7 +448,6 @@ app.all('/iyc/sendSJNew', cors(), function(req,res){
             admin.app('default').auth().getUser(g.userId).then(user=>{
                 g.info.ccAuth = user.email
                 transporter.sendMail(iyc.createMailOptionsNewMA(g), (error, info)=>{
-                    if(error) console.log(error)
                     if(error) res.status(300).send(error)
                     if(info) {
                         transporter.sendMail(iyc.createMailOptionsNew(g), (error, info)=>{
@@ -461,12 +460,6 @@ app.all('/iyc/sendSJNew', cors(), function(req,res){
                 })
             })
         })
-    })
-})
-
-app.all('/iyc/testNew', function(req,res){
-    iyc.getBL(req.body.matricola).then(div=>{
-        res.json({BL:div})
     })
 })
 
