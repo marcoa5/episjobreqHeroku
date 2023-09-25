@@ -190,7 +190,6 @@ exports.createMailOptionsNew = function(a){
 }
 
 exports.createMailOptionsNewMA =async function(a){
-    console.log(a.matricola)
     let division=''
     await getBL(a.matricola)
     .then(div=>division = div)
