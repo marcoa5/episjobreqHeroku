@@ -192,31 +192,33 @@ exports.createMailOptionsNew = function(a){
 exports.createMailOptionsNewMA =async function(a){
     let division=''
     await getBL(a.matricola)
-    .then(div=>division = div)
-    .catch(()=>{})
-    let copia='marco.arato@epiroc.com; mario.parravicini@epiroc.com; francesco.soffredini@epiroc.com; '
-    if (division=='Surface') {
-        copia += 'michel.pascal@epiroc.com;'
-    } else if (division=='Underground')  {
-        copia+= 'carlo.colombo@epiroc.com;'
-    }
-    const mailOptionsNewMA = {
-            from: `${a.author} - Epiroc Service <episerjob@gmail.com>`,
-            replyTo: 'marco.fumagalli@epiroc.com',
-            to: 'marco.fumagalli@epiroc.com',
-            cc: a.info.cc?copia:'',
-            subject: a.info.subject,
-            text: `Risultato sondaggio:\n\nOrganizzazione intervento: ${a.rissondaggio.split('')[0]}\nConsegna Ricambi: ${a.rissondaggio.split('')[1]}\nEsecuzione Intervento: ${a.rissondaggio.split('')[2]}\n\nRapporto:\n${a.rappl1} ${a.oss1!=''? '\n\nOsservazioni:\n' + a.oss1: ''}`,
-            attachments: [{
-                filename: a.info.fileName + '.ma',
-                path: a.info.urlMa
-            },
-            {
-                filename: a.info.fileName + '.pdf',
-                path: a.info.urlPdf
-            }]
+    .then(div=>{
+        division = div
+        let copia='marco.arato@epiroc.com; mario.parravicini@epiroc.com; francesco.soffredini@epiroc.com; '
+        if (division=='Surface') {
+            copia += 'michel.pascal@epiroc.com;'
+        } else if (division=='Underground')  {
+            copia+= 'carlo.colombo@epiroc.com;'
         }
-    return (mailOptionsNewMA)
+        const mailOptionsNewMA = {
+                from: `${a.author} - Epiroc Service <episerjob@gmail.com>`,
+                replyTo: 'marco.fumagalli@epiroc.com',
+                to: 'marco.fumagalli@epiroc.com',
+                cc: a.info.cc?copia:'',
+                subject: a.info.subject,
+                text: `Risultato sondaggio:\n\nOrganizzazione intervento: ${a.rissondaggio.split('')[0]}\nConsegna Ricambi: ${a.rissondaggio.split('')[1]}\nEsecuzione Intervento: ${a.rissondaggio.split('')[2]}\n\nRapporto:\n${a.rappl1} ${a.oss1!=''? '\n\nOsservazioni:\n' + a.oss1: ''}`,
+                attachments: [{
+                    filename: a.info.fileName + '.ma',
+                    path: a.info.urlMa
+                },
+                {
+                    filename: a.info.fileName + '.pdf',
+                    path: a.info.urlPdf
+                }]
+            }
+        return (mailOptionsNewMA)
+    })
+    .catch(()=>{})
 }
 
 exports.createMailParts=function(a){
