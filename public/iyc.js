@@ -194,7 +194,7 @@ exports.createMailOptionsNewMA =function(a){
         from: `${a.author} - Epiroc Service <episerjob@gmail.com>`,
         replyTo: 'marco.fumagalli@epiroc.com',
         to: 'marco.fumagalli@epiroc.com',
-        cc: a.info.cc?a.copia:'',
+        cc: a.info.cc?a.copiaMail:'',
         subject: a.info.subject,
         text: `Risultato sondaggio:\n\nOrganizzazione intervento: ${a.rissondaggio.split('')[0]}\nConsegna Ricambi: ${a.rissondaggio.split('')[1]}\nEsecuzione Intervento: ${a.rissondaggio.split('')[2]}\n\nRapporto:\n${a.rappl1} ${a.oss1!=''? '\n\nOsservazioni:\n' + a.oss1: ''}`,
         attachments: [{
