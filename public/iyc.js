@@ -139,11 +139,12 @@ exports.createMailOptionsIntProd = function(a){
 exports.createPDF = function(b){
     return new Promise((res,rej)=>{
         var a = fs.readFileSync('template/template.html','utf8')
+        if(b.heading && b.heading=='fea') a = fs.readFileSync('template/template_fea.html','utf8')
         var templ = Handlebars.compile(a)
         let options = {width: '21cm', height: '29.7cm'};
         let file = {content: templ(b)}
         html_to_pdf.generatePdf(file,options).then((d)=>{
-            
+            res(d)
             let ref = firebase.default.storage().ref(b.author + '/' + b.info.fileName + '.pdf')
             ref.put(Uint8Array.from(Buffer.from(d)).buffer, {contentType: 'application/pdf'})
             .then(()=>{
@@ -157,7 +158,7 @@ exports.createPDF = function(b){
 
 exports.createMA = function(a){
     return new Promise((res,rej)=>{
-        if(a.info.fileName){
+        if(a && a.info && a.info.fileName){
             let ref = firebase.default.storage().ref(a.author + '/' + a.info.fileName + '.ma')
             ref.put(Uint8Array.from(Buffer.from(JSON.stringify(a))).buffer)
             .then(()=>{
@@ -165,7 +166,7 @@ exports.createMA = function(a){
                     res(url)
                 })
             })  
-        }
+        } else {res('')}
     })
 }
 
@@ -212,15 +213,19 @@ return (mailOptionsNewMA)
 exports.getBL=function(a){
     let copia = 'marco.arato@epiroc.com; mario.parravicini@epiroc.com; francesco.soffredini@epiroc.com; '
     return new Promise((res,rej)=>{
-        admin.app('default').database().ref('Categ').child(a.matricola).child('div').once('value',y=>{
-            if(y.val()=='Underground'){
-                copia += 'carlo.colombo@epiroc.com'
-                res(copia)
-            } else if(y.val()=='Surface'){
-                copia += 'michel.pascal@epiroc.com'
-                res(copia)
-            }
-        })
+        if(a.matricola){
+            admin.app('default').database().ref('Categ').child(a.matricola).child('div').once('value',y=>{
+                if(y.val()=='Underground'){
+                    copia += 'carlo.colombo@epiroc.com'
+                    res(copia)
+                } else if(y.val()=='Surface'){
+                    copia += 'michel.pascal@epiroc.com'
+                    res(copia)
+                }
+            })
+        } else {
+            res(copia)
+        }
     })
     
 }

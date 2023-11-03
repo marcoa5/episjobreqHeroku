@@ -18,6 +18,7 @@ const ver = require('./package.json').version
 const iyc = require('./public/iyc')
 const grc = require('./public/grc');
 const moment = require('moment/moment');
+const { now } = require('moment/moment');
 
 
 admin.initializeApp({
@@ -440,14 +441,18 @@ app.post('/iyc/sjMa', function(req,res){
 
 app.all('/iyc/sendSJNew', cors(), async function(req,res){
     let g = req.body
+    console.log(g)
     await iyc.getBL(g).then(c=>{g.copiaMail=c})
     iyc.createMA(g)
     .then(urlMa=>{
+        if(!g.info) g.info={}
+        if(!g.info.urlMa) g.info.urlMa={}
         g.info.urlMa = urlMa
         iyc.createPDF(g).then(urlPdf=>{
+            res.send(urlPdf)
             g.info.urlPdf = urlPdf
             admin.app('default').auth().getUser(g.userId).then(user=>{
-                g.info.ccAuth = user.email
+                g.info.ccAuth = user.email 
                 transporter.sendMail(iyc.createMailOptionsNewMA(g), (error, info)=>{
                     if(error) res.status(300).send(error)
                     if(info) {
@@ -674,6 +679,7 @@ app.all('/grc/sjPdfForApproval', function(req,res){
 
 app.all('/grc/sendSJNew', function(req,res){
     let g = req.body
+    console.log(g)
     grc.createPDFgrc(g).then(urlPdf=>{
         g.info.urlPdf = urlPdf
         admin.app('grc').auth().getUser(g.userId).then(user=>{
