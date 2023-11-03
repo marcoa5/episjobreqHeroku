@@ -144,7 +144,6 @@ exports.createPDF = function(b){
         let options = {width: '21cm', height: '29.7cm'};
         let file = {content: templ(b)}
         html_to_pdf.generatePdf(file,options).then((d)=>{
-            res(d)
             let ref = firebase.default.storage().ref(b.author + '/' + b.info.fileName + '.pdf')
             ref.put(Uint8Array.from(Buffer.from(d)).buffer, {contentType: 'application/pdf'})
             .then(()=>{

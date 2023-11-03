@@ -441,7 +441,6 @@ app.post('/iyc/sjMa', function(req,res){
 
 app.all('/iyc/sendSJNew', cors(), async function(req,res){
     let g = req.body
-    console.log(g)
     await iyc.getBL(g).then(c=>{g.copiaMail=c})
     iyc.createMA(g)
     .then(urlMa=>{
@@ -450,6 +449,7 @@ app.all('/iyc/sendSJNew', cors(), async function(req,res){
         g.info.urlMa = urlMa
         iyc.createPDF(g).then(urlPdf=>{
             res.send(urlPdf)
+            console.log(urlPdf)
             g.info.urlPdf = urlPdf
             admin.app('default').auth().getUser(g.userId).then(user=>{
                 g.info.ccAuth = user.email 
