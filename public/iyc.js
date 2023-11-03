@@ -186,6 +186,7 @@ exports.createMailOptionsNew = function(a){
                 path: a.info.urlPdf
             }
         }
+        console.log('mailOptionsNew')
     return (mailOptionsNew)
 }
 
@@ -206,6 +207,8 @@ exports.createMailOptionsNewMA =function(a){
             path: a.info.urlPdf
         }]
     }
+    console.log('mailOptionsNewMA')
+
 return (mailOptionsNewMA)
 }
 
