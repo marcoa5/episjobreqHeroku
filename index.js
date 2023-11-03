@@ -448,8 +448,8 @@ app.all('/iyc/sendSJNew', cors(), async function(req,res){
         if(!g.info.urlMa) g.info.urlMa={}
         g.info.urlMa = urlMa
         iyc.createPDF(g).then(urlPdf=>{
-            res.send(urlPdf)
-            console.log(urlPdf)
+            /*res.send(urlPdf)
+            console.log(urlPdf)*/
             g.info.urlPdf = urlPdf
             admin.app('default').auth().getUser(g.userId).then(user=>{
                 g.info.ccAuth = user.email 
