@@ -471,6 +471,24 @@ app.all('/iyc/sendSJNew', cors(), async function(req,res){
     })
 })
 
+app.all('/iyc/test',function(req,res){
+    var a = fs.readFileSync('template/template_fea.html','utf8')
+    //if(b.heading && b.heading=='fea') a = fs.readFileSync('template/template_fea.html','utf8')
+    var templ = Handlebars.compile(a)
+    let options = {width: '21cm', height: '29.7cm'};
+    let file = {content: templ({})}
+    html_to_pdf.generatePdf(file,options).then((d)=>{
+        /*let ref = firebase.default.storage().ref(b.author + '/' + b.info.fileName + '.pdf')
+        ref.put(Uint8Array.from(Buffer.from(d)).buffer, {contentType: 'application/pdf'})
+        .then(()=>{
+            ref.getDownloadURL().then(url=>{
+                res(url)
+            })
+        })*/
+        res.send(d)
+    })
+})
+
 app.all('/iyc/certiqHrs',function(req,res){
     axios({
         method:'get',
@@ -580,6 +598,8 @@ app.all('/iyc/offerta', async function(req,res){
     info.title='OFFERTA'
     res.send(temp(info))
 })
+
+
 
 //GRC
 
