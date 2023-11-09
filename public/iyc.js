@@ -155,6 +155,25 @@ exports.createPDF = function(b){
     })
 }
 
+exports.createPDFforApproval = function(b){
+    return new Promise((res,rej)=>{
+        var a = fs.readFileSync('template/template_fea.html','utf8')
+        var templ = Handlebars.compile(a)
+        let options = {width: '21cm', height: '29.7cm'};
+        let file = {content: templ(b)}
+        html_to_pdf.generatePdf(file,options).then((d)=>{
+            let ref = firebase.default.storage().ref('Closed/' + b.info.fileName + '.pdf')
+            ref.put(Uint8Array.from(Buffer.from(d)).buffer, {contentType: 'application/pdf'})
+            .then(()=>{
+                ref.getDownloadURL().then(url=>{
+                    console.log('saved')
+                    res(url)
+                })
+            })
+        })
+    })
+}
+
 exports.createMA = function(a){
     return new Promise((res,rej)=>{
         if(a && a.info && a.info.fileName){

@@ -16,7 +16,7 @@ var html_to_pdf = require('html-pdf-node');
 require('firebase/storage')
 const ver = require('./package.json').version
 const iyc = require('./public/iyc')
-const grc = require('./public/grc');
+const grc = require('./public/grc')
 const moment = require('moment/moment');
 const { now } = require('moment/moment');
 
@@ -308,7 +308,6 @@ app.all('/iyc/maildebug', async function(req, res,next) {
 });
 
 app.get('/iyc/certiq', function(req,res){
-    console.log(req.query)
     let count = 0
     let code=''
     let machines=[]
@@ -317,7 +316,7 @@ app.get('/iyc/certiq', function(req,res){
     let yesterday = req.query.day
     axios({
         method:'get',
-        url: 'https://api.epiroc.com/certiq/v2/authentication/login?username=marco.arato@epiroc.com&password=' + process.env.certiqPassword,
+        url: 'https://apim.epiroc.com/public/certiq/proxy/v2/authentication/login?username=marco.arato@epiroc.com&password=' + process.env.certiqPassword,
         headers: {
             'Ocp-Apim-Subscription-Key':certiqOcp
         }
@@ -327,13 +326,14 @@ app.get('/iyc/certiq', function(req,res){
         console.log(code)
         axios({
             method:'get',
-            url: 'https://api.epiroc.com/certiq/v2/machines',
+            url: 'https://apim.epiroc.com/public/certiq/proxy/v2/machines',
             headers: {
                 'Ocp-Apim-Subscription-Key':certiqOcp,
                 'X-Auth-Token':code
             }
         })
         .then(info=>{
+            console.log(info.data.data)
             machines= info.data.data
             lung = machines.length
             machines.forEach(sr=>{
@@ -350,7 +350,7 @@ app.get('/iyc/certiq', function(req,res){
                 sr.machineSite=s1
                 axios({
                     method:'get',
-                    url: 'https://api.epiroc.com/certiq/v2/machines/'+ sr.machineItemNumber +'/kpis/' + yesterday,
+                    url: 'https://apim.epiroc.com/public/certiq/proxy/v2/machines/'+ sr.machineItemNumber +'/kpis/' + yesterday,
                     headers: {
                         'Ocp-Apim-Subscription-Key':certiqOcp,
                         'X-Auth-Token':code
@@ -361,7 +361,7 @@ app.get('/iyc/certiq', function(req,res){
                     sr.LastDayEngineHours = Math.round(gg.data.dailyUtilizationEngineHours)
                     axios({
                         method:'get',
-                        url: 'https://api.epiroc.com/certiq/v2/machines/'+ sr.machineItemNumber +'/serviceStatus',
+                        url: 'https://apim.epiroc.com/public/certiq/proxy/v2/machines/'+ sr.machineItemNumber +'/serviceStatus',
                         headers: {
                             'Ocp-Apim-Subscription-Key':certiqOcp,
                             'X-Auth-Token':code
@@ -489,6 +489,10 @@ app.all('/iyc/test',function(req,res){
     })
 })
 
+app.all('/iyc/env', function(req,res){
+    res.send(process.env.certiqOcp)
+})
+
 app.all('/iyc/certiqHrs',function(req,res){
     axios({
         method:'get',
@@ -599,6 +603,13 @@ app.all('/iyc/offerta', async function(req,res){
     res.send(temp(info))
 })
 
+app.all('/iyc/sjPdfForApproval', function(req,res){
+    let g = req.body
+    iyc.createPDFforApproval(g)
+    .then(()=>{
+        res.status(200).json({saved:true})
+    })
+})
 
 
 //GRC
