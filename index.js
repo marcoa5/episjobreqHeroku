@@ -496,7 +496,7 @@ app.all('/iyc/env', function(req,res){
 app.all('/iyc/certiqHrs',function(req,res){
     axios({
         method:'get',
-        url: 'https://api.epiroc.com/certiq/v2/authentication/login?username=marco.arato@epiroc.com&password=' + process.env.certiqPassword,
+        url: 'https://apim.epiroc.com/public/certiq/proxy/v2/authentication/login?username=marco.arato@epiroc.com&password=' + process.env.certiqPassword,
         headers: {
             'Ocp-Apim-Subscription-Key':certiqOcp
         }
@@ -505,7 +505,7 @@ app.all('/iyc/certiqHrs',function(req,res){
         let uCode = data.data.userCode
         axios({
             method:'get',
-            url: 'https://api.epiroc.com/certiq/v2/machines',
+            url: 'https://apim.epiroc.com/public/certiq/proxy/v2/machines',
             headers: {
                 'Ocp-Apim-Subscription-Key':certiqOcp,
                 'X-Auth-Token':uCode
@@ -526,7 +526,7 @@ app.all('/iyc/certiqHrs',function(req,res){
                 } catch{}
                 axios({
                     method:'get',
-                    url:'https://api.epiroc.com/certiq/v2/machines/'+m.machineItemNumber+'/kpiOverview/',
+                    url:'https://apim.epiroc.com/public/certiq/proxy/v2/machines/'+m.machineItemNumber+'/kpiOverview/',
                     headers:{
                        'Ocp-Apim-Subscription-Key':certiqOcp,
                         'X-Auth-Token':uCode, 
